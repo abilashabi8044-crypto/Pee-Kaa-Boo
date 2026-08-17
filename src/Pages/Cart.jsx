@@ -28,6 +28,9 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
   const [localQty, setLocalQty] = useState(1);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(false);
+  const [appliedCouponCode, setAppliedCouponCode] = useState('');
+  const [showCouponInput, setShowCouponInput] = useState(false);
+  const [couponError, setCouponError] = useState('');
   const [pincode, setPincode] = useState('600001');
   const [isChangingPincode, setIsChangingPincode] = useState(false);
   const [newPincode, setNewPincode] = useState('');
@@ -239,7 +242,15 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 </span>
               </div>
               <button
-                onClick={() => setAppliedCoupon(!appliedCoupon)}
+                onClick={() => {
+                  if (appliedCoupon) {
+                    setAppliedCoupon(false);
+                    setAppliedCouponCode('');
+                    setCouponCode('');
+                  } else {
+                    setShowCouponInput(true);
+                  }
+                }}
                 className="text-[#F96E8F] font-bold text-[21px] px-8 hover:underline cursor-pointer"
               >
                 {appliedCoupon ? 'Remove' : 'Apply'}
@@ -258,19 +269,100 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 </div>
               </div>
               <button
-                onClick={() => setAppliedCoupon(!appliedCoupon)}
+                onClick={() => {
+                  if (appliedCoupon && appliedCouponCode === 'FLAT1000') {
+                    setAppliedCoupon(false);
+                    setAppliedCouponCode('');
+                  } else {
+                    setAppliedCoupon(true);
+                    setAppliedCouponCode('FLAT1000');
+                    setShowCouponInput(false);
+                  }
+                }}
                 className="text-gray-400 font-extrabold text-sm px-4 hover:underline cursor-pointer"
               >
-                {appliedCoupon ? 'Applied' : 'Apply'}
+                {appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'Applied' : 'Apply'}
               </button>
             </div>
 
+            {/* Coupon Input Box when "Apply More Coupons" is clicked */}
+            {showCouponInput && (
+              <div className="border-2 border-dashed border-[#F96E8F] bg-[#FFF5F7] rounded-xl p-4 flex flex-col gap-3 shadow-sm transition-all duration-300">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[16px] text-gray-800 font-['Baloo_2']">Enter Coupon Code</span>
+                  <button 
+                    onClick={() => { setShowCouponInput(false); setCouponError(''); }}
+                    className="text-gray-400 hover:text-gray-600 font-bold text-sm cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => {
+                      setCouponCode(e.target.value);
+                      setCouponError('');
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        if (!couponCode.trim()) {
+                          setCouponError('Please enter a coupon code');
+                          return;
+                        }
+                        setAppliedCoupon(true);
+                        setAppliedCouponCode(couponCode.trim().toUpperCase());
+                        setShowCouponInput(false);
+                      }
+                    }}
+                    placeholder="Enter coupon code (e.g. FLAT1000)"
+                    className="flex-1 border border-gray-300 rounded-lg px-3.5 py-2 text-sm outline-none font-bold uppercase bg-white focus:border-[#F96E8F]"
+                  />
+                  <button
+                    onClick={() => {
+                      if (!couponCode.trim()) {
+                        setCouponError('Please enter a coupon code');
+                        return;
+                      }
+                      setAppliedCoupon(true);
+                      setAppliedCouponCode(couponCode.trim().toUpperCase());
+                      setShowCouponInput(false);
+                    }}
+                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white text-sm px-5 py-2 rounded-lg font-bold transition-colors cursor-pointer"
+                  >
+                    Apply
+                  </button>
+                </div>
+                {couponError && (
+                  <p className="text-red-500 text-xs font-bold">{couponError}</p>
+                )}
+              </div>
+            )}
+
+            {/* Applied Coupon Status Banner */}
+            {appliedCoupon && (
+              <div className="bg-[#E8F8F5] border border-[#2ECC71]/40 text-[#27AE60] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex justify-between items-center shadow-xs">
+                <span>✓ {appliedCouponCode ? `Coupon "${appliedCouponCode}" Applied (-₹1000)` : 'FLAT ₹1000 Coupon Applied!'}</span>
+                <button 
+                  onClick={() => {
+                    setAppliedCoupon(false);
+                    setAppliedCouponCode('');
+                    setCouponCode('');
+                  }}
+                  className="text-red-500 hover:text-red-700 hover:underline cursor-pointer ml-2 text-xs uppercase font-extrabold"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+
             {/* Full Width Apply More Coupons Button */}
             <button
-              onClick={() => setAppliedCoupon(true)}
-              className="w-full bg-[#F96E8F] hover:bg-[#E44971] text-white font-medium py-3 rounded-b-xl text-[15px] font-[Nunito] transition-colors cursor-pointer shadow-xs"
+              onClick={() => setShowCouponInput(!showCouponInput)}
+              className="w-full bg-[#F96E8F] hover:bg-[#E44971] text-white font-medium py-3 rounded-b-xl text-[15px] font-[Nunito] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2"
             >
-              Apply More Coupons
+              {showCouponInput ? 'Close Coupon Input' : 'Apply More Coupons'}
             </button>
 
             {/* Deliver to Pincode Section */}

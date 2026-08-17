@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import userIcon from '../assets/account/profile.png';
@@ -19,6 +19,271 @@ const UPIIcon = () => <img src={upiIcon} alt="UPI Icon" className="w-[24px] h-[2
 const CardIcon = () => <img src={cardIcon} alt="Card Icon" className="w-[24px] h-[24px] object-contain" />;
 const HeartIcon = () => <img src={heartIcon} alt="Heart Icon" className="w-[24px] h-[24px] object-contain" />;
 const LogoutIcon = () => <img src={logoutIcon} alt="Logout Icon" className="w-[24px] h-[24px] object-contain" />;
+
+const monthsList = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+// Custom Super Calendar Component
+const CustomDatePicker = ({ value, onChange, onClose }) => {
+  const parsedDate = value ? new Date(value) : new Date();
+  const validDate = isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+
+  const [currentYear, setCurrentYear] = useState(validDate.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(validDate.getMonth());
+  const [viewMode, setViewMode] = useState('days'); // 'days' | 'months' | 'years'
+  const [yearPage, setYearPage] = useState(Math.floor(validDate.getFullYear() / 12) * 12);
+
+  const selectedDate = value ? new Date(value) : null;
+  const isSelectedDateValid = selectedDate && !isNaN(selectedDate.getTime());
+  const selectedYear = isSelectedDateValid ? selectedDate.getFullYear() : null;
+  const selectedMonth = isSelectedDateValid ? selectedDate.getMonth() : null;
+  const selectedDay = isSelectedDateValid ? selectedDate.getDate() : null;
+
+  const today = new Date();
+
+  const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+  const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
+
+  const totalDays = getDaysInMonth(currentYear, currentMonth);
+  const startDay = getFirstDayOfMonth(currentYear, currentMonth);
+  const prevMonthDays = getDaysInMonth(currentYear, currentMonth - 1);
+
+  const handlePrev = () => {
+    if (viewMode === 'days') {
+      if (currentMonth === 0) {
+        setCurrentMonth(11);
+        setCurrentYear(prev => prev - 1);
+      } else {
+        setCurrentMonth(prev => prev - 1);
+      }
+    } else if (viewMode === 'years') {
+      setYearPage(prev => prev - 12);
+    } else if (viewMode === 'months') {
+      setCurrentYear(prev => prev - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (viewMode === 'days') {
+      if (currentMonth === 11) {
+        setCurrentMonth(0);
+        setCurrentYear(prev => prev + 1);
+      } else {
+        setCurrentMonth(prev => prev + 1);
+      }
+    } else if (viewMode === 'years') {
+      setYearPage(prev => prev + 12);
+    } else if (viewMode === 'months') {
+      setCurrentYear(prev => prev + 1);
+    }
+  };
+
+  const handleSelectDay = (day) => {
+    const formattedMonth = String(currentMonth + 1).padStart(2, '0');
+    const formattedDay = String(day).padStart(2, '0');
+    const dateStr = `${currentYear}-${formattedMonth}-${formattedDay}`;
+    onChange(dateStr);
+    onClose();
+  };
+
+  const handleSelectToday = () => {
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, '0');
+    const d = String(today.getDate()).padStart(2, '0');
+    onChange(`${y}-${m}-${d}`);
+    onClose();
+  };
+
+  const years = Array.from({ length: 12 }, (_, i) => yearPage + i);
+
+  return (
+    <div 
+      onClick={(e) => e.stopPropagation()}
+      className="absolute top-full left-0 mt-3 z-50 bg-white rounded-3xl shadow-2xl border border-pink-100 p-5 w-[310px] sm:w-[340px] font-['Nunito'] animate-in fade-in zoom-in-95 duration-150 select-none"
+    >
+      {/* Top Header */}
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-pink-50">
+        <button
+          type="button"
+          onClick={handlePrev}
+          className="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 hover:bg-pink-50 hover:text-[#F96E8F] transition-all cursor-pointer"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setViewMode(viewMode === 'months' ? 'days' : 'months')}
+            className={`px-3 py-1 rounded-xl font-black text-[15px] transition-all cursor-pointer ${
+              viewMode === 'months' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
+            }`}
+          >
+            {monthsList[currentMonth]}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setYearPage(Math.floor(currentYear / 12) * 12);
+              setViewMode(viewMode === 'years' ? 'days' : 'years');
+            }}
+            className={`px-3 py-1 rounded-xl font-black text-[15px] transition-all cursor-pointer ${
+              viewMode === 'years' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
+            }`}
+          >
+            {currentYear}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleNext}
+          className="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 hover:bg-pink-50 hover:text-[#F96E8F] transition-all cursor-pointer"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Days Grid View */}
+      {viewMode === 'days' && (
+        <>
+          {/* Weekday headers */}
+          <div className="grid grid-cols-7 gap-1 text-center mb-2">
+            {daysOfWeek.map((day, idx) => (
+              <span key={idx} className={`text-[12px] font-black ${idx === 0 || idx === 6 ? 'text-[#F96E8F]' : 'text-gray-400'}`}>
+                {day}
+              </span>
+            ))}
+          </div>
+
+          {/* Days Grid */}
+          <div className="grid grid-cols-7 gap-1">
+            {Array.from({ length: startDay }).map((_, i) => {
+              const dayNum = prevMonthDays - startDay + i + 1;
+              return (
+                <div key={`prev-${i}`} className="h-9 flex items-center justify-center text-gray-300 text-[12px] font-bold">
+                  {dayNum}
+                </div>
+              );
+            })}
+
+            {Array.from({ length: totalDays }).map((_, i) => {
+              const day = i + 1;
+              const isSelected = selectedYear === currentYear && selectedMonth === currentMonth && selectedDay === day;
+              const isToday = today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === day;
+
+              return (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => handleSelectDay(day)}
+                  className={`h-9 w-9 mx-auto rounded-full flex items-center justify-center text-[13.5px] font-bold transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-gradient-to-tr from-[#F96E8F] to-[#FF8EAA] text-white shadow-md shadow-pink-300 scale-105 font-black'
+                      : isToday
+                      ? 'border-2 border-[#F96E8F] text-[#F96E8F] font-black hover:bg-pink-50'
+                      : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                  }`}
+                >
+                  {day}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* Months Grid View */}
+      {viewMode === 'months' && (
+        <div className="grid grid-cols-3 gap-2 py-1">
+          {monthsList.map((m, idx) => {
+            const isSelected = currentMonth === idx;
+            return (
+              <button
+                key={m}
+                type="button"
+                onClick={() => {
+                  setCurrentMonth(idx);
+                  setViewMode('days');
+                }}
+                className={`py-3 rounded-2xl font-bold text-[14px] transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
+                    : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                }`}
+              >
+                {m.substring(0, 3)}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Years Grid View */}
+      {viewMode === 'years' && (
+        <div className="grid grid-cols-3 gap-2 py-1">
+          {years.map(y => {
+            const isSelected = currentYear === y;
+            return (
+              <button
+                key={y}
+                type="button"
+                onClick={() => {
+                  setCurrentYear(y);
+                  setViewMode('months');
+                }}
+                className={`py-3 rounded-2xl font-bold text-[14px] transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
+                    : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                }`}
+              >
+                {y}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Footer Quick Actions */}
+      <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-3">
+        <button
+          type="button"
+          onClick={handleSelectToday}
+          className="text-[13px] font-black text-[#F96E8F] hover:underline cursor-pointer"
+        >
+          Today
+        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              onChange('');
+              onClose();
+            }}
+            className="px-3 py-1 rounded-xl text-[12px] font-bold text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            Clear
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-3.5 py-1 rounded-xl text-[12px] font-bold bg-[#F96E8F] text-white hover:bg-[#E44971] transition-colors cursor-pointer shadow-xs"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 
 const Account = ({ cartItems, addToCart, orders = [] }) => {
@@ -47,16 +312,44 @@ const Account = ({ cartItems, addToCart, orders = [] }) => {
     return () => window.removeEventListener('popstate', handleTabChange);
   }, []);
   
-  const [formData, setFormData] = useState({
-    fullName: '',
-    mobileNumber: '',
-    altMobileNumber: '',
-    emailId: '',
-    altEmailId: '',
-    gender: '',
-    dob: ''
-  });
+  const getSavedProfile = () => {
+    try {
+      const saved = localStorage.getItem('userProfile');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error(e);
+    }
+    return {
+      fullName: 'Your name',
+      mobileNumber: '9123456789',
+      altMobileNumber: '',
+      emailId: '',
+      altEmailId: '',
+      gender: '',
+      dob: ''
+    };
+  };
+
+  const [profile, setProfile] = useState(getSavedProfile);
+  const [formData, setFormData] = useState(getSavedProfile);
   const [errors, setErrors] = useState({});
+  const [savedSuccess, setSavedSuccess] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const calendarRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setShowCalendar(false);
+      }
+    };
+    if (showCalendar) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCalendar]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -70,28 +363,25 @@ const Account = ({ cartItems, addToCart, orders = [] }) => {
   const validateForm = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\d{10}$/;
 
-    if (!formData.fullName.trim() || formData.fullName.length < 3) {
-      newErrors.fullName = 'Full Name is required (min 3 chars)';
+    if (!formData.fullName.trim() || formData.fullName.length < 2) {
+      newErrors.fullName = 'Full Name is required';
     }
-    if (!formData.mobileNumber.trim() || !phoneRegex.test(formData.mobileNumber)) {
+    const cleanPhone = formData.mobileNumber.replace(/\D/g, '');
+    if (!formData.mobileNumber.trim() || cleanPhone.length < 10) {
       newErrors.mobileNumber = 'Valid 10-digit mobile number is required';
     }
-    if (formData.altMobileNumber.trim() && !phoneRegex.test(formData.altMobileNumber.trim())) {
-      newErrors.altMobileNumber = 'Alternate mobile must be 10 digits';
+    if (formData.altMobileNumber && formData.altMobileNumber.trim()) {
+      const cleanAltPhone = formData.altMobileNumber.replace(/\D/g, '');
+      if (cleanAltPhone.length < 10) {
+        newErrors.altMobileNumber = 'Alternate mobile must be 10 digits';
+      }
     }
-    if (!formData.emailId.trim() || !emailRegex.test(formData.emailId)) {
+    if (formData.emailId && formData.emailId.trim() && !emailRegex.test(formData.emailId.trim())) {
       newErrors.emailId = 'Valid email is required';
     }
-    if (formData.altEmailId.trim() && !emailRegex.test(formData.altEmailId.trim())) {
+    if (formData.altEmailId && formData.altEmailId.trim() && !emailRegex.test(formData.altEmailId.trim())) {
       newErrors.altEmailId = 'Valid alternate email is required';
-    }
-    if (!formData.gender.trim()) {
-      newErrors.gender = 'Gender is required';
-    }
-    if (!formData.dob.trim()) {
-      newErrors.dob = 'Date of Birth is required';
     }
 
     setErrors(newErrors);
@@ -101,8 +391,15 @@ const Account = ({ cartItems, addToCart, orders = [] }) => {
   const handleProfileSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      alert('Profile updated successfully!');
-      // Form is valid, would typically make API call here
+      setProfile({ ...formData });
+      try {
+        localStorage.setItem('userProfile', JSON.stringify(formData));
+      } catch (err) {
+        console.error(err);
+      }
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
+      alert('Profile details saved successfully!');
     }
   };
 
@@ -138,44 +435,58 @@ const Account = ({ cartItems, addToCart, orders = [] }) => {
               {/* Profile Summary Card */}
               <div className="bg-white rounded-3xl p-6 shadow-xs border border-gray-100 flex items-center gap-5 relative overflow-hidden">
                 <div className="w-[72px] h-[72px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0 shadow-sm z-10 border-2 border-white">
-                  <img src="https://ui-avatars.com/api/?name=Your+Name&background=333&color=fff&size=150" alt="User Avatar" className="w-full h-full object-cover" />
+                  <img 
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(profile.fullName || 'User')}&background=F96E8F&color=fff&size=150`} 
+                    alt="User Avatar" 
+                    className="w-full h-full object-cover" 
+                  />
                 </div>
                 <div className="flex flex-col z-10">
-                  <h3 className="font-extrabold text-[17px] text-gray-900 leading-tight mb-1">Your name</h3>
-                  <p className="text-gray-500 font-bold text-[13px]">+91 91234 56789</p>
+                  <h3 className="font-extrabold text-[17px] text-gray-900 leading-tight mb-1">
+                    {profile.fullName || 'Your name'}
+                  </h3>
+                  <p className="text-gray-500 font-bold text-[13px]">
+                    {profile.mobileNumber ? (profile.mobileNumber.startsWith('+91') ? profile.mobileNumber : `+91 ${profile.mobileNumber}`) : '+91 91234 56789'}
+                  </p>
                 </div>
               </div>
 
               {/* Navigation Menu */}
               <div className="bg-white rounded-[24px] overflow-hidden shadow-xs border border-gray-100 py-3">
                 <ul className="flex flex-col">
-                  {menuItems.map((item, idx) => (
-                    <li key={idx}>
-                      <button 
-                        onClick={() => {
-                          if (item.name === 'Logout') {
-                            window.history.pushState({}, '', '/login');
-                            window.dispatchEvent(new Event('popstate'));
-                          } else {
-                            setActiveMenu(item.name);
-                          }
-                        }}
-                        className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
-                          activeMenu === item.name 
-                            ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]' 
-                            : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                        }`}
-                      >
-                        <div className="flex items-center gap-4">
-                          <span className={`${activeMenu === item.name ? 'text-[#F96E8F]' : 'text-gray-400'}`}>
-                            {item.icon}
-                          </span>
-                          <span className="tracking-wide font-['Baloo_2']">{item.name}</span>
-                        </div>
-                        <svg className={`w-4 h-4 ${activeMenu === item.name ? 'text-[#F96E8F]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path></svg>
-                      </button>
-                    </li>
-                  ))}
+                  {menuItems.map((item, idx) => {
+                    const isLogout = item.name === 'Logout';
+                    const isActive = activeMenu === item.name;
+                    return (
+                      <li key={idx}>
+                        <button 
+                          onClick={() => {
+                            if (isLogout) {
+                              window.history.pushState({}, '', '/login');
+                              window.dispatchEvent(new Event('popstate'));
+                            } else {
+                              setActiveMenu(item.name);
+                            }
+                          }}
+                          className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                            isLogout
+                              ? 'text-red-500 hover:bg-red-50 hover:text-red-600 border-l-[3px] border-l-transparent'
+                              : isActive 
+                              ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]' 
+                              : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <span className={`${isLogout ? 'text-red-500' : isActive ? 'text-[#F96E8F]' : 'text-gray-400'}`}>
+                              {item.icon}
+                            </span>
+                            <span className="tracking-wide font-['Baloo_2']">{item.name}</span>
+                          </div>
+                          <svg className={`w-4 h-4 ${isLogout ? 'text-red-400' : isActive ? 'text-[#F96E8F]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
 
@@ -237,21 +548,47 @@ const Account = ({ cartItems, addToCart, orders = [] }) => {
                       {errors.gender && <span className="text-red-500 text-sm font-bold">{errors.gender}</span>}
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 relative" ref={calendarRef}>
                       <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">Date of Birth</label>
-                      <div className="relative">
-                        <input type="text" name="dob" value={formData.dob} onChange={handleInputChange} className={`w-full bg-white border ${errors.dob ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 pr-10 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`} />
-                        <img src={date} alt="Date Icon" className="w-[24px] h-[24px] absolute right-4 top-1/2 -translate-y-1/2 object-contain" />
+                      <div 
+                        onClick={() => setShowCalendar(!showCalendar)}
+                        className={`w-full bg-white border ${errors.dob ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 pr-12 flex items-center justify-between cursor-pointer hover:border-[#F96E8F] transition-colors shadow-sm`}
+                      >
+                        <span className={`font-bold text-[15px] ${formData.dob ? 'text-gray-800' : 'text-gray-400'}`}>
+                          {formData.dob ? formData.dob : 'Select Date of Birth'}
+                        </span>
+                        <img 
+                          src={date} 
+                          alt="Date Icon" 
+                          className="w-[24px] h-[24px] object-contain hover:scale-110 transition-transform" 
+                        />
                       </div>
                       {errors.dob && <span className="text-red-500 text-sm font-bold">{errors.dob}</span>}
+
+                      {/* Custom Super Calendar Dropdown */}
+                      {showCalendar && (
+                        <CustomDatePicker
+                          value={formData.dob}
+                          onChange={(newDate) => {
+                            setFormData(prev => ({ ...prev, dob: newDate }));
+                            if (errors.dob) setErrors(prev => ({ ...prev, dob: '' }));
+                          }}
+                          onClose={() => setShowCalendar(false)}
+                        />
+                      )}
                     </div>
 
                   </div>
 
                   {/* Submit Button */}
-                  <div className="mt-12 flex justify-end">
+                  <div className="mt-12 flex items-center justify-end gap-4">
+                    {savedSuccess && (
+                      <span className="text-green-600 font-bold text-[15px]">
+                        ✓ Profile updated successfully!
+                      </span>
+                    )}
                     <button type="submit" className="bg-[#F96E8F] hover:bg-[#E44971] text-white py-3 px-12 rounded-[12px] font-bold text-[20px] font-['Baloo_2'] shadow-sm transition-colors cursor-pointer tracking-wider">
-                      Edit Profile
+                      Save Changes
                     </button>
                   </div>
                 </form>
