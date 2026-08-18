@@ -286,7 +286,55 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
 };
 
 
-const Account = ({ cartItems, addToCart, orders = [] }) => {
+const WishlistItemCard = ({ item, addToCart, onRemove }) => {
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAdd = () => {
+    if (addToCart) addToCart(item, 1);
+    setIsAdded(true);
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 2000);
+  };
+
+  return (
+    <div className="border border-gray-200 rounded-[18px] p-4 bg-white shadow-sm flex flex-col items-center relative group hover:shadow-md transition-shadow">
+      <img src={item.image} alt={item.title} className="w-full h-[180px] object-cover rounded-[14px] mb-3" />
+      <h4 className="font-bold text-[16px] text-gray-800 text-center mb-1 font-['Nunito'] line-clamp-1">{item.title}</h4>
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-gray-400 font-semibold line-through text-sm">₹{item.oldPrice}</span>
+        <span className="text-[#F96E8F] font-black text-lg">₹{item.price}</span>
+      </div>
+      <button
+        onClick={handleAdd}
+        className={`w-full py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-sm mb-2 font-['Nunito'] flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${
+          isAdded
+            ? 'bg-[#fc148c] text-white scale-95'
+            : 'bg-[#F96E8F] text-white hover:bg-[#E44971]'
+        }`}
+      >
+        {isAdded ? (
+          <span className="flex items-center gap-1.5 transform transition-transform duration-300">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+            </svg>
+            Added
+          </span>
+        ) : (
+          'Add to Cart'
+        )}
+      </button>
+      <button
+        onClick={onRemove}
+        className="text-xs text-gray-400 hover:text-red-500 font-bold transition-colors font-['Nunito'] cursor-pointer"
+      >
+        Remove from Wishlist
+      </button>
+    </div>
+  );
+};
+
+const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishlist }) => {
   const getInitialTab = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const tabParam = searchParams.get('tab');
@@ -321,7 +369,7 @@ const Account = ({ cartItems, addToCart, orders = [] }) => {
     }
     return {
       fullName: 'Your name',
-      mobileNumber: '9123456789',
+      mobileNumber: '',
       altMobileNumber: '',
       emailId: '',
       altEmailId: '',
@@ -696,11 +744,24 @@ const Account = ({ cartItems, addToCart, orders = [] }) => {
               )}
 
               {activeMenu === 'My Wishlists' && (
-                <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-                  <h2 className="text-[24px] font-black text-gray-900 mb-4 tracking-wide w-full text-left">My Wishlists</h2>
-                  <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
-                    <p className="font-bold text-lg">Your wishlist is empty.</p>
-                  </div>
+                <div className="flex flex-col w-full">
+                  <h2 className="text-[24px] font-black text-gray-900 mb-6 tracking-wide w-full text-left">My Wishlists ({wishlist.length})</h2>
+                  {wishlist.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center min-h-[300px] text-gray-500">
+                      <p className="font-bold text-lg">Your wishlist is empty.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {wishlist.map((item, idx) => (
+                        <WishlistItemCard
+                          key={item.id || idx}
+                          item={item}
+                          addToCart={addToCart}
+                          onRemove={() => addToWishlist && addToWishlist(item)}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 

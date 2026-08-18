@@ -7,12 +7,40 @@ import Product from './Pages/Product';
 import Cart from './Pages/Cart';
 import Checkout from './Pages/Checkout';
 import Account from './Pages/Account';
+import SmoothScroll from './Pages/Smoothscroll';
 
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [wishlist, setWishlist] = useState(() => {
+    try {
+      const saved = localStorage.getItem('userWishlist');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const addToWishlist = (product) => {
+    setWishlist(prev => {
+      const exists = prev.some(item => (item.id && product.id ? item.id === product.id : item.title === product.title));
+      let next;
+      if (exists) {
+        next = prev.filter(item => !(item.id && product.id ? item.id === product.id : item.title === product.title));
+      } else {
+        next = [...prev, product];
+      }
+      try {
+        localStorage.setItem('userWishlist', JSON.stringify(next));
+        window.dispatchEvent(new Event('wishlistUpdated'));
+      } catch (e) {
+        console.error(e);
+      }
+      return next;
+    });
+  };
 
   const placeOrder = () => {
     if (cartItems.length === 0) return;
@@ -84,12 +112,18 @@ function App() {
   const isLoginPage = currentPath.includes('/login');
 
   return (
-    <>
+    <SmoothScroll>
       <section>
         {isLoginPage ? (
           <Login />
         ) : isAccountPage ? (
-          <Account cartItems={cartItems} addToCart={addToCart} orders={orders} />
+          <Account
+            cartItems={cartItems}
+            addToCart={addToCart}
+            orders={orders}
+            wishlist={wishlist}
+            addToWishlist={addToWishlist}
+          />
         ) : isCheckoutPage ? (
           <Checkout cartItems={cartItems} updateQuantity={updateQuantity} placeOrder={placeOrder} />
         ) : isCartPage ? (
@@ -98,16 +132,21 @@ function App() {
           <Product product={selectedProduct} addToCart={addToCart} cartItems={cartItems} />
         ) : (
           <>
-            <Header cartItems={cartItems} />
-            <Shop onSelectProduct={(prod) => {
-              setSelectedProduct(prod);
-              window.history.pushState({}, '', '/product');
-              setCurrentPath('/product');
-            }} addToCart={addToCart} />
+            <Header cartItems={cartItems} wishlistCount={wishlist.length} />
+            <Shop
+              onSelectProduct={(prod) => {
+                setSelectedProduct(prod);
+                window.history.pushState({}, '', '/product');
+                setCurrentPath('/product');
+              }}
+              addToCart={addToCart}
+              wishlist={wishlist}
+              onAddToWishlist={addToWishlist}
+            />
           </>
         )}
       </section>
-    </>
+    </SmoothScroll>
   )
 }
 

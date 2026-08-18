@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import shopbg from '../assets/shop/shop-bg.png';
 import cloud from '../assets/shop/cloud.png';
 import prod1 from '../assets/shop/product1.jpg';
@@ -22,6 +22,8 @@ import spark2 from '../assets/shop/spark2.png';
 import pink from '../assets/shop/peekaaboo-pink.png';
 import headerCar from '../assets/cart/left-img.png';
 import Footer from './Footer';
+import wlist from '../assets/shop/wlist.png';
+import save from '../assets/shop/save.png';
 
 // Subcomponents
 const FilterSection = ({ title, options = [], selectedOptions = [], onChange }) => {
@@ -60,7 +62,20 @@ const FilterSection = ({ title, options = [], selectedOptions = [], onChange }) 
     );
 };
 
-const ProductCard = ({ image, title, price, oldPrice, theme, onClick, onAddToCart, viewMode = 'grid' }) => {
+const ProductCard = ({
+    item,
+    image,
+    title,
+    price,
+    oldPrice,
+    theme,
+    category,
+    onClick,
+    onAddToCart,
+    onAddToWishlist,
+    isWishlisted,
+    viewMode = 'grid'
+}) => {
     const [isAdded, setIsAdded] = useState(false);
     const isGrid = viewMode === 'grid';
 
@@ -96,11 +111,23 @@ const ProductCard = ({ image, title, price, oldPrice, theme, onClick, onAddToCar
                     </div>
 
                     <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button className="w-9 h-9 bg-[#00D0CC] rounded-[8px] flex items-center justify-center text-white hover:bg-[#00b3b0] transition-colors shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (onAddToWishlist) onAddToWishlist(item || { image, title, price, oldPrice, theme, category });
+                            }}
+                            title="Add to Wishlist"
+                            className={`w-9 h-9 rounded-[8px] flex items-center justify-center transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95 ${isWishlisted ? 'bg-[#F96E8F] text-white' : 'bg-[#00D0CC] hover:bg-[#00b3b0] text-white'}`}
+                        >
+                            <img src={wlist} alt="wishlist" className="h-4" />
                         </button>
-                        <button className="w-9 h-9 bg-[#00D0CC] rounded-[8px] flex items-center justify-center text-white hover:bg-[#00b3b0] transition-colors shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                            }}
+                            className="w-9 h-9 bg-[#00D0CC] rounded-[8px] flex items-center justify-center text-white hover:bg-[#00b3b0] transition-colors shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                        >
+                            <img src={save} alt="cart" className="h-4" />
                         </button>
                     </div>
                 </div>
@@ -108,7 +135,7 @@ const ProductCard = ({ image, title, price, oldPrice, theme, onClick, onAddToCar
                 {/* Content area */}
                 <div className="bg-white m-[6px] md:m-[10px] mt-[-20px] md:mt-[-30px] rounded-[16px] md:rounded-[20px] p-2 md:p-4 text-center flex-1 flex flex-col justify-center relative z-10 transition-all duration-300 shadow-sm">
                     <div className="text-gray-400 text-[10px] md:text-[13px] font-medium mb-1">
-                        Category
+                        {category || "Category"}
                     </div>
 
                     <h4 className="text-[#333] font-['Nunito'] font-bold text-[13px] md:text-[20px] leading-tight mb-1 md:mb-2 tracking-wide md:group-hover:text-[17px] md:group-hover:mb-3 transition-all duration-300">{title}</h4>
@@ -152,8 +179,14 @@ const ProductCard = ({ image, title, price, oldPrice, theme, onClick, onAddToCar
         >
             <div className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-[8px] overflow-hidden relative flex-shrink-0 bg-gray-50 border border-gray-100">
                 <img src={image} alt={title} className="w-full h-full object-fill" />
-                <div className="absolute top-1.5 right-1.5 text-[#F87597]/40 hover:text-[#F87597] transition-colors cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>
+                <div
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (onAddToWishlist) onAddToWishlist(item || { image, title, price, oldPrice, theme, category });
+                    }}
+                    className={`absolute top-1.5 right-1.5 transition-colors cursor-pointer ${isWishlisted ? 'text-[#F96E8F]' : 'text-[#F87597]/40 hover:text-[#F87597]'}`}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>
                 </div>
             </div>
 
@@ -219,7 +252,19 @@ export const gridItems = [
     { id: 113, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', size: '22.7mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.8, date: '2023-12-10' },
 ];
 
-export default function Shop({ onSelectProduct, addToCart }) {
+export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddToWishlist }) {
+    const [wishlistToast, setWishlistToast] = useState(null);
+
+    const handleWishlistClick = (product) => {
+        if (onAddToWishlist) {
+            onAddToWishlist(product);
+        }
+        setWishlistToast(product);
+        setTimeout(() => {
+            setWishlistToast(null);
+        }, 2500);
+    };
+
     const [selectedCategory, setSelectedCategory] = useState(() => {
         const path = window.location.pathname;
         if (path.includes('boys')) return "Boys Collections";
@@ -477,12 +522,16 @@ export default function Shop({ onSelectProduct, addToCart }) {
                                     if (item.type === 'product') {
                                         return (
                                             <ProductCard
-                                                key={index}
+                                                key={item.id || index}
+                                                item={item}
                                                 image={item.image}
                                                 title={item.title}
                                                 price={item.price}
                                                 oldPrice={item.oldPrice}
                                                 theme={item.theme}
+                                                category={item.category}
+                                                isWishlisted={wishlist.some(w => (w.id && item.id ? w.id === item.id : w.title === item.title))}
+                                                onAddToWishlist={handleWishlistClick}
                                                 onClick={() => onSelectProduct && onSelectProduct(item)}
                                                 onAddToCart={() => addToCart && addToCart(item, 1)}
                                                 viewMode={viewMode}
@@ -543,7 +592,29 @@ export default function Shop({ onSelectProduct, addToCart }) {
                     </div>
                 </div>
             </div>
-            <Footer/>
+
+            {/* Wishlist Added Popup Notification */}
+            {wishlistToast && (
+                <div className="fixed top-8 right-8 z-50 bg-white border-[2.5px] border-[#F96E8F] text-gray-800 px-5 py-3.5 rounded-[18px] shadow-2xl flex items-center gap-3.5 animate-bounce transition-all duration-300">
+                    <div className="w-10 h-10 rounded-full bg-[#F96E8F]/15 flex items-center justify-center flex-shrink-0">
+                        <img src={wlist} alt="wishlist" className="h-5" />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-[#F96E8F] text-[15px] font-['Nunito'] leading-tight">Wishlist added</h4>
+                        <p className="text-gray-600 text-[12px] font-bold font-['Nunito']">
+                            {wishlistToast.title || "Product"} added to your wishlist!
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => setWishlistToast(null)}
+                        className="text-gray-400 hover:text-gray-600 ml-2 font-bold text-base cursor-pointer"
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
+
+            <Footer />
         </div>
     );
 }

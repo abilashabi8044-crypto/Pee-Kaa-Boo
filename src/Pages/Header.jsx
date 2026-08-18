@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import logo from '../assets/Header/peekaaboo.png';
 import profile from '../assets/Header/profile.png';
 import heart from '../assets/Header/heart.png';
@@ -14,8 +15,42 @@ const actionIcons = [
     { name: 'cart', icon: cart },
 ];
 
-export default function Header({ cartItems = [] }) {
-    const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+export default function Header({ cartItems = [], wishlistCount }) {
+    const cartCount = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
+
+    const [localWishlistCount, setLocalWishlistCount] = useState(() => {
+        if (typeof wishlistCount === 'number') return wishlistCount;
+        try {
+            const saved = localStorage.getItem('userWishlist');
+            return saved ? JSON.parse(saved).length : 0;
+        } catch (e) {
+            return 0;
+        }
+    });
+
+    useEffect(() => {
+        if (typeof wishlistCount === 'number') {
+            setLocalWishlistCount(wishlistCount);
+        } else {
+            const updateCount = () => {
+                try {
+                    const saved = localStorage.getItem('userWishlist');
+                    setLocalWishlistCount(saved ? JSON.parse(saved).length : 0);
+                } catch (e) {
+                    setLocalWishlistCount(0);
+                }
+            };
+            updateCount();
+            window.addEventListener('storage', updateCount);
+            window.addEventListener('wishlistUpdated', updateCount);
+            return () => {
+                window.removeEventListener('storage', updateCount);
+                window.removeEventListener('wishlistUpdated', updateCount);
+            };
+        }
+    }, [wishlistCount]);
+
+    const activeWishlistCount = typeof wishlistCount === 'number' ? wishlistCount : localWishlistCount;
     return (
 
         <header className="w-full font-['Baloo_2'] relative overflow-hidden" >
@@ -63,51 +98,56 @@ export default function Header({ cartItems = [] }) {
                     </nav>
 
                     {/* Right Actions */}
-                    <div className="flex items-center gap-6">
-                        {/* Search Bar */}
+                <div className="flex items-center gap-6">
+                    {/* Search Bar */}
                         <div
                             className="flex items-center w-[280px] h-[42px] transition-colors bg-no-repeat bg-center bg-transparent"
                             style={{ backgroundImage: `url(${searchbarBg})`, backgroundSize: '100% 100%' }}
                         >
-                            <input
-                                type="text"
+                        <input
+                            type="text"
                                 placeholder="Search Everything"
                                 className="flex-1 pl-6 pr-3 h-full outline-none text-[13px] text-gray-500 font-extrabold bg-transparent border-none"
-                            />
-                            <button
+                        />
+                        <button
                                 className="w-[65px] h-full flex items-center justify-center transition-colors cursor-pointer bg-transparent bg-no-repeat bg-center"
                                 style={{ backgroundImage: `url(${searchbar1Bg})`, backgroundSize: '100% 100%' }}
-                            >
-                                <img src={search} alt="search" className="w-5 h-5" />
-                            </button>
-                        </div>
+                        >
+                            <img src={search} alt="search" className="w-5 h-5" />
+                        </button>
+                    </div>
 
-                        {/* Icons */}
-                        <div className="flex items-center gap-6 ml-2">
-                            {actionIcons.map((action, index) => (
-                                <button key={index} onClick={(e) => {
-                                    if (action.name === 'cart') {
-                                        e.preventDefault();
-                                        window.history.pushState({}, '', '/cart');
-                                        window.dispatchEvent(new Event('popstate'));
-                                    } else if (action.name === 'profile') {
-                                        e.preventDefault();
-                                        window.history.pushState({}, '', '/login');
-                                        window.dispatchEvent(new Event('popstate'));
-                                    } else if (action.name === 'heart') {
-                                        e.preventDefault();
-                                        window.history.pushState({}, '', '/account?tab=wishlist');
-                                        window.dispatchEvent(new Event('popstate'));
-                                    }
-                                }} className="relative text-gray-800 hover:text-[#F96E8F] transition-colors cursor-pointer">
-                                    <img src={action.icon} alt={action.name} className="w-6 h-6" />
-                                    {action.name === 'cart' && cartCount > 0 && (
-                                        <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
-                                            {cartCount}
-                                        </div>
-                                    )}
-                                </button>
-                            ))}
+                    {/* Icons */}
+                    <div className="flex items-center gap-6 ml-2">
+                        {actionIcons.map((action, index) => (
+                            <button key={index} onClick={(e) => {
+                                if (action.name === 'cart') {
+                                    e.preventDefault();
+                                    window.history.pushState({}, '', '/cart');
+                                    window.dispatchEvent(new Event('popstate'));
+                                } else if (action.name === 'profile') {
+                                    e.preventDefault();
+                                    window.history.pushState({}, '', '/login');
+                                    window.dispatchEvent(new Event('popstate'));
+                                } else if (action.name === 'heart') {
+                                    e.preventDefault();
+                                    window.history.pushState({}, '', '/account?tab=wishlist');
+                                    window.dispatchEvent(new Event('popstate'));
+                                }
+                            }} className="relative text-gray-800 hover:text-[#F96E8F] transition-colors cursor-pointer">
+                                <img src={action.icon} alt={action.name} className="w-6 h-6" />
+                                {action.name === 'cart' && cartCount > 0 && (
+                                    <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                                        {cartCount}
+                                    </div>
+                                )}
+                                {action.name === 'heart' && activeWishlistCount > 0 && (
+                                    <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm animate-pulse">
+                                        {activeWishlistCount}
+                                    </div>
+                                )}
+                            </button>
+                        ))}
                         </div>
                     </div>
                 </div>
