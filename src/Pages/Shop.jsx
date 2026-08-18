@@ -256,10 +256,14 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
     const [wishlistToast, setWishlistToast] = useState(null);
 
     const handleWishlistClick = (product) => {
+        const isRemoving = wishlist.some(w => (w.id && product.id ? w.id === product.id : w.title === product.title));
         if (onAddToWishlist) {
             onAddToWishlist(product);
         }
-        setWishlistToast(product);
+        setWishlistToast({
+            ...product,
+            action: isRemoving ? 'removed' : 'added'
+        });
         setTimeout(() => {
             setWishlistToast(null);
         }, 2500);
@@ -593,21 +597,29 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 </div>
             </div>
 
-            {/* Wishlist Added Popup Notification */}
+            {/* Wishlist Added / Removed Popup Notification */}
             {wishlistToast && (
-                <div className="fixed top-8 right-8 z-50 bg-white border-[2.5px] border-[#F96E8F] text-gray-800 px-5 py-3.5 rounded-[18px] shadow-2xl flex items-center gap-3.5 animate-bounce transition-all duration-300">
-                    <div className="w-10 h-10 rounded-full bg-[#F96E8F]/15 flex items-center justify-center flex-shrink-0">
-                        <img src={wlist} alt="wishlist" className="h-5" />
+                <div className={`fixed top-8 right-8 z-50 bg-white border-[2px] ${wishlistToast.action === 'removed' ? 'border-gray-300 shadow-lg' : 'border-[#F96E8F] shadow-lg'} text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 min-w-[280px] max-w-[360px]`}>
+                    <div className={`w-10 h-10 rounded-[12px] ${wishlistToast.action === 'removed' ? 'bg-gray-100 text-gray-500' : 'bg-[#F96E8F]/15 text-[#F96E8F]'} flex items-center justify-center flex-shrink-0`}>
+                        {wishlistToast.action === 'removed' ? (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        ) : (
+                            <img src={wlist} alt="wishlist" className="h-5" />
+                        )}
                     </div>
-                    <div>
-                        <h4 className="font-black text-[#F96E8F] text-[15px] font-['Nunito'] leading-tight">Wishlist added</h4>
-                        <p className="text-gray-600 text-[12px] font-bold font-['Nunito']">
-                            {wishlistToast.title || "Product"} added to your wishlist!
+                    <div className="flex-1 pr-2">
+                        <h4 className={`font-black ${wishlistToast.action === 'removed' ? 'text-gray-700' : 'text-[#F96E8F]'} text-[15px] font-['Nunito'] leading-tight`}>
+                            {wishlistToast.action === 'removed' ? 'Wishlist removed' : 'Wishlist added'}
+                        </h4>
+                        <p className="text-gray-500 text-[12px] font-bold font-['Nunito'] line-clamp-1 mt-0.5">
+                            {wishlistToast.title || "Product"}
                         </p>
                     </div>
                     <button
                         onClick={() => setWishlistToast(null)}
-                        className="text-gray-400 hover:text-gray-600 ml-2 font-bold text-base cursor-pointer"
+                        className="w-7 h-7 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center font-bold text-sm cursor-pointer transition-colors"
                     >
                         ✕
                     </button>

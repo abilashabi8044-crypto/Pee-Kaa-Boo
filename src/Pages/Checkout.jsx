@@ -73,37 +73,98 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
       </div>
     );
   };
-  const [billingAddressId, setBillingAddressId] = useState('addr1');
-  const [shippingAddressId, setShippingAddressId] = useState('addr1');
-  const [sameAsBilling, setSameAsBilling] = useState(true);
-
   const [isGift, setIsGift] = useState(false);
   const [selectedGiftWrap, setSelectedGiftWrap] = useState('');
   const [giftMessage, setGiftMessage] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(false);
 
-  // Financial calculations from Cart
-  const displayItemTotal = cartItems.reduce((acc, item) => acc + ((item.oldPrice || 2000) * (item.quantity || 1)), 0);
-  const displaySaved = cartItems.reduce((acc, item) => acc + (((item.oldPrice || 2000) - (item.price || 1710)) * (item.quantity || 1)), 0);
-  const couponDiscount = appliedCoupon ? 1000 : 90; // Mock logic
-  const displayBillTotal = displayItemTotal - displaySaved - couponDiscount;
+  // Dynamic financial calculations from Cart
+  const displayItemTotal = cartItems.reduce((acc, item) => acc + ((Number(item.oldPrice) || Number(item.price) || 0) * (item.quantity || 1)), 0);
+  const displaySubTotal = cartItems.reduce((acc, item) => acc + ((Number(item.price) || 0) * (item.quantity || 1)), 0);
+  const displaySaved = Math.max(0, displayItemTotal - displaySubTotal);
+  const giftWrapFee = isGift && selectedGiftWrap ? 50 : 0;
+  const couponDiscount = appliedCoupon && cartItems.length > 0 ? (displaySubTotal >= 1000 ? 1000 : displaySubTotal) : 0;
+  const shippingCost = 0;
+  const displayBillTotal = Math.max(0, displaySubTotal - couponDiscount + giftWrapFee + shippingCost);
 
   const [addresses, setAddresses] = useState(() => {
-    const saved = localStorage.getItem('userAddresses');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('userAddresses');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
   });
 
+  const [billingAddressId, setBillingAddressId] = useState(() => {
+    try {
+      const saved = localStorage.getItem('userAddresses');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return parsed.length > 0 ? parsed[0].id : '';
+    } catch (e) {
+      return '';
+    }
+  });
+  const [shippingAddressId, setShippingAddressId] = useState(() => {
+    try {
+      const saved = localStorage.getItem('userAddresses');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return parsed.length > 0 ? parsed[0].id : '';
+    } catch (e) {
+      return '';
+    }
+  });
+  const [sameAsBilling, setSameAsBilling] = useState(true);
+
   useEffect(() => {
-    localStorage.setItem('userAddresses', JSON.stringify(addresses));
+    try {
+      localStorage.setItem('userAddresses', JSON.stringify(addresses));
+    } catch (e) {
+      console.error(e);
+    }
+    if (addresses.length > 0) {
+      if (!addresses.some(a => a.id === billingAddressId)) {
+        setBillingAddressId(addresses[0].id);
+      }
+      if (!addresses.some(a => a.id === shippingAddressId)) {
+        setShippingAddressId(addresses[0].id);
+      }
+    } else {
+      setBillingAddressId('');
+      setShippingAddressId('');
+    }
   }, [addresses]);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [newAddress, setNewAddress] = useState({ name: '', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
   const [editingAddressId, setEditingAddressId] = useState(null);
+  const [addressErrors, setAddressErrors] = useState({});
+
+  const validateAddressForm = () => {
+    const errors = {};
+    if (!newAddress.name) {
+      errors.name = 'Please select an Address Label';
+    }
+    if (!newAddress.username || !newAddress.username.trim()) {
+      errors.username = 'Full Name is required';
+    }
+    if (!newAddress.line1 || !newAddress.line1.trim()) {
+      errors.line1 = 'Address Line 1 is required';
+    }
+    if (!newAddress.line2 || !newAddress.line2.trim()) {
+      errors.line2 = 'City, State & Pincode is required';
+    }
+    const cleanPhone = (newAddress.phone || '').replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      errors.phone = 'Valid 10-digit mobile number is required';
+    }
+
+    setAddressErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleAddAddress = (e) => {
     e.preventDefault();
-    if (!newAddress.name || !newAddress.username || !newAddress.line1 || !newAddress.phone) {
-      alert("Please fill in the required fields");
+    if (!validateAddressForm()) {
       return;
     }
 
@@ -117,6 +178,14 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
     setShowAddressForm(false);
     setNewAddress({ name: '', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
     setEditingAddressId(null);
+    setAddressErrors({});
+  };
+
+  const closeAddressModal = () => {
+    setShowAddressForm(false);
+    setEditingAddressId(null);
+    setNewAddress({ name: '', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
+    setAddressErrors({});
   };
 
   const handleEditAddress = (e, addr) => {
@@ -288,23 +357,124 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
         )}
         {/* Address Form Modal */}
         {showAddressForm && (
-          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-            <div className="bg-white rounded-[20px] p-6 w-full max-w-md shadow-lg font-['Baloo_2']">
-              <h3 className="text-xl font-black mb-4 text-gray-900">{editingAddressId ? 'Edit Address' : 'Add New Address'}</h3>
-              <form onSubmit={handleAddAddress} className="flex flex-col gap-4">
-                <select value={newAddress.name} onChange={e => setNewAddress({ ...newAddress, name: e.target.value })} className="border border-gray-200 p-3 rounded-[8px] outline-none font-bold text-[14px] bg-white" required>
-                  <option value="" disabled>Select Address Label</option>
-                  <option value="Home">Home</option>
-                  <option value="Work">Work</option>
-                  <option value="Other">Other</option>
-                </select>
-                <input type="text" placeholder="Full Name" value={newAddress.username} onChange={e => setNewAddress({ ...newAddress, username: e.target.value })} className="border border-gray-200 p-3 rounded-[8px] outline-none font-bold text-[14px]" required />
-                <input type="text" placeholder="Address Line 1" value={newAddress.line1} onChange={e => setNewAddress({ ...newAddress, line1: e.target.value })} className="border border-gray-200 p-3 rounded-[8px] outline-none font-bold text-[14px]" required />
-                <input type="text" placeholder="City, State, Pincode" value={newAddress.line2} onChange={e => setNewAddress({ ...newAddress, line2: e.target.value })} className="border border-gray-200 p-3 rounded-[8px] outline-none font-bold text-[14px]" />
-                <input type="text" placeholder="Phone Number" value={newAddress.phone} onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })} className="border border-gray-200 p-3 rounded-[8px] outline-none font-bold text-[14px]" required />
-                <div className="flex gap-4 mt-2">
-                  <button type="button" onClick={() => { setShowAddressForm(false); setEditingAddressId(null); setNewAddress({ name: '', username: '', line1: '', line2: '', phone: '', type: 'HOME' }); }} className="flex-1 py-3 border border-gray-300 rounded-[8px] hover:bg-gray-50 font-bold cursor-pointer text-gray-700">Cancel</button>
-                  <button type="submit" className="flex-1 py-3 bg-[#F96E8F] text-white rounded-[8px] hover:bg-[#E44971] font-bold cursor-pointer">{editingAddressId ? 'Update Address' : 'Save Address'}</button>
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[100] flex items-center justify-center p-4">
+            <div className="bg-white rounded-[24px] p-6 sm:p-7 w-full max-w-md shadow-2xl font-['Baloo_2'] border border-gray-100">
+              <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
+                <h3 className="text-[20px] font-black text-gray-900">{editingAddressId ? 'Edit Address' : 'Add New Address'}</h3>
+                <button
+                  onClick={closeAddressModal}
+                  className="w-8 h-8 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center font-bold text-base cursor-pointer transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleAddAddress} className="flex flex-col gap-4" noValidate>
+                {/* Address Label Styled Select */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[14px] font-black text-gray-800">Address Label <span className="text-[#F96E8F]">*</span></label>
+                  <div className="relative">
+                    <select
+                      value={newAddress.name}
+                      onChange={e => {
+                        const val = e.target.value;
+                        setNewAddress({ ...newAddress, name: val, type: val.toUpperCase() });
+                        if (addressErrors.name) setAddressErrors(prev => ({ ...prev, name: '' }));
+                      }}
+                      className={`w-full appearance-none bg-white border ${addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-[14px] ${newAddress.name ? 'text-gray-900' : 'text-gray-400'} outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
+                    >
+                      <option value="" disabled className="text-gray-400">Select Address Label</option>
+                      <option value="Home" className="text-gray-800 font-bold py-2">🏠 Home (Residence)</option>
+                      <option value="Work" className="text-gray-800 font-bold py-2">💼 Work (Office / Business)</option>
+                      <option value="Other" className="text-gray-800 font-bold py-2">📍 Other (Friend / Family)</option>
+                    </select>
+                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                  {addressErrors.name && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.name}</span>}
+                </div>
+
+                {/* Full Name */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[14px] font-black text-gray-800">Full Name <span className="text-[#F96E8F]">*</span></label>
+                  <input
+                    type="text"
+                    placeholder="Enter recipient's full name"
+                    value={newAddress.username}
+                    onChange={e => {
+                      setNewAddress({ ...newAddress, username: e.target.value });
+                      if (addressErrors.username) setAddressErrors(prev => ({ ...prev, username: '' }));
+                    }}
+                    className={`w-full border ${addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  />
+                  {addressErrors.username && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.username}</span>}
+                </div>
+
+                {/* Address Line 1 */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[14px] font-black text-gray-800">Address Line 1 <span className="text-[#F96E8F]">*</span></label>
+                  <input
+                    type="text"
+                    placeholder="House/Flat No., Building Name, Street"
+                    value={newAddress.line1}
+                    onChange={e => {
+                      setNewAddress({ ...newAddress, line1: e.target.value });
+                      if (addressErrors.line1) setAddressErrors(prev => ({ ...prev, line1: '' }));
+                    }}
+                    className={`w-full border ${addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  />
+                  {addressErrors.line1 && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line1}</span>}
+                </div>
+
+                {/* City, State, Pincode */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[14px] font-black text-gray-800">City, State & Pincode <span className="text-[#F96E8F]">*</span></label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Chennai, Tamil Nadu - 600001"
+                    value={newAddress.line2}
+                    onChange={e => {
+                      setNewAddress({ ...newAddress, line2: e.target.value });
+                      if (addressErrors.line2) setAddressErrors(prev => ({ ...prev, line2: '' }));
+                    }}
+                    className={`w-full border ${addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  />
+                  {addressErrors.line2 && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line2}</span>}
+                </div>
+
+                {/* Phone Number */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[14px] font-black text-gray-800">Mobile Number <span className="text-[#F96E8F]">*</span></label>
+                  <input
+                    type="text"
+                    placeholder="10-digit mobile number"
+                    value={newAddress.phone}
+                    onChange={e => {
+                      setNewAddress({ ...newAddress, phone: e.target.value.replace(/\D/g, '').slice(0, 10) });
+                      if (addressErrors.phone) setAddressErrors(prev => ({ ...prev, phone: '' }));
+                    }}
+                    className={`w-full border ${addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  />
+                  {addressErrors.phone && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.phone}</span>}
+                </div>
+
+                <div className="flex gap-4 mt-3">
+                  <button
+                    type="button"
+                    onClick={closeAddressModal}
+                    className="flex-1 py-3.5 border border-gray-300 rounded-[12px] hover:bg-gray-50 font-bold cursor-pointer text-gray-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3.5 bg-[#F96E8F] text-white rounded-[12px] hover:bg-[#E44971] font-bold cursor-pointer shadow-sm transition-colors"
+                  >
+                    {editingAddressId ? 'Update Address' : 'Save Address'}
+                  </button>
                 </div>
               </form>
             </div>
@@ -329,9 +499,16 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                   <h2 className="text-[20px] font-black text-gray-900 mb-4 tracking-wide">
                     Select Billing <span className="text-[#F96E8F]">Addresses</span>
                   </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {addresses.map(addr => renderAddressCard(addr, billingAddressId, setBillingAddressId))}
-                  </div>
+                  {addresses.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {addresses.map(addr => renderAddressCard(addr, billingAddressId, setBillingAddressId))}
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-[16px] p-6 border-2 border-dashed border-gray-200 text-center text-gray-500 font-bold">
+                      <p className="text-[16px] text-gray-700 mb-1">No address added yet</p>
+                      <p className="text-[13px] text-gray-400">Please click below to add your billing & delivery address.</p>
+                    </div>
+                  )}
                   <div className="mt-4 flex justify-center">
                     <button onClick={() => setShowAddressForm(true)} className="flex items-center justify-center gap-2 border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] font-bold py-2 px-12 rounded-[12px] hover:bg-[#FFF0F4] transition-colors w-full sm:w-[50%] cursor-pointer">
                       <span className="text-[24px] leading-none mb-1">+</span> Add New Address
@@ -356,9 +533,16 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                   <h2 className="text-[20px] font-black text-gray-900 mb-4 tracking-wide">
                     Select shipping <span className="text-[#F96E8F]">Addresses</span>
                   </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {addresses.map(addr => renderAddressCard(addr, shippingAddressId, setShippingAddressId))}
-                  </div>
+                  {addresses.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {addresses.map(addr => renderAddressCard(addr, shippingAddressId, setShippingAddressId))}
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-[16px] p-6 border-2 border-dashed border-gray-200 text-center text-gray-500 font-bold">
+                      <p className="text-[16px] text-gray-700 mb-1">No address added yet</p>
+                      <p className="text-[13px] text-gray-400">Please click below to add a shipping address.</p>
+                    </div>
+                  )}
                   <div className="mt-4 flex justify-center">
                     <button onClick={() => setShowAddressForm(true)} className="flex items-center justify-center gap-2 border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] font-bold py-2 px-12 rounded-[12px] hover:bg-[#FFF0F4] transition-colors w-full sm:w-[50%] cursor-pointer">
                       <span className="text-[24px] leading-none mb-1">+</span> Add New Address
@@ -421,9 +605,26 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                 </div>
 
                 <div className="mt-8 mb-2">
-                  <button onClick={() => setCheckoutStep('payment')} className="w-full bg-[#F96E8F] text-white font-extrabold py-4 rounded-[12px] text-[18px] hover:bg-[#E44971] transition-colors shadow-md tracking-wide cursor-pointer">
+                  <button
+                    disabled={addresses.length === 0 || !billingAddressId}
+                    onClick={() => {
+                      if (addresses.length > 0 && billingAddressId) {
+                        setCheckoutStep('payment');
+                      }
+                    }}
+                    className={`w-full font-extrabold py-4 rounded-[12px] text-[18px] transition-all tracking-wide shadow-md ${
+                      addresses.length > 0 && billingAddressId
+                        ? 'bg-[#F96E8F] text-white hover:bg-[#E44971] cursor-pointer active:scale-[0.99]'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
+                    }`}
+                  >
                     Deliver To this Address
                   </button>
+                  {addresses.length === 0 && (
+                    <p className="text-center text-[#F96E8F] font-bold text-[13px] mt-2.5">
+                      * Please add an address to proceed with your order
+                    </p>
+                  )}
                 </div>
               </>
             ) : (
@@ -484,40 +685,50 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
           </div>
 
           {/* Right Column (Order Summary) */}
-          <div className="lg:col-span-5 flex flex-col gap-5">
+          <div className="lg:col-span-5 flex flex-col gap-5 lg:sticky lg:top-24 h-fit">
 
             {/* Products List */}
             <div className="flex flex-col gap-4">
               {cartItems.length > 0 ? (
-                cartItems.map((item, index) => (
-                  <div key={index} className="border border-[#F96E8F] border-opacity-30 rounded-[20px] p-4 bg-white flex items-center gap-6 shadow-sm relative overflow-hidden">
-                    <div className="w-[120px] h-[120px] rounded-[16px] overflow-hidden flex-shrink-0 bg-[#F4D9DC]">
-                      {item.image ? (
-                        <img src={item.image} alt="Product" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full bg-[#F9E5E8]"></div>
-                      )}
-                    </div>
-                    <div className="flex-1 flex flex-col justify-center">
-                      <h3 className="font-black text-[18px] text-gray-900 mb-1 leading-tight">
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-500 font-extrabold text-[11px] mb-5">
-                        Product Code : {item.code || 'GAA200075'}
-                      </p>
-                      <div className="flex items-end gap-3 mt-4">
-                        <del className="text-gray-400 font-black text-[16px]">
-                          ₹ {item.oldPrice || 2000}
-                        </del>
-                        <span className="text-[#F96E8F] font-black text-[22px]">
-                          ₹ {item.price || 1710}
-                        </span>
+                cartItems.map((item, index) => {
+                  const itemQty = item.quantity || 1;
+                  const itemPrice = Number(item.price) || 0;
+                  const itemOldPrice = Number(item.oldPrice) || itemPrice;
+                  return (
+                    <div key={item.id || index} className="border border-[#F96E8F]/30 rounded-[20px] p-4 bg-white flex items-center gap-4 sm:gap-5 shadow-sm relative overflow-hidden">
+                      <div className="w-[100px] h-[100px] sm:w-[110px] sm:h-[110px] rounded-[16px] overflow-hidden flex-shrink-0 bg-[#F4D9DC]">
+                        {item.image ? (
+                          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full bg-[#F9E5E8]"></div>
+                        )}
+                      </div>
+                      <div className="flex-1 flex flex-col justify-center min-w-0">
+                        <h3 className="font-black text-[16px] sm:text-[17px] text-gray-900 mb-1 leading-tight truncate" title={item.title}>
+                          {item.title}
+                        </h3>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-gray-500 font-extrabold text-[12px]">Qty: {itemQty}</span>
+                          {item.code && (
+                            <span className="text-gray-400 font-bold text-[11px]">• Code: {item.code}</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {itemOldPrice > itemPrice && (
+                            <del className="text-gray-400 font-black text-[15px]">
+                              ₹ {itemOldPrice * itemQty}
+                            </del>
+                          )}
+                          <span className="text-[#F96E8F] font-black text-[20px]">
+                            ₹ {itemPrice * itemQty}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
-                <div className="border border-[#F96E8F] border-opacity-30 rounded-[20px] p-8 bg-white text-center text-gray-500 font-bold shadow-sm">
+                <div className="border border-[#F96E8F]/30 rounded-[20px] p-8 bg-white text-center text-gray-500 font-bold shadow-sm">
                   Your cart is empty
                 </div>
               )}
@@ -535,69 +746,72 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                 <div className="w-10 h-10 rounded-full bg-[#FFFFFF] text-white flex items-center justify-center font-black shadow-sm">
                   <img src={discount} alt="" className='h-[30px] w-[30px]' />
                 </div>
-                <span className="text-[#F96E8F] font-black text-[24px] tracking-wide">
-                  Apply Coupon
+                <span className="text-[#F96E8F] font-black text-[22px] tracking-wide">
+                  {appliedCoupon ? 'Coupon Applied' : 'Apply Coupon'}
                 </span>
               </div>
               <button
                 onClick={() => setAppliedCoupon(!appliedCoupon)}
-                className="text-[#F96E8F] font-black text-[18px] px-8 hover:underline cursor-pointer"
+                className="text-[#F96E8F] font-black text-[17px] px-6 hover:underline cursor-pointer"
               >
                 {appliedCoupon ? 'Remove' : 'Apply'}
               </button>
             </div>
 
             {/* Specific Offer Card */}
-            <div className="border border-[#F96E8F] rounded-[12px] p-4 bg-white flex justify-between items-center shadow-xs">
+            <div className={`border rounded-[12px] p-4 bg-white flex justify-between items-center shadow-xs transition-colors ${appliedCoupon ? 'border-green-400 bg-green-50/20' : 'border-[#F96E8F]'}`}>
               <div className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center font-black">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center font-black shadow-xs">
                   <img src={discount} alt="" className='h-[20px] w-[20px]' />
                 </div>
                 <div>
                   <h4 className="font-black text-gray-900 text-[15px] uppercase">FLAT ₹1000</h4>
-                  <p className="text-gray-800 font-extrabold text-[13px]">Flat 1000 off on Preset jewellery</p>
+                  <p className="text-gray-600 font-bold text-[13px]">Flat ₹1000 off on your order</p>
                 </div>
               </div>
               <button
                 onClick={() => setAppliedCoupon(!appliedCoupon)}
-                className="text-gray-400 font-extrabold text-sm px-4 hover:underline cursor-pointer"
+                className={`font-extrabold text-sm px-4 hover:underline cursor-pointer ${appliedCoupon ? 'text-green-600 font-black' : 'text-gray-400'}`}
               >
-                {appliedCoupon ? 'Applied' : 'Apply'}
+                {appliedCoupon ? 'Applied ✓' : 'Apply'}
               </button>
             </div>
 
-            <button
-              onClick={() => setAppliedCoupon(true)}
-              className="w-full bg-[#F96E8F] hover:bg-[#E44971] text-white font-bold py-3 rounded-[12px] rounded-t-none -mt-4 text-[16px] transition-colors cursor-pointer shadow-sm relative z-0"
-            >
-              Apply More Coupons
-            </button>
-
             {/* Bill Details Summary Card */}
             <div
-              className="rounded-xl p-6 bg-white shadow-xs flex flex-col gap-5 mt-4"
+              className="rounded-xl p-6 bg-white shadow-xs flex flex-col gap-4 mt-2"
               style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100%25\' height=\'100%25\' fill=\'none\' rx=\'12\' ry=\'12\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'14%2c 14\' stroke-dashoffset=\'0\' stroke-linecap=\'square\'/%3e%3c/svg%3e")' }}
             >
-              <div className="flex justify-between items-center text-[16px] font-black text-gray-800">
-                <span>Item Total</span>
-                <span className="font-black">₹{displayItemTotal || 2000}</span>
+              <div className="flex justify-between items-center text-[15px] font-black text-gray-800">
+                <span>Item Total ({cartItems.reduce((acc, i) => acc + (i.quantity || 1), 0)} items)</span>
+                <span className="font-black">₹{displayItemTotal}</span>
               </div>
-              <div className="flex justify-between items-center text-[16px] font-black text-gray-800">
-                <span>You Saved</span>
-                <span className="font-black">-₹{displaySaved || 290}</span>
-              </div>
-              <div className="flex justify-between items-center text-[16px] font-black text-gray-800">
-                <span>Coupon Discount</span>
-                <span className="font-black">₹{couponDiscount}</span>
-              </div>
-              <div className="flex justify-between items-center text-[16px] font-black text-gray-800">
+              {displaySaved > 0 && (
+                <div className="flex justify-between items-center text-[15px] font-black text-green-600">
+                  <span>You Saved</span>
+                  <span className="font-black">-₹{displaySaved}</span>
+                </div>
+              )}
+              {appliedCoupon && couponDiscount > 0 && (
+                <div className="flex justify-between items-center text-[15px] font-black text-[#F96E8F]">
+                  <span>Coupon Discount (FLAT 1000)</span>
+                  <span className="font-black">-₹{couponDiscount}</span>
+                </div>
+              )}
+              {isGift && selectedGiftWrap && (
+                <div className="flex justify-between items-center text-[15px] font-black text-gray-800">
+                  <span>Gift Wrap ({giftWraps.find(w => w.id === selectedGiftWrap)?.name || 'Custom'})</span>
+                  <span className="font-black">₹{giftWrapFee}</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center text-[15px] font-black text-gray-800">
                 <span>Shipping (standard)</span>
-                <span className="font-black uppercase">FREE</span>
+                <span className="font-black uppercase text-green-600">FREE</span>
               </div>
-              <div className="border-t-2 border-gray-400 my-1"></div>
-              <div className="flex justify-between items-center text-[16px] font-black text-gray-900">
+              <div className="border-t-2 border-gray-300 my-1"></div>
+              <div className="flex justify-between items-center text-[18px] font-black text-gray-900">
                 <span>Bill Total</span>
-                <span className="font-black">₹{displayBillTotal || 1620}</span>
+                <span className="font-black text-[#F96E8F]">₹{displayBillTotal}</span>
               </div>
             </div>
 

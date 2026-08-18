@@ -101,10 +101,10 @@ const Product = ({ product, cartItems, addToCart }) => {
         { id: 'specs', title: 'Specifications', content: 'Product specifications go here.' },
         { id: 'care', title: 'Jewellery Care', content: 'Jewellery care instructions go here.' },
         { id: 'shipping', title: 'Shipping Details', content: 'Shipping details go here.' },
-        { 
-            id: 'faq', 
-            title: 'Frequently Asked Questions', 
-            content: 'Q: Is the jewellery hypoallergenic?\nA: Yes, all our products are lead and nickel free, making them safe for sensitive skin.\n\nQ: Can I return the item if it doesn\'t fit?\nA: Absolutely! We offer a hassle-free 7-day return policy.\n\nQ: Does the colour fade?\nA: Our items are coated with anti-tarnish layers to prevent fading. With proper care, they will last for years.' 
+        {
+            id: 'faq',
+            title: 'Frequently Asked Questions',
+            content: 'Q: Is the jewellery hypoallergenic?\nA: Yes, all our products are lead and nickel free, making them safe for sensitive skin.\n\nQ: Can I return the item if it doesn\'t fit?\nA: Absolutely! We offer a hassle-free 7-day return policy.\n\nQ: Does the colour fade?\nA: Our items are coated with anti-tarnish layers to prevent fading. With proper care, they will last for years.'
         }
     ];
 
@@ -481,11 +481,17 @@ const ReviewsSection = () => {
     const fileInputRef = useRef(null);
     const cameraInputRef = useRef(null);
 
-    const [isCameraActive, setIsCameraActive] = useState(false);
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
 
     const handleWriteReviewClick = () => {
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        if (!isLoggedIn) {
+            alert('Please login to write a review');
+            window.history.pushState({}, '', '/login');
+            window.dispatchEvent(new Event('popstate'));
+            return;
+        }
         setReviewStep('upload');
     };
 
@@ -493,36 +499,105 @@ const ReviewsSection = () => {
         fileInputRef.current?.click();
     };
 
+    const [isCameraActive, setIsCameraActive] = useState(false);
+    const [isRecording, setIsRecording] = useState(false);
+    const [recordingTime, setRecordingTime] = useState(0);
+    const mediaRecorderRef = useRef(null);
+    const recordedChunksRef = useRef([]);
+    const timerIntervalRef = useRef(null);
+
     const startCamera = async () => {
         setIsCameraActive(true);
+        setIsRecording(false);
+        setRecordingTime(0);
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }).catch(async () => {
+                return await navigator.mediaDevices.getUserMedia({ video: true });
+            });
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
             }
         } catch (err) {
             console.error("Error accessing camera:", err);
-            alert("Could not access camera. Please allow camera permissions.");
+            alert("Could not access camera/microphone. Please check permissions.");
             setIsCameraActive(false);
         }
     };
 
     const stopCamera = () => {
+        if (isRecording) {
+            stopVideoRecording();
+        }
         if (videoRef.current && videoRef.current.srcObject) {
             videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            videoRef.current.srcObject = null;
         }
         setIsCameraActive(false);
+        setIsRecording(false);
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    };
+
+    const startVideoRecording = () => {
+        if (!videoRef.current || !videoRef.current.srcObject) return;
+        const stream = videoRef.current.srcObject;
+        recordedChunksRef.current = [];
+
+        try {
+            const options = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+                ? { mimeType: 'video/webm;codecs=vp9' }
+                : (MediaRecorder.isTypeSupported('video/mp4') ? { mimeType: 'video/mp4' } : {});
+
+            const mediaRecorder = new MediaRecorder(stream, options);
+            mediaRecorderRef.current = mediaRecorder;
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) {
+                    recordedChunksRef.current.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunksRef.current, { type: mediaRecorder.mimeType || 'video/mp4' });
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setCapturedMedia(reader.result);
+                    setCapturedMediaType('video');
+                    setReviewStep('write');
+                };
+                reader.readAsDataURL(blob);
+            };
+
+            mediaRecorder.start();
+            setIsRecording(true);
+            setRecordingTime(0);
+            timerIntervalRef.current = setInterval(() => {
+                setRecordingTime(prev => prev + 1);
+            }, 1000);
+        } catch (err) {
+            console.error("Failed to start video recording:", err);
+            alert("Video recording is not supported in this browser.");
+        }
+    };
+
+    const stopVideoRecording = () => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+            mediaRecorderRef.current.stop();
+        }
+        if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+        setIsRecording(false);
+        stopCamera();
     };
 
     const capturePhoto = () => {
         if (videoRef.current && canvasRef.current) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
             const dataUrl = canvas.toDataURL('image/png');
             setCapturedMedia(dataUrl);
+            setCapturedMediaType('image');
             stopCamera();
             setReviewStep('write');
         }
@@ -537,12 +612,17 @@ const ReviewsSection = () => {
         setReviewStep(null);
     };
 
+    const [capturedMedia, setCapturedMedia] = useState(null);
+    const [capturedMediaType, setCapturedMediaType] = useState('image'); // 'image' or 'video'
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            const isVideo = file.type.startsWith('video/');
             const reader = new FileReader();
             reader.onload = (e) => {
                 setCapturedMedia(e.target.result);
+                setCapturedMediaType(isVideo ? 'video' : 'image');
                 setReviewStep('write');
             };
             reader.readAsDataURL(file);
@@ -556,17 +636,26 @@ const ReviewsSection = () => {
     const [reviews, setReviews] = useState([]);
     const [reviewText, setReviewText] = useState('');
     const [reviewRating, setReviewRating] = useState(5);
-    const [capturedMedia, setCapturedMedia] = useState(null);
+    const [previewMedia, setPreviewMedia] = useState(null);
 
     const handleSubmitReview = (e) => {
         e.preventDefault();
         if (reviewText.trim() || capturedMedia) {
-            setReviews([{ id: Date.now(), name: 'You', rating: reviewRating, text: reviewText, media: capturedMedia }, ...reviews]);
+            setReviews([{
+                id: Date.now(),
+                name: 'You',
+                rating: reviewRating,
+                text: reviewText,
+                media: capturedMedia,
+                mediaType: capturedMediaType
+            }, ...reviews]);
         }
+        stopCamera();
         setReviewStep(null);
         setReviewText('');
         setReviewRating(5);
         setCapturedMedia(null);
+        setCapturedMediaType('image');
     };
 
     const sortedReviews = [...reviews].sort((a, b) => {
@@ -618,13 +707,28 @@ const ReviewsSection = () => {
                     {reviews.filter(r => r.media).length > 0 ? (
                         <div className="grid grid-cols-3 gap-2">
                             {reviews.filter(r => r.media).map((r) => (
-                                <div key={r.id} className="aspect-square bg-white rounded-lg flex items-center justify-center relative shadow-sm overflow-hidden">
-                                    <img src={r.media} alt="Review" className="w-full h-full object-cover" />
+                                <div
+                                    key={r.id}
+                                    onClick={() => setPreviewMedia(r)}
+                                    className="aspect-square bg-white rounded-lg flex items-center justify-center relative shadow-sm overflow-hidden group cursor-pointer hover:opacity-90 transition-opacity"
+                                >
+                                    {r.mediaType === 'video' || (typeof r.media === 'string' && r.media.startsWith('data:video')) ? (
+                                        <div className="w-full h-full relative">
+                                            <video src={r.media} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                                <div className="w-7 h-7 rounded-full bg-white/90 text-[#F96E8F] flex items-center justify-center text-xs font-bold pl-0.5 shadow-md group-hover:scale-110 transition-transform">
+                                                    ▶
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <img src={r.media} alt="Review" className="w-full h-full object-cover" />
+                                    )}
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <p className="text-gray-400 text-[13px] text-center py-6 border-2 border-dashed border-gray-200 rounded-xl">No photos uploaded yet</p>
+                        <p className="text-gray-400 text-[13px] text-center py-6 border-2 border-dashed border-gray-200 rounded-xl">No photos or videos uploaded yet</p>
                     )}
                 </div>
 
@@ -648,7 +752,7 @@ const ReviewsSection = () => {
                         {sortedReviews.length === 0 ? (
                             <p className="text-gray-400 font-bold text-center py-12 text-[15px]">No reviews yet. Be the first to review!</p>
                         ) : (
-                            sortedReviews.map((review, i) => (
+                            sortedReviews.map((review) => (
                                 <div key={review.id} className="py-6 border-b border-gray-300 last:border-0 first:pt-0">
                                     <div className="flex mb-3">
                                         {[...Array(5)].map((_, i) => (
@@ -665,9 +769,14 @@ const ReviewsSection = () => {
                                         </div>
                                         <span className="font-bold text-gray-700 text-[14px]">{review.name}</span>
                                     </div>
-                                    <p className="text-gray-600 font-medium text-[14px] leading-relaxed">
+                                    <p className="text-gray-600 font-medium text-[14px] leading-relaxed mb-3">
                                         {review.text}
                                     </p>
+                                    {review.media && review.mediaType !== 'video' && !(typeof review.media === 'string' && review.media.startsWith('data:video')) && (
+                                        <div className="mt-2 max-w-xs">
+                                            <img src={review.media} alt="Review attachment" className="w-32 h-32 rounded-xl object-cover border border-gray-200 shadow-sm" />
+                                        </div>
+                                    )}
                                 </div>
                             ))
                         )}
@@ -677,37 +786,38 @@ const ReviewsSection = () => {
 
             {/* Modals */}
             {reviewStep === 'upload' && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-                    <div className="bg-white rounded-3xl p-8 max-w-md w-full flex flex-col gap-6 shadow-2xl relative">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-[100] p-4">
+                    <div className="bg-white rounded-3xl p-8 max-w-md w-full flex flex-col gap-6 shadow-2xl relative font-['Nunito']">
                         <button onClick={closeUploadModal} className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-2xl font-bold">&times;</button>
 
                         {!isCameraActive ? (
                             <>
-                                <h3 className="text-2xl font-black text-gray-800 text-center font-['Nunito']">Upload Media</h3>
-                                <p className="text-center text-gray-500 font-medium text-sm">Drop a picture/video here or capture one.</p>
+                                <h3 className="text-2xl font-black text-gray-800 text-center">Upload Photo or Video</h3>
+                                <p className="text-center text-gray-500 font-medium text-sm">Upload an image/video or record one with your camera.</p>
 
                                 <div className="flex gap-4 h-40">
                                     {/* Upload Option */}
                                     <div
                                         onClick={handleUploadClick}
-                                        className="flex-1 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                                        className="flex-1 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors p-3 text-center"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[#F96E8F] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                         </svg>
-                                        <span className="text-gray-400 font-bold text-sm">Upload File</span>
+                                        <span className="text-gray-700 font-bold text-sm">Upload File</span>
+                                        <span className="text-gray-400 font-medium text-[11px]">Photo or Video</span>
                                     </div>
 
                                     {/* Capture Option */}
                                     <div
                                         onClick={handleCameraClick}
-                                        className="flex-1 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                                        className="flex-1 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors p-3 text-center"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[#04BCC6] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
-                                        <span className="text-gray-400 font-bold text-sm">Take Photo</span>
+                                        <span className="text-gray-700 font-bold text-sm">Camera</span>
+                                        <span className="text-gray-400 font-medium text-[11px]">Take Photo / Video</span>
                                     </div>
                                 </div>
 
@@ -726,15 +836,46 @@ const ReviewsSection = () => {
                             </>
                         ) : (
                             <>
-                                <h3 className="text-2xl font-black text-gray-800 text-center font-['Nunito']">Camera</h3>
+                                <h3 className="text-2xl font-black text-gray-800 text-center">Camera & Video Recorder</h3>
                                 <div className="relative w-full h-64 bg-black rounded-2xl overflow-hidden flex items-center justify-center mt-2">
-                                    <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover"></video>
+                                    <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover"></video>
                                     <canvas ref={canvasRef} className="hidden"></canvas>
+
+                                    {isRecording && (
+                                        <div className="absolute top-3 left-3 bg-red-600/90 text-white font-extrabold text-xs px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg animate-pulse z-10">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
+                                            <span>REC {Math.floor(recordingTime / 60).toString().padStart(2, '0')}:{(recordingTime % 60).toString().padStart(2, '0')}</span>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="flex justify-center mt-6">
-                                    <button onClick={capturePhoto} className="w-16 h-16 bg-white border-4 border-gray-300 rounded-full flex items-center justify-center shadow-lg hover:border-[#F96E8F] transition-colors">
-                                        <div className="w-12 h-12 bg-[#F76188] rounded-full"></div>
-                                    </button>
+
+                                <div className="flex items-center justify-center gap-4 mt-4">
+                                    {!isRecording ? (
+                                        <>
+                                            <button
+                                                type="button"
+                                                onClick={capturePhoto}
+                                                className="flex-1 py-3 bg-[#F96E8F] text-white font-black rounded-xl hover:bg-[#E44971] transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer text-sm"
+                                            >
+                                                📷 Take Photo
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={startVideoRecording}
+                                                className="flex-1 py-3 bg-[#04BCC6] text-white font-black rounded-xl hover:bg-[#0399A2] transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer text-sm"
+                                            >
+                                                🎥 Record Video
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={stopVideoRecording}
+                                            className="w-full py-3.5 bg-red-600 text-white font-black rounded-xl hover:bg-red-700 transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer text-[15px]"
+                                        >
+                                            ⏹ Stop & Save Video
+                                        </button>
+                                    )}
                                 </div>
                             </>
                         )}
@@ -743,10 +884,10 @@ const ReviewsSection = () => {
             )}
 
             {reviewStep === 'write' && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-                    <div className="bg-white rounded-3xl p-8 max-w-md w-full flex flex-col gap-6 shadow-2xl relative">
-                        <button onClick={() => setReviewStep(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-2xl font-bold">&times;</button>
-                        <h3 className="text-2xl font-black text-gray-800 text-center font-['Nunito']">Write Review</h3>
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-[100] p-4">
+                    <div className="bg-white rounded-3xl p-8 max-w-md w-full flex flex-col gap-6 shadow-2xl relative font-['Nunito']">
+                        <button onClick={() => { stopCamera(); setReviewStep(null); }} className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-2xl font-bold">&times;</button>
+                        <h3 className="text-2xl font-black text-gray-800 text-center">Write Review</h3>
 
                         <div className="flex justify-center text-3xl cursor-pointer">
                             {[1, 2, 3, 4, 5].map(star => (
@@ -760,7 +901,11 @@ const ReviewsSection = () => {
 
                         {capturedMedia && (
                             <div className="flex justify-center">
-                                <img src={capturedMedia} alt="Captured" className="w-24 h-24 object-cover rounded-xl shadow-md border-[1.5px] border-gray-200" />
+                                {capturedMediaType === 'video' || (typeof capturedMedia === 'string' && capturedMedia.startsWith('data:video')) ? (
+                                    <video src={capturedMedia} controls className="w-48 h-36 object-cover rounded-xl shadow-md border-[1.5px] border-gray-200" />
+                                ) : (
+                                    <img src={capturedMedia} alt="Captured" className="w-24 h-24 object-cover rounded-xl shadow-md border-[1.5px] border-gray-200" />
+                                )}
                             </div>
                         )}
 
@@ -771,8 +916,39 @@ const ReviewsSection = () => {
                             className="w-full border-[1.5px] border-gray-300 rounded-xl p-4 outline-none focus:border-[#F96E8F] font-medium text-gray-700 resize-none"
                             placeholder="Tell us what you loved..."
                         ></textarea>
-
                         <button onClick={handleSubmitReview} className="w-full py-3 bg-[#F96E8F] text-white font-bold rounded-xl hover:bg-[#E44971] transition-colors">Submit Review</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Media Lightbox Modal for Playing Review Videos & Viewing Photos */}
+            {previewMedia && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center z-[110] p-4">
+                    <div className="bg-white rounded-3xl p-6 max-w-lg w-full flex flex-col gap-4 shadow-2xl relative font-['Nunito']">
+                        <button
+                            onClick={() => setPreviewMedia(null)}
+                            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center text-lg font-bold transition-colors cursor-pointer"
+                        >
+                            ✕
+                        </button>
+
+                        <h3 className="text-xl font-black text-gray-800">
+                            Customer Review {previewMedia.mediaType === 'video' || (typeof previewMedia.media === 'string' && previewMedia.media.startsWith('data:video')) ? 'Video' : 'Photo'} {previewMedia.name ? `by ${previewMedia.name}` : ''}
+                        </h3>
+
+                        <div className="w-full rounded-2xl overflow-hidden bg-black flex items-center justify-center max-h-[60vh]">
+                            {previewMedia.mediaType === 'video' || (typeof previewMedia.media === 'string' && previewMedia.media.startsWith('data:video')) ? (
+                                <video src={previewMedia.media} controls autoPlay className="w-full max-h-[60vh] object-contain" />
+                            ) : (
+                                <img src={previewMedia.media} alt="Review" className="w-full max-h-[60vh] object-contain" />
+                            )}
+                        </div>
+
+                        {previewMedia.text && (
+                            <p className="text-gray-600 font-medium text-sm leading-relaxed border-t border-gray-100 pt-3">
+                                "{previewMedia.text}"
+                            </p>
+                        )}
                     </div>
                 </div>
             )}
@@ -804,7 +980,7 @@ const FAQSection = () => {
             <div className="flex flex-col gap-4">
                 {faqs.map((faq, index) => (
                     <div key={index} className="bg-white rounded-[1.2rem] flex flex-col shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                        <div 
+                        <div
                             className="p-6 flex justify-between items-center cursor-pointer"
                             onClick={() => setOpenIndex(openIndex === index ? null : index)}
                         >

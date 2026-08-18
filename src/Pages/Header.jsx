@@ -127,7 +127,9 @@ export default function Header({ cartItems = [], wishlistCount }) {
                                     window.dispatchEvent(new Event('popstate'));
                                 } else if (action.name === 'profile') {
                                     e.preventDefault();
-                                    window.history.pushState({}, '', '/login');
+                                    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                                    const targetPath = isLoggedIn ? '/account' : '/login';
+                                    window.history.pushState({}, '', targetPath);
                                     window.dispatchEvent(new Event('popstate'));
                                 } else if (action.name === 'heart') {
                                     e.preventDefault();

@@ -82,10 +82,11 @@ export default function Login() {
                 <button 
                     onClick={(e) => {
                         e.preventDefault();
+                        localStorage.setItem('isLoggedIn', 'true');
                         window.history.pushState({}, '', '/account');
                         window.dispatchEvent(new Event('popstate'));
                     }}
-                    className="w-full h-[45px] bg-[#04BCC6] text-white text-[18px] font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md"
+                    className="w-full h-[45px] bg-[#04BCC6] text-white text-[18px] font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md cursor-pointer"
                 >
                     Sign in
                 </button>
