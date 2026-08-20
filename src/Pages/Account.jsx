@@ -795,7 +795,13 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                               <button className="font-black text-[14px] text-gray-800 hover:text-[#F96E8F] transition-colors py-2 px-4 cursor-pointer text-right">
                                 Cancel Order
                               </button>
-                              <button className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-8 rounded-[8px] transition-colors shadow-sm cursor-pointer w-[150px]">
+                              <button
+                                onClick={() => {
+                                  window.history.pushState({ orderId: order.id }, '', '/order-details');
+                                  window.dispatchEvent(new Event('popstate'));
+                                }}
+                                className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-8 rounded-[8px] transition-colors shadow-sm cursor-pointer w-[150px]"
+                              >
                                 Track Order
                               </button>
                             </>
@@ -941,15 +947,17 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     <p className="font-bold text-lg">Your wishlist is empty.</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {wishlist.map((item, idx) => (
-                      <WishlistItemCard
-                        key={item.id || idx}
-                        item={item}
-                        addToCart={addToCart}
-                        onRemove={() => handleRemoveWishlist(item)}
-                      />
-                    ))}
+                  <div className="max-h-[640px] overflow-y-auto pr-2 custom-scrollbar transition-all">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-4">
+                      {wishlist.map((item, idx) => (
+                        <WishlistItemCard
+                          key={item.id || idx}
+                          item={item}
+                          addToCart={addToCart}
+                          onRemove={() => handleRemoveWishlist(item)}
+                        />
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

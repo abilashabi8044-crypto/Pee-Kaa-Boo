@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from '../redux/wishlistSlice';
 import Header from './Header';
 
 // Assets
@@ -15,10 +17,21 @@ import badge from '../assets/product/star-badge.png';
 import spark1 from '../assets/product/spark1.png';
 import spark2 from '../assets/product/spark2.png';
 import arrowLeft from '../assets/product/arrow-l.png';
+import user from '../assets/product/user.png';
 import arrowRight from '../assets/product/arrow-r.png';
 import { gridItems } from './Shop';
+import Footer from './Footer';
+import wishlist from '../assets/product/w-list.png';
+import share from '../assets/product/share.png';
+import whatsapp from '../assets/product/social-icons/w-app.png';
+import facebook from '../assets/product/social-icons/fb-.png';
+import x from '../assets/product/social-icons/x.png';
+import pinterest from '../assets/product/social-icons/pint.png';
+import mail from '../assets/product/social-icons/mail.png';
+
 
 const Product = ({ product, cartItems, addToCart }) => {
+    const dispatch = useDispatch();
     const [selectedSize, setSelectedSize] = useState('24');
     const [selectedColor, setSelectedColor] = useState('Gold');
     const [quantity, setQuantity] = useState(1);
@@ -29,17 +42,80 @@ const Product = ({ product, cartItems, addToCart }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const [carouselIndex, setCarouselIndex] = useState(0);
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
+
+    React.useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 640);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const shopProducts = gridItems.filter(item => item.type === 'product');
-    const maxCarouselIndex = Math.max(0, shopProducts.length - 4);
+    const itemsPerPage = isMobile ? 1 : 4;
+    const maxCarouselIndex = Math.max(0, shopProducts.length - itemsPerPage);
 
     const defaultProduct = product || shopProducts[0];
     const productImages = defaultProduct?.images || Array(4).fill(defaultProduct?.image);
+
+    const [shareModalOpen, setShareModalOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
+    const [addedItems, setAddedItems] = useState({});
+
+    const wishlistItems = useSelector(selectWishlistItems);
+    const isWishlisted = Boolean(wishlistItems?.some(item =>
+        item.id && defaultProduct?.id ? item.id === defaultProduct.id : item.title === defaultProduct?.title
+    ));
+
+    const handleWishlistClick = (e) => {
+        if (e) e.preventDefault();
+        const activeProduct = defaultProduct;
+        if (activeProduct) {
+            dispatch(toggleWishlistAction(activeProduct));
+        }
+    };
+
+    const handleShareClick = (platform) => {
+        const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://peekaaboo.com/product';
+        const prodTitle = defaultProduct?.title || 'PEE KAA BOO Jewellery';
+        const prodPrice = defaultProduct?.price ? `₹${defaultProduct.price}` : '';
+        const prodImage = defaultProduct?.image || '';
+
+        switch (platform) {
+            case 'whatsapp':
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out ${prodTitle} (${prodPrice}) on PEE KAA BOO: ${currentUrl}`)}`, '_blank');
+                break;
+            case 'facebook':
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`, '_blank');
+                break;
+            case 'email':
+                window.location.href = `mailto:?subject=${encodeURIComponent(`Check out ${prodTitle} on PEE KAA BOO`)}&body=${encodeURIComponent(`Hi,\n\nI found this beautiful jewellery on PEE KAA BOO:\n\n${prodTitle}\nPrice: ${prodPrice}\n\nView details here: ${currentUrl}`)}`;
+                break;
+            case 'x':
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out ${prodTitle} on PEE KAA BOO!`)}&url=${encodeURIComponent(currentUrl)}`, '_blank');
+                break;
+            case 'pinterest':
+                window.open(`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(currentUrl)}&media=${encodeURIComponent(prodImage)}&description=${encodeURIComponent(prodTitle)}`, '_blank');
+                break;
+            case 'copy':
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(currentUrl).then(() => {
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2500);
+                    });
+                }
+                break;
+            default:
+                break;
+        }
+    };
 
     const handleNextCarousel = () => setCarouselIndex(prev => Math.min(prev + 1, maxCarouselIndex));
     const handlePrevCarousel = () => setCarouselIndex(prev => Math.max(prev - 1, 0));
 
     const progressWidth = shopProducts.length > 0
-        ? ((carouselIndex + Math.min(4, shopProducts.length)) / shopProducts.length) * 100
+        ? Math.min(100, Math.max(0, ((carouselIndex + Math.min(itemsPerPage, shopProducts.length)) / shopProducts.length) * 100))
         : 100;
 
     const checkPincode = async () => {
@@ -101,11 +177,7 @@ const Product = ({ product, cartItems, addToCart }) => {
         { id: 'specs', title: 'Specifications', content: 'Product specifications go here.' },
         { id: 'care', title: 'Jewellery Care', content: 'Jewellery care instructions go here.' },
         { id: 'shipping', title: 'Shipping Details', content: 'Shipping details go here.' },
-        {
-            id: 'faq',
-            title: 'Frequently Asked Questions',
-            content: 'Q: Is the jewellery hypoallergenic?\nA: Yes, all our products are lead and nickel free, making them safe for sensitive skin.\n\nQ: Can I return the item if it doesn\'t fit?\nA: Absolutely! We offer a hassle-free 7-day return policy.\n\nQ: Does the colour fade?\nA: Our items are coated with anti-tarnish layers to prevent fading. With proper care, they will last for years.'
-        }
+
     ];
 
     const sizes = [
@@ -124,18 +196,19 @@ const Product = ({ product, cartItems, addToCart }) => {
     ];
 
     return (
-        <div className="w-full min-h-screen bg-[#ffffff] font-['Nunito'] pb-12">
+        <div className="w-full min-h-screen bg-[#ffffff] font-['Nunito'] pb-0">
             <Header cartItems={cartItems} />
 
             {/* Breadcrumbs */}
-            <div className="max-w-[1200px] mx-auto px-4 pt-8 pb-2">
-                <div className="text-[18px] text-[#888] font-medium flex items-center flex-wrap gap-2">
-                    <button onClick={() => window.location.href = '/'} className="hover:text-[#F96E8F] transition-colors">Home</button>
-                    <span>&gt;</span>
-                    <button onClick={() => window.location.href = '/shop'} className="hover:text-[#F96E8F] transition-colors">shop</button>
-                    <span>&gt;</span>
-                    <button onClick={() => window.location.href = `/${product?.category?.toLowerCase().replace(/\s+/g, '-') || 'boys-collections'}`} className="hover:text-[#F96E8F] transition-colors">{product?.category || 'Boys Collections'}</button>
-                    <span className="text-[#F96E8F]">&gt; {product?.title || 'Product 1'}</span>
+            <div className="max-w-[1500px] mt-[28px] mx-auto px-4 pt-8 pb-2">
+                <div className="text-[14px] sm:text-[15px] md:text-[18px] text-[#888] font-medium flex items-center flex-nowrap whitespace-nowrap overflow-x-auto gap-1.5 sm:gap-2">
+                    <button onClick={() => { window.history.pushState({}, '', '/'); window.dispatchEvent(new Event('popstate')); }} className="hover:text-[#F96E8F] transition-colors cursor-pointer flex-shrink-0">Home</button>
+                    <span className="flex-shrink-0">&gt;</span>
+                    <button onClick={() => { window.history.pushState({}, '', '/shop'); window.dispatchEvent(new Event('popstate')); }} className="hover:text-[#F96E8F] transition-colors cursor-pointer flex-shrink-0">shop</button>
+                    <span className="flex-shrink-0">&gt;</span>
+                    <button onClick={() => { window.history.pushState({}, '', '/shop'); window.dispatchEvent(new Event('popstate')); }} className="hover:text-[#F96E8F] transition-colors cursor-pointer flex-shrink-0">{product?.category || 'Boys Collections'}</button>
+                    <span className="flex-shrink-0 text-[#F96E8F]">&gt;</span>
+                    <span className="text-[#F96E8F] flex-shrink-0">{product?.title || 'Product 1'}</span>
                 </div>
             </div>
 
@@ -160,11 +233,22 @@ const Product = ({ product, cartItems, addToCart }) => {
 
                             {/* Action Buttons */}
                             <div className="absolute top-6 right-6 flex flex-col gap-3 z-10">
-                                <button className="w-10 h-10 bg-[#00D0CC] text-white rounded-full flex items-center justify-center hover:bg-[#00b3b0] transition-colors shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                                <button
+                                    onClick={handleWishlistClick}
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer hover:scale-105 active:scale-95 ${isWishlisted
+                                            ? 'bg-[#F96E8F] text-white ring-2 ring-pink-300 shadow-pink-200'
+                                            : 'bg-[#00D0CC] text-white hover:bg-[#00b3b0]'
+                                        }`}
+                                    title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                                >
+                                    <img src={wishlist} alt="Wishlist" className="w-5 h-5 object-contain" />
                                 </button>
-                                <button className="w-10 h-10 bg-[#00D0CC] text-white rounded-full flex items-center justify-center hover:bg-[#00b3b0] transition-colors shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+                                <button
+                                    onClick={() => setShareModalOpen(true)}
+                                    className="w-10 h-10 bg-[#00D0CC] text-white rounded-full flex items-center justify-center hover:bg-[#00b3b0] transition-colors shadow-md cursor-pointer"
+                                    title="Share Product"
+                                >
+                                    <img src={share} alt="Share" className="w-5 h-5 object-contain" />
                                 </button>
                             </div>
 
@@ -221,7 +305,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                         {/* Size Selection */}
                         <div className="bg-white p-5 rounded-2xl shadow-sm">
                             <h3 className="text-gray-700 font-['Baloo_2'] font-extrabold text-[16px] mb-4">Choose size</h3>
-                            <div className="flex flex-wrap gap-3">
+                            <div className="grid grid-cols-4 gap-2.5 sm:gap-3 w-full">
                                 {sizes.map((size) => {
                                     const isSelected = selectedSize === size.label;
                                     const isOut = size.status === 'Out of stock';
@@ -230,13 +314,13 @@ const Product = ({ product, cartItems, addToCart }) => {
                                             key={size.label}
                                             onClick={() => !isOut && setSelectedSize(size.label)}
                                             className={`
-                                                relative w-[85px] h-14 rounded-[10px] flex flex-col items-center justify-center font-black text-[15px] transition-all overflow-hidden
+                                                relative w-full h-13 sm:h-14 rounded-[10px] flex flex-col items-center justify-center font-black text-[14px] sm:text-[15px] transition-all overflow-hidden
                                                 ${isSelected ? 'bg-[#F96E8F] text-white shadow-md' : 'bg-[#BCBCBC] font-[Nunito] text-white'}
-                                                ${isOut ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-0.5'}
+                                                ${isOut ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-0.5 cursor-pointer'}
                                             `}
                                         >
-                                            <span className="mb-3">{size.label}</span>
-                                            <div className="absolute bottom-1 w-[80%] bg-white rounded-md text-[9px] font-bold text-gray-800 py-0.5">
+                                            <span className="mb-2 sm:mb-3">{size.label}</span>
+                                            <div className="absolute bottom-1 w-[88%] bg-white rounded-md text-[8px] sm:text-[9px] font-bold text-gray-800 py-0.5 text-center">
                                                 {size.status}
                                             </div>
                                         </button>
@@ -248,16 +332,16 @@ const Product = ({ product, cartItems, addToCart }) => {
                         {/* Color Selection */}
                         <div className="bg-white p-5 rounded-2xl shadow-sm">
                             <h3 className="font-['Baloo_2'] text-gray-700 font-extrabold text-[16px] mb-4">Choose Colour</h3>
-                            <div className="flex flex-wrap gap-6 items-center">
+                            <div className="grid grid-cols-5 gap-1.5 sm:gap-3 w-full items-center justify-items-center">
                                 {colors.map((color) => {
                                     const isSelected = selectedColor === color.name;
                                     return (
                                         <div
                                             key={color.name}
                                             onClick={() => setSelectedColor(color.name)}
-                                            className="flex flex-col items-center gap-2 cursor-pointer group"
+                                            className="flex flex-col items-center gap-1.5 cursor-pointer group w-full"
                                         >
-                                            <div className="relative w-14 h-14 rounded-full p-[2px]">
+                                            <div className="relative w-11 h-11 sm:w-14 sm:h-14 rounded-full p-[2px]">
                                                 {isSelected && (
                                                     <>
                                                         <div className="absolute inset-0 border-[2px] border-[#F96E8F] rounded-full"></div>
@@ -267,10 +351,10 @@ const Product = ({ product, cartItems, addToCart }) => {
                                                     </>
                                                 )}
                                                 <div className="w-full h-full rounded-full overflow-hidden shadow-sm">
-                                                    <img src={color.img} alt={color.name} className=" w-full h-full object-cover" />
+                                                    <img src={color.img} alt={color.name} className="w-full h-full object-cover" />
                                                 </div>
                                             </div>
-                                            <span className="text-[11px] font-extrabold text-gray-800">{color.name}</span>
+                                            <span className="text-[10px] sm:text-[11px] font-extrabold text-gray-800 text-center truncate w-full">{color.name}</span>
                                         </div>
                                     );
                                 })}
@@ -280,7 +364,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                         {/* Delivery Details */}
                         <div className="bg-white p-5 rounded-2xl shadow-sm">
                             <h3 className="text-gray-700 font-['Baloo_2'] font-extrabold text-[16px] mb-4">Delivery details</h3>
-                            <div className="flex h-12 mb-4 border-b border-dashed border-gray-300 pb-4">
+                            <div className="flex items-stretch h-11 sm:h-12 mb-4">
                                 <input
                                     type="text"
                                     placeholder="Enter Pincode"
@@ -290,15 +374,16 @@ const Product = ({ product, cartItems, addToCart }) => {
                                         setDeliveryStatus(null);
                                     }}
                                     maxLength="6"
-                                    className="flex-1 h-full px-4 text-sm outline-none border border-gray-300 border-r-0 rounded-l-md font-bold text-gray-700 placeholder-gray-400"
+                                    className="flex-1 min-w-0 h-full px-3 sm:px-4 text-[13px] sm:text-sm outline-none border border-gray-300 border-r-0 rounded-l-md font-bold text-gray-700 placeholder-gray-400"
                                 />
                                 <button
                                     onClick={checkPincode}
-                                    className="h-full px-6 bg-[#F96E8F] font-['Nunito'] text-white text-[14px] font-medium rounded-r-md hover:bg-[#E44971] transition-colors"
+                                    className="h-full px-3 sm:px-6 bg-[#F96E8F] font-['Nunito'] text-white text-[12px] sm:text-[14px] font-bold rounded-r-md hover:bg-[#E44971] transition-colors whitespace-nowrap flex-shrink-0 cursor-pointer flex items-center justify-center"
                                 >
                                     Check availability
                                 </button>
                             </div>
+                            <div className="border-b border-dashed border-gray-200 mb-4"></div>
 
                             {/* Delivery Status Message */}
                             {deliveryStatus === 'loading' && (
@@ -418,59 +503,296 @@ const Product = ({ product, cartItems, addToCart }) => {
             </div>
 
             {/* Third Section: You May Also Like */}
-            <div className="max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-6 md:p-10 lg:p-12 mt-16 mb-12">
+            <div className="w-[calc(100%-2rem)] max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-5 sm:p-8 md:p-10 lg:p-12 mt-12 sm:mt-16 mb-12">
                 <h2 className="text-[28px] md:text-[36px] font-bold text-gray-800 mb-8 font-['Baloo_2']">
                     You May <span className="text-[#F96E8F]">Also Like</span>
                 </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {shopProducts.slice(carouselIndex, carouselIndex + 4).map((item, index) => {
-                        return (
-                            <div key={index} className="rounded-[2rem] p-4 flex flex-col relative overflow-hidden group shadow-sm h-[340px]">
-                                <img src={item.image} alt="Product" className="w-full h-full object-cover absolute top-0 left-0 " />
+                <div className={`grid ${isMobile ? 'grid-cols-1 max-w-xs mx-auto' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-6`}>
+                    {shopProducts.slice(carouselIndex, carouselIndex + itemsPerPage).map((item, index) => {
+                        const itemWishlisted = Boolean(wishlistItems?.some(w => w.id && item.id ? w.id === item.id : w.title === item.title));
+                        const themeBg = item.theme === 'yellow' ? 'bg-[#FFF8E7]' : item.theme === 'blue' ? 'bg-[#EBF7FF]' : 'bg-[#FFE5EC]';
 
-                                <div className="h-[110px] absolute bottom-4 left-4 right-4 bg-white rounded-[1.2rem] p-4 text-center shadow-md z-10">
-                                    <p className="text-[9px] text-gray-400 font-[Nunito] font-semibold uppercase mb-1">{item.category}</p>
-                                    <h3 className="font-bold text-gray-800 text-[18px] mb-2 font-['Nunito']">{item.title}</h3>
-                                    <div className="flex items-center justify-center gap-2">
-                                        <span className="text-gray-400 font-bold text-[13px] line-through">₹ {item.oldPrice}</span>
-                                        <span className="text-[#F96E8F] font-[Nunito] font-bold text-[22.43px]">₹ {item.price}</span>
+                        return (
+                            <div
+                                key={item.id || index}
+                                onClick={() => {
+                                    window.history.pushState({ product: item }, '', '/product');
+                                    window.dispatchEvent(new Event('popstate'));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                className={`rounded-[24px] overflow-hidden flex flex-col justify-between group transition-all duration-300 relative cursor-pointer border border-pink-100/40 ${themeBg} shadow-sm hover:shadow-xl`}
+                            >
+                                {/* Top Image Area */}
+                                <div className="h-[210px] sm:h-[240px] w-full p-0 relative flex items-center justify-center">
+                                    <img
+                                        src={item.image}
+                                        alt={item.title}
+                                        className="w-full h-full object-cover rounded-t-[17px] group-hover:scale-105 transition-transform duration-300"
+                                    />
+
+                                    {/* Best Selling Badge (Top Left - Appears on Hover) */}
+                                    <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                        <div className="bg-[#00D0CC] text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-md">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                                                <path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
+                                                <path d="m8.21 13.89-3 4.1c-.26.36-.02.85.43.85h3.6l1.26 3.16c.16.4.74.4 1 0L12.76 18.84h3.6c.45 0 .69-.49.43-.85l-3-4.1" />
+                                            </svg>
+                                            <span className="text-[12px] font-extrabold tracking-wide">Best Selling</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Action Buttons (Top Right - Wishlist & Copy) */}
+                                    <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                        {/* Wishlist Heart */}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                dispatch(toggleWishlistAction(item));
+                                            }}
+                                            title="Add to Wishlist"
+                                            className={`w-9 h-9 text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer ${
+                                                itemWishlisted ? 'bg-[#F96E8F]' : 'bg-[#00D0CC] hover:bg-[#00b3b0]'
+                                            }`}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={itemWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                            </svg>
+                                        </button>
+                                        {/* Compare / Copy Icon */}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (navigator.clipboard) {
+                                                    navigator.clipboard.writeText(window.location.origin + '/product');
+                                                }
+                                            }}
+                                            title="Copy Link"
+                                            className="w-9 h-9 bg-[#00D0CC] hover:bg-[#00b3b0] text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Content area */}
+                                <div className="bg-white m-[10px] mt-0 rounded-[18px] p-4 text-center flex-1 flex flex-col justify-center relative transition-all duration-300 shadow-xs">
+                                    <span className="text-gray-400 text-[11px] font-[Nunito] uppercase mb-1">
+                                        {item.category || 'Category'}
+                                    </span>
+
+                                    <h4 className="text-gray-900 font-bold text-[18px] sm:text-[20px] leading-tight mb-1 tracking-wide font-['Nunito'] group-hover:text-[#F96E8F] transition-colors truncate">
+                                        {item.title}
+                                    </h4>
+
+                                    <div className="flex justify-center items-center gap-2">
+                                        {item.oldPrice && (
+                                            <del className="text-gray-400 font-bold text-[16px] font-[Nunito]">₹ {item.oldPrice}</del>
+                                        )}
+                                        <span className="text-[#F96E8F] font-bold text-[24px] sm:text-[27px] font-['Nunito']">₹ {item.price}</span>
+                                    </div>
+
+                                    {/* Expandable Content (Add to Cart) */}
+                                    <div className="w-full max-h-0 opacity-0 overflow-hidden group-hover:max-h-[60px] group-hover:opacity-100 group-hover:mt-3 transition-all duration-500 ease-in-out">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (addToCart) {
+                                                    addToCart(item, 1);
+                                                }
+                                                setAddedItems(prev => ({ ...prev, [item.id || index]: true }));
+                                                setTimeout(() => {
+                                                    setAddedItems(prev => ({ ...prev, [item.id || index]: false }));
+                                                }, 2000);
+                                            }}
+                                            className={`w-full py-2.5 px-4 border-2 border-[#F96E8F] rounded-full font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center shadow-xs ${
+                                                addedItems[item.id || index]
+                                                    ? 'bg-[#F96E8F] text-white border-solid scale-95'
+                                                    : 'border-dashed text-[#F96E8F] hover:bg-[#F96E8F] hover:text-white hover:border-solid active:scale-95'
+                                            }`}
+                                        >
+                                            {addedItems[item.id || index] ? (
+                                                <span className="flex items-center gap-2 transform transition-transform duration-300">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                                                    Added!
+                                                </span>
+                                            ) : 'Add to Cart'}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        )
+                        );
                     })}
                 </div>
 
                 {/* Slider Controls */}
-                <div className="flex items-center justify-between mt-12">
+                <div className="w-full flex items-center justify-between mt-8 sm:mt-12 gap-4">
                     {/* Progress Line */}
-                    <div className="flex-1 h-[2px] bg-gray-300 mr-8 relative rounded-full">
-                        <div className="absolute left-0 top-0 h-full bg-[#F96E8F] rounded-full transition-all duration-300" style={{ width: `${progressWidth}%` }}></div>
+                    <div className="flex-1 min-w-0 h-[3px] bg-gray-200 rounded-full relative overflow-hidden">
+                        <div
+                            className="absolute left-0 top-0 h-full bg-[#F96E8F] rounded-full transition-all duration-300"
+                            style={{ width: `${progressWidth}%` }}
+                        ></div>
                     </div>
                     {/* Arrows */}
-                    <div className="flex gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                         <button
                             onClick={handlePrevCarousel}
                             disabled={carouselIndex === 0}
-                            className="w-10 h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
+                            title="Previous"
                         >
-                            <img src={arrowLeft} alt="Previous" />
+                            <img src={arrowLeft} alt="Previous" className="w-3.5 h-3.5 object-contain" />
                         </button>
                         <button
                             onClick={handleNextCarousel}
                             disabled={carouselIndex >= maxCarouselIndex}
-                            className="w-10 h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
+                            title="Next"
                         >
-                            <img src={arrowRight} alt="Next" />
+                            <img src={arrowRight} alt="Next" className="w-3.5 h-3.5 object-contain" />
                         </button>
                     </div>
                 </div>
             </div>
 
+            {/* Dynamic Share Product Modal */}
+            {shareModalOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+                    onClick={() => setShareModalOpen(false)}
+                >
+                    <div
+                        className="bg-white w-full max-w-[460px] rounded-[24px] shadow-2xl p-6 relative flex flex-col gap-5 border border-pink-100"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                            <div>
+                                <h3 className="text-[20px] font-black text-gray-900 font-['Baloo_2']">Share Product</h3>
+                                <p className="text-[12px] text-gray-500 font-bold">Share this beautiful piece with your friends & family</p>
+                            </div>
+                            <button
+                                onClick={() => setShareModalOpen(false)}
+                                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-pink-50 hover:text-[#F96E8F] text-gray-500 flex items-center justify-center font-bold text-sm cursor-pointer transition-colors"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Product Summary Preview */}
+                        <div className="flex items-center gap-3.5 bg-[#FFF5F7] border border-[#FDE5EB] rounded-[16px] p-3">
+                            <img
+                                src={defaultProduct?.image || productImages[0]}
+                                alt={defaultProduct?.title}
+                                className="w-14 h-14 rounded-xl object-cover border border-pink-200/60 flex-shrink-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                                <h4 className="font-extrabold text-[15px] text-gray-900 truncate">{defaultProduct?.title || 'Product'}</h4>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="text-[#F96E8F] font-black text-[15px]">₹{defaultProduct?.price}</span>
+                                    {defaultProduct?.oldPrice && (
+                                        <span className="text-gray-400 font-bold text-[12px] line-through">₹{defaultProduct?.oldPrice}</span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Share Options Grid */}
+                        <div className="grid grid-cols-3 gap-3">
+                            {/* WhatsApp */}
+                            <button
+                                onClick={() => handleShareClick('whatsapp')}
+                                className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#E8F8EE] hover:bg-[#D3F3DE] text-[#25D366] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#C2ECCF]"
+                            >
+                                <img src={whatsapp} alt="WhatsApp" className="w-10 h-10 object-contain" />
+                                <span className="text-[12px] font-extrabold text-gray-800">WhatsApp</span>
+                            </button>
+
+                            {/* Facebook */}
+                            <button
+                                onClick={() => handleShareClick('facebook')}
+                                className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#EAF2FE] hover:bg-[#D5E5FD] text-[#1877F2] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#BED7FB]"
+                            >
+                                <img src={facebook} alt="Facebook" className="w-10 h-10 object-contain" />
+                                <span className="text-[12px] font-extrabold text-gray-800">Facebook</span>
+                            </button>
+
+                            {/* Email */}
+                            <button
+                                onClick={() => handleShareClick('email')}
+                                className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#FDEEED] hover:bg-[#FCDCDA] text-[#EA4335] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#F8C4C0]"
+                            >
+                                <img src={mail} alt="Email" className="w-10 h-10 object-contain" />
+                                <span className="text-[12px] font-extrabold text-gray-800">Email</span>
+                            </button>
+
+                            {/* X (Twitter) */}
+                            <button
+                                onClick={() => handleShareClick('x')}
+                                className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-gray-100 hover:bg-gray-200 text-black transition-all hover:scale-105 cursor-pointer shadow-xs border border-gray-200"
+                            >
+                                <img src={x} alt="X (Twitter)" className="w-10 h-10 object-contain" />
+                                <span className="text-[12px] font-extrabold text-gray-800">X (Twitter)</span>
+                            </button>
+
+                            {/* Pinterest */}
+                            <button
+                                onClick={() => handleShareClick('pinterest')}
+                                className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#FDE6E9] hover:bg-[#FBD0D6] text-[#E60023] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#F7B0BA]"
+                            >
+                                <img src={pinterest} alt="Pinterest" className="w-10 h-10 object-contain" />
+                                <span className="text-[12px] font-extrabold text-gray-800">Pinterest</span>
+                            </button>
+
+                            {/* Copy Link */}
+                            <button
+                                onClick={() => handleShareClick('copy')}
+                                className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#FFF0F4] hover:bg-[#FFE0E9] text-[#F96E8F] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#FDC2D2]"
+                            >
+                                <div className="w-10 h-10 rounded-full bg-[#F96E8F] text-white flex items-center justify-center shadow-xs">
+                                    {copied ? (
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    ) : (
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                        </svg>
+                                    )}
+                                </div>
+                                <span className="text-[12px] font-extrabold text-gray-800">{copied ? 'Copied!' : 'Copy Link'}</span>
+                            </button>
+                        </div>
+
+                        {/* Copy Link Input Bar */}
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-[14px] p-1.5 pl-3 mt-1">
+                            <input
+                                type="text"
+                                readOnly
+                                value={typeof window !== 'undefined' ? window.location.href : ''}
+                                className="bg-transparent text-gray-600 text-[13px] font-bold outline-none flex-1 truncate"
+                            />
+                            <button
+                                onClick={() => handleShareClick('copy')}
+                                className={`px-4 py-2 rounded-[10px] font-black text-[12px] transition-all cursor-pointer shadow-xs ${copied
+                                        ? 'bg-green-600 text-white'
+                                        : 'bg-[#F96E8F] hover:bg-[#E44971] text-white'
+                                    }`}
+                            >
+                                {copied ? '✓ Copied' : 'Copy'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <ReviewsSection />
             <FAQSection />
-
+            <Footer />
         </div>
     );
 };
@@ -666,7 +988,7 @@ const ReviewsSection = () => {
 
     return (
         <div className="max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-6 md:p-10 lg:p-12 mt-4 mb-12">
-            <h2 className="text-[28px] md:text-[36px] font-black text-gray-800 mb-8 font-['Nunito']">
+            <h2 className="text-[28px] md:text-[41px] font-black text-gray-800 mb-8 font-['Nunito']">
                 Reviews
             </h2>
             <div className="flex flex-col lg:flex-row gap-12">
@@ -697,11 +1019,11 @@ const ReviewsSection = () => {
                     </div>
 
                     {/* Write Review Button */}
-                    <button onClick={handleWriteReviewClick} className="w-48 mx-auto mt-4 py-3 bg-[#F76188] text-white font-bold rounded-[1rem] hover:bg-[#E44971] transition-colors shadow-md">
+                    <button onClick={handleWriteReviewClick} className="w-48 mx-auto mt-4 py-3 bg-[#F76188] text-white text-[24px] font-['Baloo_2'] font-bold rounded-[1rem] hover:bg-[#E44971] transition-colors shadow-md">
                         Write a Review
                     </button>
 
-                    <h3 className="text-center font-bold text-gray-800 mt-4 text-[16px]">Photos & Videos</h3>
+                    <h3 className="text-center font-bold font-['Baloo_2'] text-gray-800 mt-4 text-[20px]">Photos & Videos</h3>
 
                     {/* Grid */}
                     {reviews.filter(r => r.media).length > 0 ? (
@@ -740,7 +1062,7 @@ const ReviewsSection = () => {
                             <button
                                 key={filter}
                                 onClick={() => setFilterBy(filter)}
-                                className={`px-6 py-2 rounded-[0.8rem] border-[1.5px] font-bold text-[13px] transition-colors ${filterBy === filter ? 'bg-[#F76188] text-white border-[#F76188]' : 'bg-transparent border-gray-400 text-gray-700 hover:border-gray-800'}`}
+                                className={`px-6 py-2 rounded-[0.8rem] border-[1.5px] font-[Baloo_2] font-bold text-[17px] transition-colors ${filterBy === filter ? 'bg-[#F76188] text-white border-[#F76188]' : 'bg-transparent border-gray-400 text-gray-700 hover:border-gray-800'}`}
                             >
                                 {filter}
                             </button>
@@ -763,13 +1085,11 @@ const ReviewsSection = () => {
                                     </div>
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="w-9 h-9 bg-[#F76188] rounded-lg flex items-center justify-center text-white">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
+                                            <img src={user} alt="user" className='w-5 h-6 object-contain' />
                                         </div>
-                                        <span className="font-bold text-gray-700 text-[14px]">{review.name}</span>
+                                        <span className=" font-['Nunito'] text-gray-700 text-[18px]">{review.name}</span>
                                     </div>
-                                    <p className="text-gray-600 font-medium text-[14px] leading-relaxed mb-3">
+                                    <p className="text-gray-600 font-['Nunito'] text-[18px] leading-relaxed mb-3">
                                         {review.text}
                                     </p>
                                     {review.media && review.mediaType !== 'video' && !(typeof review.media === 'string' && review.media.startsWith('data:video')) && (
@@ -997,8 +1317,11 @@ const FAQSection = () => {
                     </div>
                 ))}
             </div>
+
         </div>
+
     );
+
 };
 
 export default Product;

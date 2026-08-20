@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import shopbg from '../assets/shop/shop-bg.png';
+import shopMobBg from '../assets/shop/shop-mob-bg.png';
 import cloud from '../assets/shop/cloud.png';
 import prod1 from '../assets/shop/product1.jpg';
 import banner1 from '../assets/shop/5ac2235c236dda0548ffadcb89a2362280a7f92c.png';
@@ -98,7 +99,7 @@ const ProductCard = ({
             >
                 {/* Top Image area */}
                 <div className="h-[140px] md:h-[240px] w-full p-0 relative flex items-center justify-center">
-                    <img src={image} alt={title} className="w-full h-full object-fill rounded-t-[10px] md:rounded-t-[17px]" />
+                    <img src={image} alt={title} className="w-full h-full  object-fill rounded-t-[10px] md:rounded-t-[17px]" />
 
                     {/* Hover Elements on Image */}
                     <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -233,23 +234,23 @@ const ageCollections = [
 ];
 
 export const gridItems = [
-    { id: 101, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'pink', category: 'Girls Collections', size: '22.7mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.5, date: '2023-10-01' },
-    { id: 102, type: 'product', image: prod2, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'blue', category: 'Boys Collections', size: '24mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.8, date: '2023-09-15' },
-    { id: 103, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', size: '23mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.9, date: '2023-11-20' },
+    { id: 101, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'pink', category: 'Girls Collections', age: '1-5 years', size: '22.7mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.5, date: '2023-10-01' },
+    { id: 102, type: 'product', image: prod2, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'blue', category: 'Boys Collections', age: '5-8 years', size: '24mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.8, date: '2023-09-15' },
+    { id: 103, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '23mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.9, date: '2023-11-20' },
 
-    { id: 104, type: 'product', image: prod1, title: 'Name of the product', price: '6710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', size: '22mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.2, date: '2023-08-05' },
-    { id: 105, type: 'product', image: prod2, title: 'Name of the product', price: '5710', oldPrice: '7000', theme: 'blue', category: 'Boys Collections', size: '21mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.7, date: '2023-10-12' },
-    { id: 106, type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', size: '22.7mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.5, date: '2023-07-22' },
+    { id: 104, type: 'product', image: prod1, title: 'Name of the product', price: '6710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', age: '8-10 years', size: '22mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.2, date: '2023-08-05' },
+    { id: 105, type: 'product', image: prod2, title: 'Name of the product', price: '5710', oldPrice: '7000', theme: 'blue', category: 'Boys Collections', age: '10-12 years', size: '21mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.7, date: '2023-10-12' },
+    { id: 106, type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '22.7mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.5, date: '2023-07-22' },
 
-    { id: 107, type: 'product', image: prod1, title: 'Name of the product', price: '7710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', size: '24mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 5.0, date: '2023-12-01' },
+    { id: 107, type: 'product', image: prod1, title: 'Name of the product', price: '7710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', age: '1-5 years', size: '24mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 5.0, date: '2023-12-01' },
     { id: 108, type: 'banner', bannerTheme: 'pink', bannerImage: banner1, title: 'Girls Collections', subtitle: 'Get an extra 30% discount', category: 'Girls Collections' },
 
-    { id: 109, type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'pink', category: 'Girls Collections', size: '23mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.1, date: '2023-09-30' },
-    { id: 110, type: 'product', image: prod2, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'blue', category: 'Boys Collections', size: '22mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.6, date: '2023-11-05' },
-    { id: 111, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', size: '21mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 4.3, date: '2023-10-25' },
+    { id: 109, type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'pink', category: 'Girls Collections', age: '5-8 years', size: '23mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.1, date: '2023-09-30' },
+    { id: 110, type: 'product', image: prod2, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'blue', category: 'Boys Collections', age: '8-10 years', size: '22mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.6, date: '2023-11-05' },
+    { id: 111, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '10-12 years', size: '21mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 4.3, date: '2023-10-25' },
 
     { id: 112, type: 'banner', bannerTheme: 'blue', bannerImage: banner2, title: 'Boys Collections', subtitle: 'Get an extra 30% discount', category: 'Boys Collections' },
-    { id: 113, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', size: '22.7mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.8, date: '2023-12-10' },
+    { id: 113, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '22.7mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.8, date: '2023-12-10' },
 ];
 
 export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddToWishlist }) {
@@ -277,6 +278,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
         return "All items";
     });
 
+    const [selectedAge, setSelectedAge] = useState(null);
     const [sortBy, setSortBy] = useState('default');
     const [sortOpen, setSortOpen] = useState(false);
     const [viewMode, setViewMode] = useState('grid');
@@ -326,6 +328,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
         if (filters.Sizes.length > 0 && !filters.Sizes.includes(item.size)) return false;
         if (filters.Patterns.length > 0 && !filters.Patterns.includes(item.pattern)) return false;
         if (filters['Product Type'].length > 0 && !filters['Product Type'].includes(item.productType)) return false;
+        if (selectedAge && item.type === 'product' && item.age !== selectedAge) return false;
 
         if (filters.Categories.length > 0) {
             const matchesCategory = filters.Categories.some(cat => {
@@ -373,18 +376,21 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
 
             {/* Hero Section */}
             <div
-                className="w-full pt-[130px] pb-36 -mt-[142px] relative flex justify-center items-center z-10 bg-top bg-no-repeat w-full"
-                style={{ backgroundImage: `url(${shopbg})`, backgroundSize: '100% 100%' }}
+                className="w-full pt-[196px] sm:pt-[206px] lg:pt-[130px] pb-24 md:pb-36 -mt-[155px] lg:-mt-[142px] relative flex justify-center items-center z-10 bg-top bg-no-repeat shop-hero-bg"
+                style={{
+                    '--shop-bg-mob': `url(${shopMobBg})`,
+                    '--shop-bg-desk': `url(${shopbg})`
+                }}
             >
-                <div className="text-center mt-6">
-                    <h1 className="text-[40px] md:text-[50px] font-black text-gray-900 leading-tight tracking-wide">
+                <div className="text-center mt-6 lg:mt-6">
+                    <h1 className="text-[32px] sm:text-[40px] md:text-[50px] font-black text-gray-900 leading-tight tracking-wide">
                         {headingParts.first} <span className="text-[#F96E8F]">{headingParts.second}</span>
                     </h1>
-                    <p className="text-[14px] text-gray-800 font-extrabold mt-1 tracking-wide">
+                    <p className="text-[12px] sm:text-[14px] text-gray-800 font-extrabold mt-1 tracking-wide">
                         Home &gt; shop &gt; <span className="text-[#F96E8F]">{selectedCategory === "All items" ? "All Collections" : selectedCategory}</span>
                     </p>
                 </div>
-                <img src={cloud} alt="cloud" className="absolute top-[0%] left-[0%] w-[340px] h-auto object-contain pointer-events-none" />
+                <img src={cloud} alt="cloud" className="absolute top-[-115px] sm:top-[-110px] lg:top-[-25px] left-[54%] -translate-x-1/2 lg:left-0 lg:translate-x-0 w-full md:w-[340px] lg:w-[330px] xl:w-[360px] h-auto object-contain pointer-events-none z-30 lg:z-auto" />
                 {/* Left Decoration (Car) */}
                 <img src={headerCar} alt="Car" className="hidden lg:block absolute bottom-[15%] top-[200px] left-[2%] xl:left-[4%] w-[90px] xl:w-[100px] object-contain pointer-events-none" />
 
@@ -394,27 +400,37 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
 
             <div className="bg-white relative z-20">
                 {/* Collections by Age */}
-                <div className="w-full max-w-[1440px] mx-auto px-6 py-12 text-center">
-                    <h2 className="text-[43px] font-black text-gray-900 mb-10">
+                <div className="w-full max-w-[1440px] mx-auto px-6 pt-8 md:pt-12 pb-2 md:pb-4 text-center">
+                    <h2 className="text-[24px] md:text-[43px] font-black text-gray-900 mb-6 md:mb-10">
                         Explore Collections by <span className="text-[#F96E8F]">Age</span>
                     </h2>
 
-                    <div className="flex flex-wrap justify-center items-end gap-3 md:gap-14">
-                        {ageCollections.map((item, index) => (
-                            <div
-                                key={index}
-                                onClick={() => window.history.pushState({}, '', '/shop')}
-                                className="flex flex-col items-center gap-2 md:gap-3 cursor-pointer group w-[30%] md:w-auto"
-                            >
-                                <img src={item.image} alt={item.label} className="h-[60px] md:h-[90px] object-contain mb-1 group-hover:scale-105 transition-transform" />
-                                <span className="inline-block text-gray-900 font-black text-[10px] md:text-[22px] px-3 py-1.5 md:px-8 md:py-2.5 bg-no-repeat bg-center bg-contain whitespace-nowrap" style={{ backgroundImage: `url('${item.bgVector}')` }}>{item.label}</span>
-                            </div>
-                        ))}
+                    <div
+                        className="flex lg:flex-wrap lg:justify-center items-end gap-6 sm:gap-8 md:gap-10 lg:gap-14 overflow-x-auto lg:overflow-visible pb-2 pt-1 px-4 lg:px-0"
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
+                        {ageCollections.map((item, index) => {
+                            const isSelected = selectedAge === item.label;
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => {
+                                        setSelectedAge(prev => prev === item.label ? null : item.label);
+                                    }}
+                                    className="flex flex-col items-center gap-2 md:gap-3 cursor-pointer group flex-shrink-0"
+                                >
+                                    <img src={item.image} alt={item.label} className="h-[70px] sm:h-[80px] md:h-[90px] object-contain mb-1 transition-transform group-hover:scale-105" />
+                                    <span className={`inline-block font-black text-[13px] sm:text-[16px] md:text-[22px] px-4 sm:px-6 md:px-8 py-2 sm:py-2 md:py-2.5 bg-no-repeat bg-center bg-contain whitespace-nowrap transition-colors ${isSelected ? 'text-[#F96E8F]' : 'text-gray-900'}`} style={{ backgroundImage: `url('${item.bgVector}')` }}>
+                                        {item.label}
+                                    </span>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
 
                 {/* Main Content Layout */}
-                <div className="max-w-[1440px] mx-auto px-6 py-8 pb-20">
+                <div className="max-w-[1440px] mx-auto px-6 pt-2 md:pt-4 pb-20">
 
                     {/* Category Tags */}
                     <div className="flex gap-2 md:gap-4 mb-8 flex-nowrap overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -455,7 +471,10 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                 </div>
 
                                 <button
-                                    onClick={() => setFilters({ Categories: [], Price: [], Colours: [], Sizes: [], Patterns: [], 'Product Type': [] })}
+                                    onClick={() => {
+                                        setSelectedAge(null);
+                                        setFilters({ Categories: [], Price: [], Colours: [], Sizes: [], Patterns: [], 'Product Type': [] });
+                                    }}
                                     className="w-full bg-[#F96E8F] text-white font-extrabold py-3.5 rounded-[8px] hover:bg-[#E44971] transition-colors shadow-sm text-[14px]">
                                     RESET ALL FILTER
                                 </button>
@@ -466,7 +485,20 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         <div className="flex-1">
                             {/* Top Sort Bar */}
                             <div className="flex justify-between items-center mb-6 border border-gray-200 bg-white rounded-[8px] py-1.5 md:py-2 pl-3 md:pl-6 pr-1.5 md:pr-2 shadow-sm">
-                                <span className="text-gray-900 font-extrabold text-[11px] md:text-[15px]">Showing 1–20 Of 50 Results</span>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="text-gray-900 font-extrabold text-[11px] md:text-[15px]">Showing {sortedItems.filter(i => i.type === 'product').length} Results</span>
+                                    {selectedAge && (
+                                        <span className="inline-flex items-center gap-1.5 bg-[#F96E8F]/15 text-[#F96E8F] border border-[#F96E8F]/30 px-3 py-1 rounded-full font-black text-xs">
+                                            Age: {selectedAge}
+                                            <button
+                                                onClick={() => setSelectedAge(null)}
+                                                className="hover:bg-[#F96E8F]/20 w-4 h-4 rounded-full flex items-center justify-center text-[10px] cursor-pointer transition-colors"
+                                            >
+                                                ✕
+                                            </button>
+                                        </span>
+                                    )}
+                                </div>
                                 <div className="flex items-center gap-2 md:gap-3">
                                     <div className="flex bg-gray-50 rounded-[6px] overflow-hidden p-1 border border-gray-100">
                                         <button

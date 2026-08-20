@@ -27,6 +27,7 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
   const [dropdownBankId, setDropdownBankId] = useState('');
   const [bankSearchQuery, setBankSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showThankYouModal, setShowThankYouModal] = useState(false);
 
   const [allBanks, setAllBanks] = useState([]);
 
@@ -64,8 +65,8 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
           )}
         </div>
         <div className="flex-1">
-          <h4 className="font-black text-[16px] text-gray-900">{title}</h4>
-          <p className="font-extrabold text-[12px] text-gray-400 mt-1 leading-none">{subtitle}</p>
+          <h4 className="font-black text-[22px] text-gray-900">{title}</h4>
+          <p className="font-extrabold text-[11px] text-gray-400 mt-1 leading-none">{subtitle}</p>
         </div>
         <div className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors ${isSelected ? 'border-[#F96E8F]' : 'border-gray-300'}`}>
           {isSelected && <div className="w-2.5 h-2.5 bg-[#F96E8F] rounded-full"></div>}
@@ -77,6 +78,14 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
   const [selectedGiftWrap, setSelectedGiftWrap] = useState('');
   const [giftMessage, setGiftMessage] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(false);
+
+  const handleCompletePayment = () => {
+    if (typeof placeOrder === 'function') {
+      placeOrder();
+    }
+    setShowBankModal(false);
+    setShowThankYouModal(true);
+  };
 
   // Dynamic financial calculations from Cart
   const displayItemTotal = cartItems.reduce((acc, item) => acc + ((Number(item.oldPrice) || Number(item.price) || 0) * (item.quantity || 1)), 0);
@@ -342,8 +351,9 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                 <div className="flex justify-center mt-8">
                   <button 
                     onClick={() => {
-                      if (typeof placeOrder === 'function') placeOrder();
-                      setShowBankModal(false);
+                      if (selectedBankId) {
+                        handleCompletePayment();
+                      }
                     }}
                     className={`w-[260px] text-white font-extrabold py-3.5 rounded-[12px] text-[18px] shadow-sm transition-colors ${selectedBankId ? 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer' : 'bg-pink-300 cursor-not-allowed'}`}
                     disabled={!selectedBankId}
@@ -482,7 +492,7 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
         )}
         {/* Hero Section */}
         <div className="w-full text-center mb-10">
-          <h1 className="text-[40px] md:text-[50px] font-black text-gray-900 tracking-wide">
+          <h1 className="text-[40px] md:text-[72px] font-black text-gray-900 tracking-wide">
             Checkout
           </h1>
         </div>
@@ -629,7 +639,7 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
               </>
             ) : (
               <div className="animate-fade-in font-['Baloo_2']">
-                <h2 className="text-[24px] font-black text-gray-900 mb-8 tracking-wide">
+                <h2 className="text-[28px] font-black text-gray-900 mb-8 tracking-wide">
                   Select <span className="text-[#F96E8F]">Payment Method</span>
                 </h2>
 
@@ -675,8 +685,17 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                 </div>
 
                 <div className="mt-10 flex justify-end">
-                  <button onClick={() => { if (selectedPayment === 'netbanking') setShowBankModal(true); }} className="bg-[#F96E8F] text-white font-black py-3 px-12 rounded-[10px] text-[16px] hover:bg-[#E44971] transition-colors shadow-md cursor-pointer">
-                    Continue
+                  <button
+                    onClick={() => {
+                      if (selectedPayment === 'netbanking') {
+                        setShowBankModal(true);
+                      } else {
+                        handleCompletePayment();
+                      }
+                    }}
+                    className="bg-[#F96E8F] text-white font-black py-3 px-12 rounded-[10px] text-[21px] hover:bg-[#E44971] transition-colors shadow-md cursor-pointer"
+                  >
+                    {selectedPayment === 'netbanking' ? 'Continue' : selectedPayment === 'cod' ? 'Place Order' : 'Pay Now'}
                   </button>
                 </div>
               </div>
@@ -704,22 +723,21 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                         )}
                       </div>
                       <div className="flex-1 flex flex-col justify-center min-w-0">
-                        <h3 className="font-black text-[16px] sm:text-[17px] text-gray-900 mb-1 leading-tight truncate" title={item.title}>
+                        <h3 className="font-[Baloo_2] font-bold text-[16px] sm:text-[24px] text-gray-900 mb-1 leading-tight truncate" title={item.title}>
                           {item.title}
                         </h3>
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-gray-500 font-extrabold text-[12px]">Qty: {itemQty}</span>
-                          {item.code && (
-                            <span className="text-gray-400 font-bold text-[11px]">• Code: {item.code}</span>
-                          )}
+                          <span className="text-gray-500 font-extrabold text-[14px]">
+                            Product Code: {item.code || (item.id ? `PKB-${item.id}` : 'PKB-101')}
+                          </span>
                         </div>
                         <div className="flex items-center gap-3">
                           {itemOldPrice > itemPrice && (
-                            <del className="text-gray-400 font-black text-[15px]">
+                            <del className="text-gray-400 font-[Nunito]  text-[17px]">
                               ₹ {itemOldPrice * itemQty}
                             </del>
                           )}
-                          <span className="text-[#F96E8F] font-black text-[20px]">
+                          <span className="text-[#F96E8F] font-semibold font-[Nunito]  text-[29px]">
                             ₹ {itemPrice * itemQty}
                           </span>
                         </div>
@@ -746,13 +764,13 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                 <div className="w-10 h-10 rounded-full bg-[#FFFFFF] text-white flex items-center justify-center font-black shadow-sm">
                   <img src={discount} alt="" className='h-[30px] w-[30px]' />
                 </div>
-                <span className="text-[#F96E8F] font-black text-[22px] tracking-wide">
+                <span className="text-[#F96E8F] font-black text-[28px] tracking-wide">
                   {appliedCoupon ? 'Coupon Applied' : 'Apply Coupon'}
                 </span>
               </div>
               <button
                 onClick={() => setAppliedCoupon(!appliedCoupon)}
-                className="text-[#F96E8F] font-black text-[17px] px-6 hover:underline cursor-pointer"
+                className="text-[#F96E8F] font-black text-[21px] px-6 hover:underline cursor-pointer"
               >
                 {appliedCoupon ? 'Remove' : 'Apply'}
               </button>
@@ -765,13 +783,13 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
                   <img src={discount} alt="" className='h-[20px] w-[20px]' />
                 </div>
                 <div>
-                  <h4 className="font-black text-gray-900 text-[15px] uppercase">FLAT ₹1000</h4>
-                  <p className="text-gray-600 font-bold text-[13px]">Flat ₹1000 off on your order</p>
+                  <h4 className="font-black text-gray-900 text-[17px] uppercase">FLAT ₹1000</h4>
+                  <p className="text-gray-600 font-bold text-[15px]">Flat 1000 off on Preset jewellery</p>
                 </div>
               </div>
               <button
                 onClick={() => setAppliedCoupon(!appliedCoupon)}
-                className={`font-extrabold text-sm px-4 hover:underline cursor-pointer ${appliedCoupon ? 'text-green-600 font-black' : 'text-gray-400'}`}
+                className={`font-extrabold text-[15px] px-4 hover:underline cursor-pointer ${appliedCoupon ? 'text-green-600 font-black' : 'text-gray-400'}`}
               >
                 {appliedCoupon ? 'Applied ✓' : 'Apply'}
               </button>
@@ -782,41 +800,88 @@ const Checkout = ({ cartItems = [], updateQuantity, placeOrder }) => {
               className="rounded-xl p-6 bg-white shadow-xs flex flex-col gap-4 mt-2"
               style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100%25\' height=\'100%25\' fill=\'none\' rx=\'12\' ry=\'12\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'14%2c 14\' stroke-dashoffset=\'0\' stroke-linecap=\'square\'/%3e%3c/svg%3e")' }}
             >
-              <div className="flex justify-between items-center text-[15px] font-black text-gray-800">
+              <div className="flex justify-between items-center text-[17px] font-black text-gray-800">
                 <span>Item Total ({cartItems.reduce((acc, i) => acc + (i.quantity || 1), 0)} items)</span>
                 <span className="font-black">₹{displayItemTotal}</span>
               </div>
               {displaySaved > 0 && (
-                <div className="flex justify-between items-center text-[15px] font-black text-green-600">
+                <div className="flex justify-between items-center text-[17px] font-black text-green-600">
                   <span>You Saved</span>
                   <span className="font-black">-₹{displaySaved}</span>
                 </div>
               )}
               {appliedCoupon && couponDiscount > 0 && (
-                <div className="flex justify-between items-center text-[15px] font-black text-[#F96E8F]">
+                <div className="flex justify-between items-center text-[17px] font-black text-[#F96E8F]">
                   <span>Coupon Discount (FLAT 1000)</span>
                   <span className="font-black">-₹{couponDiscount}</span>
                 </div>
               )}
               {isGift && selectedGiftWrap && (
-                <div className="flex justify-between items-center text-[15px] font-black text-gray-800">
+                <div className="flex justify-between items-center text-[17px] font-black text-gray-800">
                   <span>Gift Wrap ({giftWraps.find(w => w.id === selectedGiftWrap)?.name || 'Custom'})</span>
                   <span className="font-black">₹{giftWrapFee}</span>
                 </div>
               )}
-              <div className="flex justify-between items-center text-[15px] font-black text-gray-800">
+              <div className="flex justify-between items-center text-[17px] font-black text-gray-800">
                 <span>Shipping (standard)</span>
                 <span className="font-black uppercase text-green-600">FREE</span>
               </div>
               <div className="border-t-2 border-gray-300 my-1"></div>
-              <div className="flex justify-between items-center text-[18px] font-black text-gray-900">
+              <div className="flex justify-between items-center text-[17px] font-black text-gray-900">
                 <span>Bill Total</span>
                 <span className="font-black text-[#F96E8F]">₹{displayBillTotal}</span>
               </div>
             </div>
-
           </div>
         </div>
+
+        {/* Thank You / Order Confirmation Popup Modal */}
+        {showThankYouModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[150] flex items-center justify-center p-4">
+            <div className="bg-white rounded-[24px] sm:rounded-[32px] p-8 sm:p-12 md:p-14 w-full max-w-[620px] shadow-2xl font-['Baloo_2'] text-center border border-gray-100 animate-fade-in relative">
+              {/* Pink Circle Checkmark */}
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F96E8F] text-white rounded-full flex items-center justify-center mx-auto mb-5 sm:mb-6 shadow-md shadow-pink-200">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+
+              {/* Title */}
+              <h2 className="text-[28px] sm:text-[36px] font-black text-gray-900 mb-2 sm:mb-3">
+                Thank you!
+              </h2>
+
+              {/* Description */}
+              <p className="text-gray-500  font-['Nunito'] text-[14px] sm:text-[16px] max-w-[420px] mx-auto mb-8 sm:mb-10 leading-relaxed">
+                Your order has been confirmed &amp; it is on the way. Check your email for the details
+              </p>
+
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                <button
+                  onClick={() => {
+                    setShowThankYouModal(false);
+                    window.history.pushState({}, '', '/');
+                    window.dispatchEvent(new Event('popstate'));
+                  }}
+                  className="w-full sm:w-auto min-w-[190px] bg-[#F96E8F] hover:bg-[#E44971] text-white font-black text-[16px] sm:text-[17px] py-3.5 px-8 rounded-full transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  Go to Homepage
+                </button>
+                <button
+                  onClick={() => {
+                    setShowThankYouModal(false);
+                    window.history.pushState({}, '', '/order-details');
+                    window.dispatchEvent(new Event('popstate'));
+                  }}
+                  className="w-full sm:w-auto min-w-[190px] bg-white border-2 border-[#F96E8F] text-[#F96E8F] hover:bg-[#FFF0F4] font-black text-[16px] sm:text-[17px] py-3.5 px-8 rounded-full transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  Check Order Details
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       <Footer />
