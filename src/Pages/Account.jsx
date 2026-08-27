@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectOrders, cancelOrder as cancelOrderAction } from '../redux/ordersSlice';
+import { addToCart as addToCartAction } from '../redux/cartSlice';
 import Header from './Header';
 import Footer from './Footer';
 import userIcon from '../assets/account/profile.png';
@@ -329,7 +332,125 @@ const WishlistItemCard = ({ item, addToCart, onRemove }) => {
 };
 
 const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishlist }) => {
+  const dispatch = useDispatch();
+  const reduxOrders = useSelector(selectOrders) || [];
+  const [localOrders, setLocalOrders] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pkb_orders');
+      const parsed = saved ? JSON.parse(saved) : [];
+      const cleaned = parsed.filter(o => o.orderId !== '973675159' && o.id !== '973675159');
+      if (parsed.length !== cleaned.length) {
+        localStorage.setItem('pkb_orders', JSON.stringify(cleaned));
+      }
+      return cleaned;
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const [orderSearchQuery, setOrderSearchQuery] = useState('');
+  const [orderSort, setOrderSort] = useState('last 3 months');
+  const [orderToast, setOrderToast] = useState(null);
   const [wishlistToast, setWishlistToast] = useState(null);
+
+  const combinedOrders = (reduxOrders.length > 0 ? reduxOrders : localOrders.length > 0 ? localOrders : orders)
+    .filter(order => order.orderId !== '973675159' && order.id !== '973675159');
+
+  const currentUserId = localStorage.getItem('userId');
+  const currentUserEmail = localStorage.getItem('userEmail');
+
+  const userScopedOrders = combinedOrders.filter(order => {
+    if (!currentUserId && !currentUserEmail) return true;
+    if (order.userId && currentUserId) return order.userId === currentUserId;
+    if (order.userEmail && currentUserEmail) return order.userEmail.toLowerCase() === currentUserEmail.toLowerCase();
+    return false;
+  });
+
+  const seenOrderKeys = new Set();
+  const flattenedOrderItems = [];
+  userScopedOrders.forEach(order => {
+    const orderId = order.orderId || order.id;
+    if (order.items && Array.isArray(order.items) && order.items.length > 0) {
+      order.items.forEach((item, itemIdx) => {
+        const uniqueKey = `${orderId}_${item.id || item.code || itemIdx}`;
+        if (!seenOrderKeys.has(uniqueKey)) {
+          seenOrderKeys.add(uniqueKey);
+          flattenedOrderItems.push({
+            orderId: orderId,
+            id: item.id || `${orderId}_${itemIdx}`,
+            title: item.title || item.name || '',
+            code: item.code || (item.id ? `64A288${item.id}` : '64A288075'),
+            image: item.image || '',
+            qty: item.quantity || item.qty || 1,
+            price: item.price || 0,
+            oldPrice: item.oldPrice || item.price || 0,
+            status: item.status || order.status || 'active',
+            date: item.orderDate || order.orderDate || order.date || new Date().toISOString(),
+            fullOrder: order
+          });
+        }
+      });
+    } else if (order.title || order.name || order.image) {
+      const uniqueKey = `${orderId}_${order.id || ''}`;
+      if (!seenOrderKeys.has(uniqueKey)) {
+        seenOrderKeys.add(uniqueKey);
+        flattenedOrderItems.push({
+          orderId: orderId,
+          id: order.id || orderId,
+          title: order.title || order.name || '',
+          code: order.code || (order.id ? `64A288${order.id}` : '64A288075'),
+          image: order.image || '',
+          qty: order.qty || order.quantity || 1,
+          price: order.price || 0,
+          oldPrice: order.oldPrice || order.price || 0,
+          status: order.status || 'active',
+          date: order.orderDate || order.date || new Date().toISOString(),
+          fullOrder: order
+        });
+      }
+    }
+  });
+
+  const filteredOrders = flattenedOrderItems.filter(order => {
+    if (!orderSearchQuery.trim()) return true;
+    const q = orderSearchQuery.toLowerCase();
+    return (
+      (order.title && order.title.toLowerCase().includes(q)) ||
+      (order.code && order.code.toLowerCase().includes(q)) ||
+      (order.orderId && String(order.orderId).toLowerCase().includes(q))
+    );
+  });
+
+  const handleCancelOrder = (orderId) => {
+    dispatch(cancelOrderAction(orderId));
+    setLocalOrders(prev => prev.map(o => (o.orderId === orderId || o.id === orderId) ? { ...o, status: 'cancelled' } : o));
+    setOrderToast('Order cancelled successfully.');
+    setTimeout(() => setOrderToast(null), 3000);
+  };
+
+  const handleTrackOrder = (order) => {
+    window.history.pushState({ orderId: order.orderId || order.id, order: order.fullOrder || order }, '', '/order-details');
+    window.dispatchEvent(new Event('popstate'));
+  };
+
+  const handleReturnOrder = (orderId) => {
+    setOrderToast('Return request initiated successfully.');
+    setTimeout(() => setOrderToast(null), 3000);
+  };
+
+  const handleReorder = (order) => {
+    if (addToCart) {
+      addToCart(order, order.qty || 1);
+    } else {
+      dispatch(addToCartAction({ product: order, quantity: order.qty || 1 }));
+    }
+    setOrderToast('Item added to cart! Redirecting to cart...');
+    setTimeout(() => {
+      setOrderToast(null);
+      window.history.pushState({}, '', '/cart');
+      window.dispatchEvent(new Event('popstate'));
+    }, 1200);
+  };
 
   const handleRemoveWishlist = (item) => {
     if (addToWishlist) addToWishlist(item);
@@ -348,6 +469,12 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
     if (tabParam === 'wishlist' || tabParam === 'wishlists' || window.location.hash === '#wishlist') {
       return 'My Wishlists';
     }
+    if (tabParam === 'orders' || tabParam === 'order' || window.location.hash === '#orders') {
+      return 'My Orders';
+    }
+    if (tabParam === 'address' || tabParam === 'addresses' || window.location.hash === '#address') {
+      return 'Manage Addresses';
+    }
     return 'My Profile';
   };
 
@@ -359,6 +486,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
       const tabParam = searchParams.get('tab');
       if (tabParam === 'wishlist' || tabParam === 'wishlists' || window.location.hash === '#wishlist') {
         setActiveMenu('My Wishlists');
+      } else if (tabParam === 'orders' || tabParam === 'order' || window.location.hash === '#orders') {
+        setActiveMenu('My Orders');
+      } else if (tabParam === 'address' || tabParam === 'addresses' || window.location.hash === '#address') {
+        setActiveMenu('Manage Addresses');
       }
     };
 
@@ -749,77 +880,161 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
               <div className="flex flex-col w-full font-['Baloo_2'] min-h-[500px]">
                 <h2 className="text-[24px] font-black text-gray-900 mb-6 tracking-wide w-full text-left">My Orders</h2>
 
+                {/* Toast Notification */}
+                {orderToast && (
+                  <div className="bg-[#F96E8F] text-white font-extrabold px-5 py-3 rounded-[14px] shadow-md mb-6 flex items-center justify-between text-[14px] animate-fade-in">
+                    <span>✓ {orderToast}</span>
+                    <button onClick={() => setOrderToast(null)} className="ml-4 font-black cursor-pointer">✕</button>
+                  </div>
+                )}
+
                 {/* Toolbar */}
                 <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
-                  <div className="flex items-center w-full max-w-md bg-white border border-gray-200 rounded-[8px] overflow-hidden shadow-sm">
-                    <input type="text" placeholder="Search Orders" className="flex-1 px-4 py-2.5 font-bold text-[14px] text-gray-700 outline-none" />
-                    <button className="bg-[#F96E8F] hover:bg-[#E44971] text-white px-6 py-2.5 font-bold text-[14px] flex items-center gap-2 cursor-pointer transition-colors h-full">
+                  <div className="flex items-center w-full max-w-md bg-white border border-gray-200 rounded-[8px] overflow-hidden shadow-xs">
+                    <input
+                      type="text"
+                      value={orderSearchQuery}
+                      onChange={(e) => setOrderSearchQuery(e.target.value)}
+                      placeholder="Search Orders"
+                      className="flex-1 px-4 py-2.5 font-bold text-[14px] text-gray-700 outline-none font-['Nunito']"
+                    />
+                    <button
+                      type="button"
+                      className="bg-[#F96E8F] hover:bg-[#E44971] text-white px-5 py-2.5 font-extrabold text-[14px] flex items-center gap-1.5 cursor-pointer transition-colors h-full"
+                    >
                       Search
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       </svg>
                     </button>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="font-black text-[15px] text-gray-900">Sort by :</span>
-                    <select className="border border-gray-300 rounded-[8px] px-3 py-2 font-bold text-[14px] text-gray-600 bg-white outline-none cursor-pointer">
+                    <span className="font-extrabold text-[15px] text-gray-900">Sort by :</span>
+                    <select
+                      value={orderSort}
+                      onChange={(e) => setOrderSort(e.target.value)}
+                      className="border border-gray-300 rounded-[8px] px-3.5 py-2 font-bold text-[14px] text-gray-700 bg-white outline-none cursor-pointer hover:border-[#F96E8F] transition-colors"
+                    >
                       <option>last 3 months</option>
                       <option>last 6 months</option>
+                      <option>2024</option>
                       <option>2023</option>
-                      <option>2022</option>
+                      <option>All</option>
                     </select>
                   </div>
                 </div>
 
-                {/* Orders List */}
-                <div className="flex flex-col gap-6">
-                  {orders.length > 0 ? (
-                    orders.map(order => (
-                      <div key={order.id} className="bg-white border border-gray-100 rounded-[12px] p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-start sm:items-center relative">
-                        <div className="w-full sm:w-[130px] h-[130px] rounded-[12px] overflow-hidden bg-[#F9E5E8] flex-shrink-0">
-                          <img src={order.image} alt="Product" className="w-full h-full object-cover" />
-                        </div>
-
-                        <div className="flex-1">
-                          <p className="font-black text-gray-900 mb-2">Order ID: <span className="text-[#F96E8F]">{order.id}</span></p>
-                          <h3 className="font-black text-[20px] text-gray-800 mb-1 leading-tight">{order.name}</h3>
-                          <p className="text-gray-500 font-bold text-[13px] mb-3">Product Code: {order.code}</p>
-                          <p className="font-bold text-[15px] text-gray-500 mb-2">Qty: <span className="text-[#F96E8F]">{order.qty} Nos</span></p>
-                          <p className="font-black text-[24px] text-[#F96E8F] mt-1">₹ {order.price}</p>
-                        </div>
-
-                        <div className="flex flex-row sm:flex-col gap-3 mt-4 sm:mt-0 self-end ml-auto">
-                          {order.status === 'active' ? (
-                            <>
-                              <button className="font-black text-[14px] text-gray-800 hover:text-[#F96E8F] transition-colors py-2 px-4 cursor-pointer text-right">
-                                Cancel Order
-                              </button>
-                              <button
-                                onClick={() => {
-                                  window.history.pushState({ orderId: order.id }, '', '/order-details');
-                                  window.dispatchEvent(new Event('popstate'));
-                                }}
-                                className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-8 rounded-[8px] transition-colors shadow-sm cursor-pointer w-[150px]"
-                              >
-                                Track Order
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button className="border border-gray-200 text-gray-700 font-extrabold text-[15px] py-2.5 px-8 rounded-[8px] hover:bg-gray-50 transition-colors cursor-pointer w-[150px]">
-                                Return Order
-                              </button>
-                              <button className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-8 rounded-[8px] transition-colors shadow-sm cursor-pointer w-[150px]">
-                                Reorder
-                              </button>
-                            </>
+                {/* Orders List - 2 products visible, scroll to see more */}
+                <div className="max-h-[480px] sm:max-h-[510px] overflow-y-auto pr-2 custom-scrollbar flex flex-col gap-5 transition-all">
+                  {filteredOrders.length > 0 ? (
+                    filteredOrders.map((order, idx) => (
+                      <div
+                        key={order.id || idx}
+                        className="bg-white border border-gray-100/90 rounded-[20px] p-5 sm:p-6 shadow-xs relative flex flex-col gap-4 hover:shadow-md transition-shadow shrink-0"
+                      >
+                        {/* Order ID Top Header */}
+                        <div className="flex items-center justify-between">
+                          <p className="font-extrabold text-[16px] sm:text-[17px] text-gray-900 font-['Baloo_2']">
+                            Order ID: <span className="text-[#F96E8F] font-black">{order.orderId}</span>
+                          </p>
+                          {order.status === 'cancelled' && (
+                            <span className="bg-red-50 text-red-500 font-extrabold text-[12px] px-3 py-1 rounded-full uppercase tracking-wider">
+                              Cancelled
+                            </span>
                           )}
+                        </div>
+
+                        {/* Order Content Row */}
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-5 sm:gap-6">
+                          {/* Image Box */}
+                          <div className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] rounded-[16px] overflow-hidden bg-[#FBE8EC] shrink-0 flex items-center justify-center p-1.5">
+                            <img
+                              src={order.image}
+                              alt={order.title}
+                              className="w-full h-full object-cover rounded-[12px]"
+                            />
+                          </div>
+
+                          {/* Middle Info */}
+                          <div className="flex-1 flex flex-col justify-center text-center sm:text-left min-w-0">
+                            <h3 className="font-bold text-[18px] sm:text-[20px] text-gray-900 font-['Nunito'] mb-1 truncate" title={order.title}>
+                              {order.title}
+                            </h3>
+                            <p className="text-gray-400 font-bold text-[12px] sm:text-[13px] mb-2 font-['Nunito']">
+                              Product Code: {order.code}
+                            </p>
+                            <p className="text-gray-500 font-bold text-[14px] font-['Nunito'] mb-2">
+                              Qty: <span className="text-[#F96E8F]">{order.qty} Nos</span>
+                            </p>
+                            <p className="text-[#F96E8F] font-bold text-[24px] sm:text-[26px] font-['Nunito'] leading-tight">
+                              ₹ {order.price}
+                            </p>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex flex-row items-center gap-3 self-center sm:self-end mt-2 sm:mt-0">
+                            {order.status === 'active' ? (
+                              <>
+                                <button
+                                  onClick={() => handleCancelOrder(order.orderId)}
+                                  className="font-extrabold text-[14px] text-gray-800 hover:text-[#F96E8F] transition-colors py-2.5 px-4 cursor-pointer"
+                                >
+                                  Cancel Order
+                                </button>
+                                <button
+                                  onClick={() => handleTrackOrder(order)}
+                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                                >
+                                  Track Order
+                                </button>
+                              </>
+                            ) : order.status === 'delivered' ? (
+                              <>
+                                <button
+                                  onClick={() => handleReturnOrder(order.orderId)}
+                                  className="border border-[#F96E8F] text-[#F96E8F] hover:bg-pink-50 font-extrabold text-[15px] py-2.5 px-7 rounded-[10px] transition-all cursor-pointer hover:scale-105 active:scale-95"
+                                >
+                                  Return Order
+                                </button>
+                                <button
+                                  onClick={() => handleReorder(order)}
+                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                                >
+                                  Reorder
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <span className="text-red-500 font-extrabold text-[14px] py-2.5 px-4">
+                                  Cancelled
+                                </span>
+                                <button
+                                  onClick={() => handleReorder(order)}
+                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                                >
+                                  Reorder
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="text-center text-gray-500 font-bold mt-10">No orders found.</div>
+                    <div className="text-center text-gray-500 font-bold py-16 bg-white rounded-[20px] border border-gray-100 flex flex-col items-center justify-center gap-3">
+                      <p className="text-[18px] text-gray-800 font-extrabold">No orders found.</p>
+                      <p className="text-[14px] text-gray-400 font-medium">You haven't placed any orders yet.</p>
+                      <button
+                        onClick={() => {
+                          window.history.pushState({}, '', '/shop');
+                          window.dispatchEvent(new Event('popstate'));
+                        }}
+                        className="mt-2 bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[14px] py-2.5 px-6 rounded-[10px] transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                      >
+                        Start Shopping
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

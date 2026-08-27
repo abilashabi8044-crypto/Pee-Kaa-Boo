@@ -11,6 +11,8 @@ import imgMain from '../assets/login/Image.png';
 
 export default function Login() {
     const [bgIndex, setBgIndex] = useState(0);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         const storedIndex = sessionStorage.getItem('loginBgIndex');
@@ -30,6 +32,33 @@ export default function Login() {
         "border-[#4B83D1]",
         "border-[#F76188]"
     ];
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const userEmail = email.trim() || 'username@gmail.com';
+        const userId = `user_${userEmail.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', userEmail);
+        localStorage.setItem('userId', userId);
+
+        const existingProfile = localStorage.getItem('userProfile');
+        if (!existingProfile) {
+            const defaultProfile = {
+                fullName: userEmail.split('@')[0] || 'Your name',
+                emailId: userEmail,
+                mobileNumber: '+91 91234 56789',
+                altMobileNumber: '',
+                altEmailId: '',
+                gender: 'Female',
+                dob: '1998-05-15'
+            };
+            localStorage.setItem('userProfile', JSON.stringify(defaultProfile));
+        }
+
+        window.history.pushState({}, '', '/account');
+        window.dispatchEvent(new Event('popstate'));
+    };
 
     return (
         <div className={`min-h-screen bg-gradient-to-br ${gradients[bgIndex]} relative overflow-hidden flex items-center justify-center font-['Baloo_2'] p-4 md:p-8`}>
@@ -52,6 +81,8 @@ export default function Login() {
                     <label className="text-white text-[14px] font-bold mb-[5px] block">Email</label>
                     <input
                         type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="username@gmail.com"
                         className="w-full h-[45px] rounded-[10px] px-[15px] text-[14px] text-[#333] outline-none border-none placeholder-gray-400 font-medium"
                     />
@@ -62,6 +93,8 @@ export default function Login() {
                     <div className="relative">
                         <input
                             type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="Password"
                             className="w-full h-[45px] rounded-[10px] px-[15px] text-[14px] text-[#333] outline-none border-none placeholder-gray-400 font-medium"
                         />
@@ -80,12 +113,7 @@ export default function Login() {
                 </div>
 
                 <button 
-                    onClick={(e) => {
-                        e.preventDefault();
-                        localStorage.setItem('isLoggedIn', 'true');
-                        window.history.pushState({}, '', '/account');
-                        window.dispatchEvent(new Event('popstate'));
-                    }}
+                    onClick={handleLogin}
                     className="w-full h-[45px] bg-[#04BCC6] text-white text-[18px] font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md cursor-pointer"
                 >
                     Sign in

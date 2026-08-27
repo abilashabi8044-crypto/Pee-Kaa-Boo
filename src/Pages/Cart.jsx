@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -6,23 +6,16 @@ import Footer from './Footer';
 import leftCar from '../assets/cart/left-img.png';
 import rightBunny from '../assets/cart/right-img.png';
 import headerBg from '../assets/cart/shop-bg.png';
+import shopMobBg from '../assets/shop/shop-mob-bg.png';
+import cloud from '../assets/shop/cloud.png';
 import prod1 from '../assets/shop/62741597f1c25de37c22ae67896b59fca2148f7e.jpg';
-import prod2 from '../assets/shop/silver-yellow.png';
-import prod3 from '../assets/shop/e6d33d54f4b94cee7f7fa20b4b7d7c16f7b1464d.png';
-import prod4 from '../assets/shop/product1.jpg';
 import arrowLeft from '../assets/product/arrow-l.png';
 import arrowRight from '../assets/product/arrow-r.png';
 import discount from '../assets/cart/discount.png';
 import location from '../assets/cart/location.png';
+import { gridItems } from './Shop';
 
-const recommendedProducts = [
-  { id: 1, title: 'Name of the product', category: 'Category', price: '1710', oldPrice: '2000', image: prod1, theme: 'pink' },
-  { id: 2, title: 'Name of the product', category: 'Category', price: '1710', oldPrice: '2000', image: prod2, theme: 'blue' },
-  { id: 3, title: 'Name of the product', category: 'Category', price: '1710', oldPrice: '2000', image: prod3, theme: 'yellow' },
-  { id: 4, title: 'Name of the product', category: 'Category', price: '1710', oldPrice: '2000', image: prod4, theme: 'pink' },
-  { id: 5, title: 'Name of the product', category: 'Category', price: '1710', oldPrice: '2000', image: prod1, theme: 'blue' },
-  { id: 6, title: 'Name of the product', category: 'Category', price: '1710', oldPrice: '2000', image: prod2, theme: 'yellow' },
-];
+const recommendedProducts = gridItems.filter(item => item.type === 'product');
 
 const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
   const [localQty, setLocalQty] = useState(1);
@@ -31,15 +24,51 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
   const [appliedCouponCode, setAppliedCouponCode] = useState('');
   const [showCouponInput, setShowCouponInput] = useState(false);
   const [couponError, setCouponError] = useState('');
-  const [pincode, setPincode] = useState('600001');
+  const [pincode, setPincode] = useState('');
   const [isChangingPincode, setIsChangingPincode] = useState(false);
   const [newPincode, setNewPincode] = useState('');
+  const [pincodeStatus, setPincodeStatus] = useState(null); // null | 'loading' | 'available' | 'unavailable' | 'error'
+  const [pincodeLocation, setPincodeLocation] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [addedItems, setAddedItems] = useState({});
+  const [showOrderSummaryModal, setShowOrderSummaryModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 640 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const navigateTo = (path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new Event('popstate'));
+  };
+
+  const checkPincode = async (code) => {
+    if (!code || code.length !== 6) {
+      setPincodeStatus('error');
+      setPincodeLocation(null);
+      return;
+    }
+    setPincodeStatus('loading');
+    setPincodeLocation(null);
+    try {
+      const response = await fetch(`https://api.postalpincode.in/pincode/${code}`);
+      const data = await response.json();
+      if (data && data[0].Status === 'Success') {
+        const postOffice = data[0].PostOffice[0];
+        setPincodeLocation({ area: postOffice.Name, district: postOffice.District, state: postOffice.State });
+        const allowedStates = ['Tamil Nadu', 'Andhra Pradesh', 'Kerala', 'Karnataka'];
+        setPincodeStatus(allowedStates.includes(postOffice.State) ? 'available' : 'unavailable');
+      } else {
+        setPincodeStatus('error');
+      }
+    } catch {
+      setPincodeStatus('error');
+    }
   };
 
   const handleQtyChange = (item, delta) => {
@@ -55,25 +84,32 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
   const shippingCost = 0;
   const displayBillTotal = Math.max(0, displayItemTotal - displaySaved - couponDiscount + shippingCost);
 
-  const maxCarousel = Math.max(0, recommendedProducts.length - 4);
+  const itemsPerPage = isMobile ? 1 : 4;
+  const maxCarousel = Math.max(0, recommendedProducts.length - itemsPerPage);
   const handlePrevCarousel = () => setCarouselIndex(prev => Math.max(0, prev - 1));
   const handleNextCarousel = () => setCarouselIndex(prev => Math.min(maxCarousel, prev + 1));
   const progressWidth = recommendedProducts.length > 0
-    ? ((carouselIndex + Math.min(4, recommendedProducts.length)) / recommendedProducts.length) * 100
+    ? ((carouselIndex + Math.min(itemsPerPage, recommendedProducts.length)) / recommendedProducts.length) * 100
     : 100;
 
   return (
     <div className="w-full min-h-screen bg-white font-['Baloo_2'] flex flex-col">
-      {/* Combined Header & Hero Banner Section with full header-bg.png */}
+      {/* Combined Header & Hero Banner Section with responsive background */}
       <div
-        className="w-full relative bg-no-repeat bg-center"
+        className="w-full relative bg-no-repeat bg-center shop-hero-bg"
         style={{
-          backgroundImage: `url(${headerBg})`,
-          backgroundSize: '100% 100%',
+          '--shop-bg-mob': `url(${shopMobBg})`,
+          '--shop-bg-desk': `url(${headerBg})`,
           backgroundPosition: 'center top'
-
         }}
       >
+        {/* Cloud Decoration (Mobile Responsive) */}
+        <img
+          src={cloud}
+          alt="cloud"
+          className="absolute top-[-122px] sm:top-[-118px] lg:top-[-25px] left-[54%] -translate-x-1/2 lg:left-0 lg:translate-x-0 w-full md:w-[340px] lg:w-[330px] xl:w-[360px] h-auto object-contain pointer-events-none z-30 lg:z-auto md:hidden"
+        />
+
         {/* Header Navigation */}
         <Header cartItems={cartItems} />
 
@@ -81,10 +117,10 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
         <div className="w-full relative pt-6 pb-20 sm:pb-28 flex flex-col items-center justify-center">
           {/* Breadcrumb & Heading */}
           <div className="text-center z-10 px-4">
-            <h1 className="text-[72px] md:text-[72px] font-black text-gray-900 mb-2 tracking-wide">
+            <h1 className="text-[32px] md:text-[72px] font-black text-gray-900 mb-2 tracking-wide">
               My <span className="text-[#F96E8F]">Cart</span>
             </h1>
-            <div className="text-sm md:text-base font-extrabold text-gray-800 flex items-center justify-center gap-2">
+            <div className="text-[20px] md:text-base font-extrabold text-gray-800 flex items-center justify-center gap-2">
               <button onClick={() => navigateTo('/')} className="hover:text-[#F96E8F] transition-colors cursor-pointer">
                 Home
               </button>
@@ -110,11 +146,11 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
       </div>
 
       {/* Main Cart Content Area */}
-      <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 pt-8 pb-20 lg:pb-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-start">
 
           {/* Left Column: Cart Items & Actions */}
-          <div className="lg:col-span-7 bg-[#F4FCFF] rounded-3xl p-4 sm:p-8 flex flex-col justify-between shadow-sm min-h-[520px]">
+          <div className="lg:col-span-7 bg-[#F4FCFF] rounded-3xl p-4 sm:p-8 flex flex-col justify-start lg:justify-between shadow-sm min-h-0 lg:min-h-[520px]">
             <div>
               {cartItems.length === 0 ? (
                 <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-sm text-center flex flex-col items-center justify-center h-full border border-sky-100 mb-4">
@@ -134,31 +170,33 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 </div>
               ) : (
                 cartItems.map((item, index) => (
-                  <div key={item.id || index} className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm mb-4 flex flex-col sm:flex-row items-center justify-between gap-4 border border-sky-100">
+                  <div key={item.id || index} className="bg-white rounded-2xl p-3 sm:p-5 shadow-sm mb-3 sm:mb-4 flex flex-row items-center sm:items-start justify-between gap-3 sm:gap-4 border border-sky-100">
 
                     {/* Product Thumbnail */}
-                    <div className="w-38 h-38 sm:w-38 sm:h-38 rounded-xl overflow-hidden flex-shrink-0 bg-[#F9E2E8] p-1 flex items-center justify-center">
+                    <div className="w-[115px] h-[115px] sm:w-38 sm:h-38 rounded-2xl overflow-hidden flex-shrink-0 bg-[#F9E2E8] p-1 flex items-center justify-center">
                       <img
                         src={item.image || prod1}
                         alt={item.title}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-cover rounded-xl"
                       />
                     </div>
 
                     {/* Product Info */}
-                    <div className="flex-1 text-center sm:text-left flex flex-col justify-center">
-                      <h3 className="text-gray-900 font-extrabold text-[25px] sm:text-[25px] leading-tight font-['Baloo_2']">
-                        {item.title || 'Name of the product'}
-                      </h3>
-                      <p className="text-gray-500 font-bold text-[15px] sm:text-[15px] mb-1">
-                        Product Code : {item.code || 'GAA200075'}
-                      </p>
-                      <p className="mt-16 text-gray-700 font-extrabold text-[17px] sm:text-[17px] mb-3">
-                        Expected Delivery Date : {item.weight || '20 Grams'}
-                      </p>
+                    <div className="flex-1 text-left flex flex-col justify-between self-stretch py-0.5 sm:py-0">
+                      <div>
+                        <h3 className="text-gray-900 font-bold sm:font-extrabold text-[18px] sm:text-[25px] leading-tight font-['Baloo_2']">
+                          {item.title || 'Name of the product'}
+                        </h3>
+                        <p className="text-gray-900 sm:text-gray-500 font-bold text-[12px] sm:text-[15px] mt-0.5 sm:mb-1">
+                          Product Code : {item.code || (item.id ? `64A288${item.id}` : '64A288075')}
+                        </p>
+                        <p className="text-gray-900 sm:text-gray-700 font-extrabold text-[12px] sm:text-[17px] my-1.5 sm:mt-16 sm:mb-3">
+                          Expected Delivery Date : {item.deliveryDate || (item.weight && !item.weight.includes('Gram') ? item.weight : '20 Jan')}
+                        </p>
+                      </div>
 
-                      {/* Quantity Control Buttons */}
-                      <div className="flex items-center justify-center sm:justify-start gap-1">
+                      {/* Desktop Only Quantity Control Buttons */}
+                      <div className="hidden sm:flex items-center justify-start gap-1">
                         <div className="flex items-center border-2 border-dashed border-[#000000] rounded-[18px] overflow-hidden bg-white shadow-xs">
                           <button
                             onClick={() => handleQtyChange(item, 1)}
@@ -177,14 +215,46 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                           </button>
                         </div>
                       </div>
+
+                      {/* Mobile Only Bottom Row (Prices on Left, Quantity on Right) */}
+                      <div className="flex sm:hidden items-center justify-between mt-auto pt-1">
+                        <div className="flex items-center gap-1.5">
+                          <del className="text-gray-400 font-bold text-[14px]">
+                            ₹{item.oldPrice || 2000}
+                          </del>
+                          <span className="text-[#F96E8F] font-black text-[24px] font-['Nunito']">
+                            ₹ {item.price || 1710}
+                          </span>
+                        </div>
+
+                        {/* Mobile Quantity Control */}
+                        <div className="flex items-center border border-dashed border-gray-600 rounded-full overflow-hidden bg-white px-0.5 py-0.5">
+                          <button
+                            onClick={() => handleQtyChange(item, 1)}
+                            className="w-5 h-5 flex items-center justify-center font-bold text-gray-700 hover:bg-gray-100 cursor-pointer text-xs"
+                          >
+                            +
+                          </button>
+                          <span className="w-5 text-center font-black text-gray-800 text-xs border-x border-dashed border-gray-400">
+                            {item.quantity || 1}
+                          </span>
+                          <button
+                            onClick={() => handleQtyChange(item, -1)}
+                            className="w-5 h-5 flex items-center justify-center font-bold text-gray-700 hover:bg-gray-100 cursor-pointer text-xs"
+                          >
+                            -
+                          </button>
+                        </div>
+                      </div>
+
                     </div>
 
-                    {/* Price Tag */}
-                    <div className="flex sm:flex-row items-center mt-48 sm:items-end justify-center gap-2 sm:gap-1 text-right min-w-[100px]">
-                      <del className="text-gray-400 font-bold text-[20px] sm:text-[20px]">
+                    {/* Desktop Only Price Tag */}
+                    <div className="hidden sm:flex sm:flex-row items-end justify-end mt-48 gap-1 text-right min-w-[100px]">
+                      <del className="text-gray-400 font-bold text-[20px]">
                         ₹{item.oldPrice || 2000}
                       </del>
-                      <span className="text-[#F96E8F] font-black text-[25px] sm:text-[25px] font-['Nunito']">
+                      <span className="text-[#F96E8F] font-black text-[25px] font-['Nunito']">
                         ₹ {item.price || 1710}
                       </span>
                     </div>
@@ -195,10 +265,10 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
             </div>
 
             {/* Bottom Actions */}
-            <div className="mt-8 flex flex-col items-center text-center gap-3">
+            <div className="mt-4 sm:mt-8 flex flex-col items-center text-center gap-3">
               <button
                 onClick={() => navigateTo('/shop')}
-                className="text-[#F96E8F] font-bold text-sm sm:text-base hover:underline cursor-pointer transition-colors"
+                className="text-[#F96E8F] font-bold text-[17px] sm:text-base hover:underline cursor-pointer transition-colors"
               >
                 Continue Shopping
               </button>
@@ -210,11 +280,10 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                   }
                 }}
                 disabled={cartItems.length === 0}
-                className={`w-full max-w-[380px] text-white py-3.5 px-8 rounded-[16px] font-bold text-base sm:text-lg shadow-md transition-all tracking-wide uppercase ${
-                  cartItems.length === 0 
-                    ? 'bg-gray-400 cursor-not-allowed opacity-70' 
+                className={`hidden lg:block w-full max-w-[380px] text-white py-3.5 px-8 rounded-[16px] font-bold text-base sm:text-lg shadow-md transition-all tracking-wide uppercase ${cartItems.length === 0
+                    ? 'bg-gray-400 cursor-not-allowed opacity-70'
                     : 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
-                }`}
+                  }`}
               >
                 Proceed to Checkout
               </button>
@@ -237,7 +306,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 <div className="w-10 h-10 rounded-full bg-[#FFFFFF] text-white flex items-center justify-center font-black">
                   <img src={discount} alt="" className='h-[36px] w-[36px]' />
                 </div>
-                <span className="text-[#F96E8F] font-bold text-[28px] font-[Baloo_2] tracking-wide">
+                <span className="text-[#F96E8F] font-bold text-[21px] md:text-[28px] font-[Baloo_2] tracking-wide">
                   Apply Coupon
                 </span>
               </div>
@@ -251,7 +320,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                     setShowCouponInput(true);
                   }
                 }}
-                className="text-[#F96E8F] font-bold text-[21px] px-8 hover:underline cursor-pointer"
+                className="text-[#F96E8F] font-bold text-[16px] md:text-[21px] px-8 hover:underline cursor-pointer"
               >
                 {appliedCoupon ? 'Remove' : 'Apply'}
               </button>
@@ -264,8 +333,8 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                   <img src={discount} alt="" className='h-[24px] w-[24px]' />
                 </div>
                 <div>
-                  <h4 className="font-[Baloo_2] font-bold text-gray-900 text-[17px] uppercase">FLAT ₹1000</h4>
-                  <p className="text-gray-800 font-[Baloo_2] font-bold text-[15px]">Flat 1000 off on Preset jewellery</p>
+                  <h4 className="font-[Baloo_2] font-bold text-gray-900 text-[14px] md:text-[17px] uppercase">FLAT ₹1000</h4>
+                  <p className="text-gray-800 font-[Baloo_2] font-bold text-[12px] md:text-[15px]">Flat 1000 off on Preset jewellery</p>
                 </div>
               </div>
               <button
@@ -279,7 +348,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                     setShowCouponInput(false);
                   }
                 }}
-                className="text-gray-400 font-extrabold text-sm px-4 hover:underline cursor-pointer"
+                className="text-gray-400 font-extrabold text-[12px] md:text-[14px] px-4 hover:underline cursor-pointer"
               >
                 {appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'Applied' : 'Apply'}
               </button>
@@ -290,7 +359,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
               <div className="border-2 border-dashed border-[#F96E8F] bg-[#FFF5F7] rounded-xl p-4 flex flex-col gap-3 shadow-sm transition-all duration-300">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-[16px] text-gray-800 font-['Baloo_2']">Enter Coupon Code</span>
-                  <button 
+                  <button
                     onClick={() => { setShowCouponInput(false); setCouponError(''); }}
                     className="text-gray-400 hover:text-gray-600 font-bold text-sm cursor-pointer"
                   >
@@ -344,7 +413,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
             {appliedCoupon && (
               <div className="bg-[#E8F8F5] border border-[#2ECC71]/40 text-[#27AE60] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex justify-between items-center shadow-xs">
                 <span>✓ {appliedCouponCode ? `Coupon "${appliedCouponCode}" Applied (-₹1000)` : 'FLAT ₹1000 Coupon Applied!'}</span>
-                <button 
+                <button
                   onClick={() => {
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
@@ -370,44 +439,79 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
               <div className="flex justify-between items-center text-sm font-extrabold text-gray-900">
                 <div className="flex items-center gap-3">
                   <img src={location} alt="" className='h-[24px] w-[24px]' />
-                  <span className="text-[15px] font-[Baloo_2]">Deliver to Pincode</span>
+                  <span className="text-[15px] font-[Baloo_2]">
+                    {pincode && pincodeLocation ? `Deliver to ${pincodeLocation.area}, ${pincodeLocation.district}` : 'Check Delivery Availability'}
+                  </span>
                 </div>
                 <button
                   onClick={() => setIsChangingPincode(!isChangingPincode)}
                   className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer font-bold text-[15px] font-[Baloo_2]"
                 >
-                  Change Pincode
+                  {pincode ? 'Change Pincode' : 'Enter Pincode'}
                 </button>
               </div>
 
               {isChangingPincode && (
-                <div className="flex gap-2 mt-3">
-                  <input
-                    type="text"
-                    value={newPincode}
-                    onChange={(e) => setNewPincode(e.target.value)}
-                    placeholder="Enter 6-digit Pincode"
-                    className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm outline-none font-bold"
-                    maxLength={6}
-                  />
-                  <button
-                    onClick={() => {
-                      if (newPincode.trim().length === 6) {
-                        setPincode(newPincode.trim());
-                        setIsChangingPincode(false);
-                      }
-                    }}
-                    className="bg-[#F96E8F] text-white text-sm px-4 py-2 rounded font-bold hover:bg-[#E44971]"
-                  >
-                    Save
-                  </button>
+                <div className="flex flex-col gap-2 mt-3">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newPincode}
+                      onChange={(e) => setNewPincode(e.target.value.replace(/\D/g, ''))}
+                      placeholder="Enter 6-digit Pincode"
+                      className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm outline-none font-bold"
+                      maxLength={6}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && newPincode.trim().length === 6) {
+                          setPincode(newPincode.trim());
+                          checkPincode(newPincode.trim());
+                          setIsChangingPincode(false);
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        if (newPincode.trim().length === 6) {
+                          setPincode(newPincode.trim());
+                          checkPincode(newPincode.trim());
+                          setIsChangingPincode(false);
+                        }
+                      }}
+                      className="bg-[#F96E8F] text-white text-sm px-4 py-2 rounded font-bold hover:bg-[#E44971] cursor-pointer"
+                    >
+                      Check
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Pincode API Result */}
+              {pincodeStatus === 'loading' && (
+                <div className="text-blue-500 font-bold text-[13px] mt-3 flex items-center gap-2">
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                  Checking delivery availability...
+                </div>
+              )}
+              {pincodeStatus === 'available' && pincodeLocation && (
+                <div className="text-green-600 font-bold text-[13px] mt-3">
+                  ✓ Delivery available to {pincodeLocation.area}, {pincodeLocation.district}, {pincodeLocation.state}
+                </div>
+              )}
+              {pincodeStatus === 'unavailable' && pincodeLocation && (
+                <div className="text-red-500 font-bold text-[13px] mt-3">
+                  ✕ Delivery not available to {pincodeLocation.state}. We deliver to Tamil Nadu, Andhra Pradesh, Kerala & Karnataka.
+                </div>
+              )}
+              {pincodeStatus === 'error' && (
+                <div className="text-red-500 font-bold text-[13px] mt-3">
+                  ✕ Invalid pincode. Please enter a valid 6-digit pincode.
                 </div>
               )}
             </div>
 
             {/* Bill Details Summary Card */}
             <div
-              className="rounded-xl p-6 bg-white shadow-xs flex flex-col gap-5 mt-2"
+              className="hidden lg:flex rounded-xl p-6 bg-white shadow-xs flex-col gap-5 mt-2"
               style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100%25\' height=\'100%25\' fill=\'none\' rx=\'12\' ry=\'12\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'14%2c 14\' stroke-dashoffset=\'0\' stroke-linecap=\'square\'/%3e%3c/svg%3e")' }}
             >
               <div className="flex justify-between items-center text-[17px] font-[Baloo_2] font-black text-gray-800">
@@ -442,14 +546,14 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
         </div>
 
         {/* You May Also Like Section */}
-        <section className="bg-[#F4FCFF] rounded-[2rem] p-6 md:p-10 my-16 shadow-xs">
-          <h2 className="text-[29px] md:text-[41px] font-black text-gray-900 mb-8 font-['Baloo_2']">
+        <section className="bg-[#F4FCFF] rounded-[2rem] p-4 pb-4 sm:p-6 sm:pb-6 md:p-8 md:pb-6 mt-6 sm:mt-8 mb-0 shadow-xs">
+          <h2 className="text-[24px] md:text-[41px] font-black text-gray-900 mb-6 sm:mb-8 font-['Baloo_2']">
             You May <span className="text-[#F96E8F]">Also Like</span>
           </h2>
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {recommendedProducts.slice(carouselIndex, carouselIndex + 4).map((product, idx) => {
+            {recommendedProducts.slice(carouselIndex, carouselIndex + itemsPerPage).map((product, idx) => {
               let borderColor = 'border-[#FFB7D5]';
               let bgTheme = 'bg-[#FFB7D5]/20';
               if (product.theme === 'blue') {
@@ -509,13 +613,13 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                       {product.category}
                     </span>
 
-                    <h4 className="text-gray-900 font-bold text-[18px] sm:text-[20px] leading-tight mb-1 tracking-wide font-['Nunito'] group-hover:text-[#F96E8F] transition-colors">
+                    <h4 className="text-gray-900 font-bold text-[24px] sm:text-[20px] leading-tight mb-1 tracking-wide font-['Nunito'] group-hover:text-[#F96E8F] transition-colors">
                       {product.title}
                     </h4>
 
                     <div className="flex justify-center items-center gap-2">
-                      <del className="text-gray-400 font-bold text-[16px] font-[Nunito]">₹ {product.oldPrice}</del>
-                      <span className="text-[#F96E8F] font-bold text-[27px] font-['Nunito']">₹ {product.price}</span>
+                      <del className="text-gray-400 font-bold text-[19px] font-[Nunito]">₹ {product.oldPrice}</del>
+                      <span className="text-[#F96E8F] font-bold text-[33px] font-['Nunito']">₹ {product.price}</span>
                     </div>
 
                     {/* Expandable Content (Add to Cart) */}
@@ -555,7 +659,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
           </div>
 
           {/* Slider Controls */}
-          <div className="flex items-center justify-between mt-10">
+          <div className="flex items-center justify-between mt-4 sm:mt-6">
             {/* Progress Bar */}
             <div className="flex-1 h-1.5 bg-gray-200 rounded-full mr-6 relative overflow-hidden">
               <div
@@ -585,6 +689,110 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
         </section>
 
       </main>
+
+      {/* Fixed Bottom Order Summary & Checkout Bar for Mobile Only */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100 py-3 px-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3">
+        {/* Left: Prices & Info Icon */}
+        <div className="flex flex-col justify-center">
+          <del className="text-gray-400 font-bold text-[13px] leading-tight">
+            ₹{displayItemTotal}
+          </del>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-[#F96E8F] font-black text-[22px] leading-none font-['Nunito']">
+              ₹ {displayBillTotal}
+            </span>
+            <button
+              onClick={() => setShowOrderSummaryModal(!showOrderSummaryModal)}
+              className={`w-4.5 h-4.5 rounded-full text-white text-[10px] font-bold inline-flex items-center justify-center cursor-pointer transition-colors shadow-2xs font-['Nunito'] ${
+                showOrderSummaryModal ? 'bg-[#F96E8F]' : 'bg-[#7C8894] hover:bg-[#5A6570]'
+              }`}
+              aria-label="Order Summary Info"
+              title="View Order Summary"
+            >
+              i
+            </button>
+          </div>
+        </div>
+
+        {/* Right: Proceed To Checkout Button */}
+        <button
+          onClick={() => {
+            if (cartItems.length > 0) {
+              navigateTo('/checkout');
+            }
+          }}
+          disabled={cartItems.length === 0}
+          className={`text-white px-6 py-3 rounded-[12px] font-bold text-[15px] shadow-sm transition-all tracking-wide ${cartItems.length === 0
+              ? 'bg-gray-400 cursor-not-allowed opacity-70'
+              : 'bg-[#F96E8F] hover:bg-[#E44971] active:scale-[0.98] cursor-pointer'
+            }`}
+        >
+          Proceed To Checkout
+        </button>
+      </div>
+
+      {/* Mobile Order Summary Popup (Slides out from behind the fixed bottom bar) */}
+      {/* Transparent Click-Outside Area (No dark overlay on screen) */}
+      {showOrderSummaryModal && (
+        <div
+          className="lg:hidden fixed inset-0 z-20 bg-transparent"
+          onClick={() => setShowOrderSummaryModal(false)}
+        />
+      )}
+
+      {/* Popup Card with Smooth Slide Up/Down from Behind the Fixed Button */}
+      <div
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t-2 border-dashed border-[#F96E8F] rounded-t-[24px] p-5 pb-22 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transform transition-all duration-300 ease-out ${
+          showOrderSummaryModal
+            ? 'translate-y-0 opacity-100 pointer-events-auto'
+            : 'translate-y-full opacity-0 pointer-events-none'
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[19px] font-black text-gray-900 font-['Baloo_2']">
+            Order <span className="text-[#F96E8F]">Summary</span>
+          </h3>
+          <button
+            onClick={() => setShowOrderSummaryModal(false)}
+            className="w-6 h-6 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold transition-colors cursor-pointer"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Bill Rows */}
+        <div className="flex flex-col gap-2.5">
+          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+            <span>Item Total</span>
+            <span className="font-extrabold text-gray-900">₹{displayItemTotal}</span>
+          </div>
+
+          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+            <span>You Saved</span>
+            <span className="font-extrabold text-gray-900">-₹{displaySaved}</span>
+          </div>
+
+          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+            <span>Coupon Discount</span>
+            <span className="font-extrabold text-gray-900">₹{couponDiscount}</span>
+          </div>
+
+          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+            <span>Shipping (standard)</span>
+            <span className="font-extrabold text-gray-900">FREE</span>
+          </div>
+
+          <hr className="border-t border-gray-400 my-1" />
+
+          <div className="flex justify-between items-center text-[16px] font-black text-gray-900 font-['Baloo_2']">
+            <span>Bill Total</span>
+            <span className="font-black text-gray-900">₹{displayBillTotal}</span>
+          </div>
+        </div>
+      </div>
 
       {/* Footer */}
       <Footer />

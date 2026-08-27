@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectOrders, cancelOrder as cancelOrderAction } from '../redux/ordersSlice';
+import { selectOrders, selectLatestOrder, cancelOrder as cancelOrderAction } from '../redux/ordersSlice';
 import { selectCartItems } from '../redux/cartSlice';
 import { selectWishlistItems } from '../redux/wishlistSlice';
 import Header from './Header';
 import Footer from './Footer';
 import upiIcon from '../assets/checkout/upi-id 1.png';
+import netBankingIcon from '../assets/checkout/noto_bank.png';
+import debitCardIcon from '../assets/checkout/twemoji_credit-card (1).png';
+import creditCardIcon from '../assets/checkout/twemoji_credit-card.png';
 import prod1 from '../assets/shop/product1.jpg';
 
 const Orderdetails = () => {
   const dispatch = useDispatch();
   const orders = useSelector(selectOrders) || [];
+  const latestOrder = useSelector(selectLatestOrder);
   const cartItems = useSelector(selectCartItems) || [];
   const wishlist = useSelector(selectWishlistItems) || [];
 
@@ -19,8 +23,47 @@ const Orderdetails = () => {
   const [cancelSuccess, setCancelSuccess] = useState(false);
   const [downloadingInvoice, setDownloadingInvoice] = useState(false);
 
-  // Address from localStorage or default
-  const [userAddress] = useState(() => {
+  // Determine current active order dynamically
+  const [activeOrder, setActiveOrder] = useState(null);
+
+  useEffect(() => {
+    let orderToUse = null;
+
+    // 1. Check window.history.state
+    const historyOrderId = window.history.state?.orderId;
+    const historyOrder = window.history.state?.order;
+
+    if (historyOrder) {
+      orderToUse = historyOrder;
+    } else if (historyOrderId && orders.length > 0) {
+      orderToUse = orders.find(o => o.orderId === historyOrderId || o.id === historyOrderId);
+    }
+
+    // 2. Check latestOrder from Redux
+    if (!orderToUse && latestOrder) {
+      orderToUse = latestOrder;
+    }
+
+    // 3. Check first order from orders array
+    if (!orderToUse && orders.length > 0) {
+      orderToUse = orders[0];
+    }
+
+    // 4. Check localStorage fallback
+    if (!orderToUse) {
+      try {
+        const saved = localStorage.getItem('pkb_latest_order');
+        if (saved) orderToUse = JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    setActiveOrder(orderToUse);
+  }, [orders, latestOrder]);
+
+  // Dynamic user address from order or localStorage
+  const userAddress = activeOrder?.address || (() => {
     try {
       const saved = localStorage.getItem('userAddresses');
       const parsed = saved ? JSON.parse(saved) : [];
@@ -28,7 +71,7 @@ const Orderdetails = () => {
         return {
           name: parsed[0].name || 'Home',
           username: parsed[0].username || 'User Name',
-          address: `${parsed[0].line1 || ''}, ${parsed[0].line2 || ''}`.trim() || '123 Anywhere St., Any City, ST 12345',
+          address: `${parsed[0].line1 || ''}, ${parsed[0].line2 || ''}`.replace(/^,\s*|,\s*$/g, '') || '123 Anywhere St., Any City, ST 12345',
           phone: parsed[0].phone || '+91 91234 56789'
         };
       }
@@ -41,63 +84,68 @@ const Orderdetails = () => {
       address: '123 Anywhere St., Any City, ST 12345',
       phone: '+91 91234 56789'
     };
-  });
+  })();
 
-  // Default mock products matching the user's reference image if no order in redux
-  const defaultItems = [
-    {
-      id: 'item1',
-      title: 'Name of the product',
-      code: '64A288075',
-      image: prod1,
-      orderDate: '10/01/2026',
-      qty: 1,
-      oldPrice: 2000,
-      price: 1710,
-    },
-    {
-      id: 'item2',
-      title: 'Name of the product',
-      code: '64A288075',
-      image: prod1,
-      orderDate: '10/01/2026',
-      qty: 1,
-      oldPrice: 2000,
-      price: 1710,
-    }
-  ];
-
-  // Display items
-  const displayItems = orders.length > 0
-    ? orders.map((o, idx) => ({
-        id: o.id || `order-${idx}`,
-        title: o.title || o.name || 'Name of the product',
-        code: o.code || '64A288075',
-        image: o.image || prod1,
-        orderDate: o.date ? new Date(o.date).toLocaleDateString('en-GB') : '10/01/2026',
-        qty: o.quantity || o.qty || 1,
-        oldPrice: Number(o.oldPrice) || 2000,
-        price: Number(o.price) || 1710,
-        status: o.status || 'active'
+  // Dynamic products list
+  const displayItems = activeOrder?.items && activeOrder.items.length > 0
+    ? activeOrder.items.map((item, idx) => ({
+        id: item.id || `item-${idx}`,
+        title: item.title || item.name || 'Product',
+        code: item.code || (item.id ? `64A288${item.id}` : '64A288075'),
+        image: item.image || prod1,
+        orderDate: item.orderDate || (activeOrder.date ? new Date(activeOrder.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB')),
+        qty: item.quantity || item.qty || 1,
+        oldPrice: Number(item.oldPrice) || Number(item.price) || 0,
+        price: Number(item.price) || 0,
+        status: item.status || activeOrder.status || 'active'
       }))
-    : defaultItems;
+    : activeOrder?.title || activeOrder?.name
+    ? [{
+        id: activeOrder.id || 'order-1',
+        title: activeOrder.title || activeOrder.name || 'Product',
+        code: activeOrder.code || (activeOrder.id ? `64A288${activeOrder.id}` : '64A288075'),
+        image: activeOrder.image || prod1,
+        orderDate: activeOrder.date ? new Date(activeOrder.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'),
+        qty: activeOrder.quantity || activeOrder.qty || 1,
+        oldPrice: Number(activeOrder.oldPrice) || 0,
+        price: Number(activeOrder.price) || 0,
+        status: activeOrder.status || 'active'
+      }]
+    : [];
 
-  const itemTotal = displayItems.reduce((acc, item) => acc + ((item.oldPrice || item.price) * item.qty), 0);
+  const orderId = activeOrder?.orderId || activeOrder?.id || '123456789';
+  const isCancelled = activeOrder?.status === 'cancelled';
+
+  // Dynamic financial totals
+  const itemTotal = activeOrder?.itemTotal ?? displayItems.reduce((acc, item) => acc + (item.oldPrice * item.qty), 0);
   const subTotal = displayItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
-  const savedAmount = Math.max(0, itemTotal - subTotal);
-  const billTotal = subTotal;
+  const savedAmount = activeOrder?.savedAmount ?? Math.max(0, itemTotal - subTotal);
+  const couponDiscount = activeOrder?.couponDiscount ?? 0;
+  const billTotal = activeOrder?.billTotal ?? (subTotal - couponDiscount);
+  const paymentMethod = activeOrder?.paymentMethod || 'UPI';
+
+  const normPayment = (paymentMethod || '').toLowerCase();
+  const isCod = normPayment.includes('cod') || normPayment.includes('cash');
+  const isUpi = normPayment.includes('upi');
+  const isNetBanking = normPayment.includes('net') || normPayment.includes('bank');
+  const isDebit = normPayment.includes('debit');
+  const isCredit = normPayment.includes('credit');
 
   const handleCancelOrder = () => {
-    if (orders.length > 0) {
-      orders.forEach(o => {
-        if (o.id) dispatch(cancelOrderAction(o.id));
-      });
+    if (orderId) {
+      dispatch(cancelOrderAction(orderId));
+      setActiveOrder(prev => prev ? { ...prev, status: 'cancelled' } : null);
     }
     setCancelSuccess(true);
     setTimeout(() => {
       setCancelSuccess(false);
     }, 4000);
   };
+
+  const customerEmail = activeOrder?.customer?.email || activeOrder?.userEmail || localStorage.getItem('userEmail') || 'user@gmail.com';
+  const customerName = activeOrder?.customer?.name || activeOrder?.userName || userAddress.username;
+  const customerPhone = activeOrder?.customer?.phone || activeOrder?.userPhone || userAddress.phone;
+  const customerUserId = activeOrder?.userId || activeOrder?.customer?.id || localStorage.getItem('userId') || 'user_guest';
 
   const handleDownloadInvoice = () => {
     setDownloadingInvoice(true);
@@ -106,10 +154,16 @@ const Orderdetails = () => {
       const invoiceContent = `====================================
 PEE KAA BOO - INVOICE
 ====================================
-Order ID: 123456789
-Date: ${new Date().toLocaleDateString()}
-Customer: ${userAddress.username} (${userAddress.phone})
-Address: ${userAddress.address}
+Order ID: ${orderId}
+Order Date: ${displayItems[0]?.orderDate || new Date().toLocaleDateString('en-GB')}
+Status: ${isCancelled ? 'CANCELLED' : 'CONFIRMED'}
+
+CUSTOMER DETAILS:
+Customer Name: ${customerName}
+Customer Email: ${customerEmail}
+Customer Phone: ${customerPhone}
+User ID: ${customerUserId}
+Delivery Address: [${userAddress.name}] ${userAddress.address}
 
 ------------------------------------
 ITEMS:
@@ -117,14 +171,14 @@ ITEMS:
 ${displayItems.map(i => `- ${i.title} (${i.code}) x${i.qty}: Rs. ${i.price * i.qty}`).join('\n')}
 
 ------------------------------------
-Price Summary:
+PRICE SUMMARY:
 Item Total: Rs. ${itemTotal}
 You Saved: -Rs. ${savedAmount}
-Coupon Discount: Rs. 0
+Coupon Discount: Rs. ${couponDiscount}
 Shipping: FREE
 ------------------------------------
 Bill Total: Rs. ${billTotal}
-Payment Method: UPI
+Payment Method: ${paymentMethod}
 ====================================
 Thank you for shopping with PEE KAA BOO!
 `;
@@ -132,7 +186,7 @@ Thank you for shopping with PEE KAA BOO!
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Invoice-123456789.txt`;
+      link.download = `Invoice-${orderId}.txt`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -166,82 +220,101 @@ Thank you for shopping with PEE KAA BOO!
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             {/* Left Column */}
-            <div className="lg:col-span-8 flex flex-col gap-6">
+            <div className="lg:col-span-7 flex flex-col gap-6">
               
               {/* Top Arriving & Products Card */}
-              <div className="bg-[#F4FCFF] rounded-[24px] p-5 sm:p-7 border border-blue-50/60 shadow-xs flex flex-col gap-5">
+              <div className="bg-[#F4FCFF] rounded-[24px] p-5 sm:p-7 border border-blue-100/70 shadow-xs flex flex-col gap-5">
                 
                 {/* Header */}
-                <div>
-                  <h2 className="text-[18px] sm:text-[20px] font-black text-gray-900">
-                    Arriving September 30
-                  </h2>
-                  <p className="text-[13px] sm:text-[14px] font-black text-gray-800 mt-0.5">
-                    Order ID: <span className="text-[#F96E8F]">123456789</span>
-                  </p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h2 className="text-[18px] sm:text-[20px] font-black text-gray-900">
+                      {isCancelled ? 'Order Cancelled' : 'Arriving September 30'}
+                    </h2>
+                    <p className="text-[13px] sm:text-[14px] font-black text-gray-800 mt-0.5">
+                      Order ID: <span className="text-[#F96E8F]">{orderId}</span>
+                    </p>
+                  </div>
+
+                  {isCancelled && (
+                    <span className="self-start sm:self-auto bg-red-100 text-red-600 font-extrabold text-[12px] px-3 py-1 rounded-full uppercase tracking-wider">
+                      Cancelled
+                    </span>
+                  )}
                 </div>
 
                 {/* Products List */}
                 <div className="flex flex-col gap-4">
-                  {displayItems.map((item, idx) => (
-                    <div
-                      key={item.id || idx}
-                      className="bg-white rounded-[20px] p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 shadow-xs border border-gray-100/70"
-                    >
-                      {/* Product Image */}
-                      <div className="w-[110px] h-[110px] sm:w-[125px] sm:h-[125px] rounded-[16px] overflow-hidden bg-[#FBE8EC] shrink-0 flex items-center justify-center p-1.5">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="w-full h-full object-cover rounded-[12px]"
-                        />
-                      </div>
+                  {displayItems.length > 0 ? (
+                    displayItems.map((item, idx) => (
+                      <div
+                        key={item.id || idx}
+                        className="bg-white rounded-[20px] p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 shadow-xs border border-gray-100/70"
+                      >
+                        {/* Product Image */}
+                        <div className="w-[110px] h-[110px] sm:w-[125px] sm:h-[125px] rounded-[16px] overflow-hidden bg-[#FBE8EC] shrink-0 flex items-center justify-center p-1.5">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-full object-cover rounded-[12px]"
+                          />
+                        </div>
 
-                      {/* Product Details */}
-                      <div className="flex-1 flex flex-col justify-center text-center sm:text-left min-w-0">
-                        <h3 className="font-bold text-[18px] sm:text-[20px] text-gray-900 font-['Nunito'] mb-1 truncate">
-                          {item.title}
-                        </h3>
-                        <p className="text-gray-400 font-bold text-[12px] sm:text-[13px] mb-1 font-['Nunito']">
-                          Product Code : {item.code}
-                        </p>
-                        <p className="text-gray-600 font-bold text-[13px] mb-1.5 font-['Nunito']">
-                          Order Placed on : <span className="text-[#F96E8F]">{item.orderDate}</span>
-                        </p>
-                        <p className="text-gray-500 font-bold text-[13px] font-['Nunito']">
-                          Quantity : <span className="text-[#F96E8F]">{String(item.qty).padStart(2, '0')} Nos</span>
-                        </p>
-                      </div>
+                        {/* Product Details */}
+                        <div className="flex-1 flex flex-col justify-center text-center sm:text-left min-w-0">
+                          <h3 className="font-bold text-[18px] sm:text-[20px] text-gray-900 font-['Nunito'] mb-1 truncate" title={item.title}>
+                            {item.title}
+                          </h3>
+                          <p className="text-gray-400 font-bold text-[12px] sm:text-[13px] mb-1 font-['Nunito']">
+                            Product Code : {item.code}
+                          </p>
+                          <p className="text-gray-600 font-bold text-[13px] mb-1.5 font-['Nunito']">
+                            Order Placed on : <span className="text-[#F96E8F]">{item.orderDate}</span>
+                          </p>
+                          <p className="text-gray-500 font-bold text-[13px] font-['Nunito']">
+                            Quantity : <span className="text-[#F96E8F]">{String(item.qty).padStart(2, '0')} Nos</span>
+                          </p>
+                        </div>
 
-                      {/* Pricing */}
-                      <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2">
-                        {item.oldPrice && (
-                          <del className="text-gray-400 font-bold text-[15px] sm:text-[16px] font-['Nunito']">
-                            ₹ {item.oldPrice}
-                          </del>
-                        )}
-                        <span className="text-[#F96E8F] font-bold text-[24px] sm:text-[28px] font-['Nunito'] leading-tight">
-                          ₹ {item.price}
-                        </span>
+                        {/* Pricing */}
+                        <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2">
+                          {item.oldPrice && item.oldPrice > item.price && (
+                            <del className="text-gray-400 font-bold text-[15px] sm:text-[16px] font-['Nunito']">
+                              ₹ {item.oldPrice * item.qty}
+                            </del>
+                          )}
+                          <span className="text-[#F96E8F] font-bold text-[24px] sm:text-[28px] font-['Nunito'] leading-tight">
+                            ₹ {item.price * item.qty}
+                          </span>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="bg-white rounded-[20px] p-8 text-center text-gray-500 font-bold border border-gray-100/70">
+                      No order items found.
                     </div>
-                  ))}
+                  )}
                 </div>
 
                 {/* Cancel Order Button */}
                 <div className="flex justify-end pt-2">
                   <button
                     onClick={handleCancelOrder}
-                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-8 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                    disabled={isCancelled}
+                    className={`font-extrabold text-[15px] py-2.5 px-8 rounded-[10px] transition-all shadow-sm ${
+                      isCancelled
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                        : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer hover:scale-105 active:scale-95'
+                    }`}
                   >
-                    Cancel order
+                    {isCancelled ? 'Order Cancelled' : 'Cancel order'}
                   </button>
                 </div>
 
               </div>
 
               {/* Order Updates Card */}
-              <div className="bg-white rounded-[24px] p-6 sm:p-8 shadow-xs border border-gray-100 font-['Nunito']">
+              <div className="bg-white rounded-[24px] p-6 sm:p-8 shadow-xs border border-pink-200/80 font-['Nunito']">
                 <h3 className="font-extrabold text-[18px] sm:text-[20px] text-gray-900 mb-8">
                   Order Updates
                 </h3>
@@ -254,14 +327,16 @@ Thank you for shopping with PEE KAA BOO!
 
                   {/* Step 1 */}
                   <div className="flex flex-col items-center text-center relative z-10">
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#F96E8F] text-white flex items-center justify-center font-black text-[17px] sm:text-[18px] shadow-sm mb-3">
+                    <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full text-white flex items-center justify-center font-black text-[17px] sm:text-[18px] shadow-sm mb-3 ${
+                      isCancelled ? 'bg-red-500' : 'bg-[#F96E8F]'
+                    }`}>
                       1
                     </div>
                     <span className="font-extrabold text-[12px] sm:text-[14px] text-gray-900 whitespace-nowrap">
-                      Order Dispatch
+                      {isCancelled ? 'Cancelled' : 'Order Dispatch'}
                     </span>
                     <span className="text-[11px] sm:text-[12px] font-bold text-gray-400 mt-0.5">
-                      Processing
+                      {isCancelled ? 'Terminated' : 'Processing'}
                     </span>
                   </div>
 
@@ -308,7 +383,7 @@ Thank you for shopping with PEE KAA BOO!
               </div>
 
               {/* Rate Your Experience Card */}
-              <div className="bg-white rounded-[24px] p-6 sm:p-7 shadow-xs border border-gray-100 font-['Nunito']">
+              <div className="bg-white rounded-[24px] p-6 sm:p-7 shadow-xs border border-pink-200/80 font-['Nunito']">
                 <h3 className="font-extrabold text-[18px] sm:text-[20px] text-gray-900 mb-1">
                   Rate your experience
                 </h3>
@@ -350,10 +425,10 @@ Thank you for shopping with PEE KAA BOO!
             </div>
 
             {/* Right Column */}
-            <div className="lg:col-span-4 flex flex-col gap-6">
+            <div className="lg:col-span-5 flex flex-col gap-6">
               
               {/* Delivery Details Card */}
-              <div className="bg-white rounded-[24px] p-6 shadow-xs border border-gray-100 font-['Nunito']">
+              <div className="bg-white rounded-[24px] p-6 shadow-xs border border-pink-200/80 font-['Nunito']">
                 <h3 className="font-extrabold text-[18px] sm:text-[20px] text-gray-900 mb-4">
                   Delivery Details
                 </h3>
@@ -388,46 +463,91 @@ Thank you for shopping with PEE KAA BOO!
               </div>
 
               {/* Price Details Card */}
-              <div className="bg-white rounded-[24px] p-6 shadow-xs border border-gray-100 font-['Nunito'] flex flex-col gap-3.5">
+              <div className="bg-white rounded-[24px] p-6 shadow-xs border border-pink-200/80 font-['Nunito'] flex flex-col gap-3.5">
                 <h3 className="font-extrabold text-[18px] sm:text-[20px] text-gray-900 mb-1">
                   Price Details
                 </h3>
 
                 <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
                   <span>Item Total</span>
-                  <span className="font-extrabold text-gray-900">₹{itemTotal || 999}</span>
+                  <span className="font-extrabold text-gray-900">₹{itemTotal}</span>
                 </div>
 
-                <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
-                  <span>You Saved</span>
-                  <span className="font-extrabold text-gray-900">-₹{savedAmount || 349}</span>
-                </div>
+                {savedAmount > 0 && (
+                  <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
+                    <span>You Saved</span>
+                    <span className="font-extrabold text-green-600">-₹{savedAmount}</span>
+                  </div>
+                )}
 
-                <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
-                  <span>Coupon Discount</span>
-                  <span className="font-extrabold text-gray-900">₹0</span>
-                </div>
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
+                    <span>Coupon Discount</span>
+                    <span className="font-extrabold text-[#F96E8F]">-₹{couponDiscount}</span>
+                  </div>
+                )}
 
                 <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
                   <span>Shipping (standard)</span>
-                  <span className="font-black text-gray-900">FREE</span>
+                  <span className="font-black text-green-600 uppercase">FREE</span>
                 </div>
 
                 <div className="border-t border-gray-200 my-1"></div>
 
                 <div className="flex justify-between items-center text-[17px] font-black text-gray-900">
                   <span>Bill Total</span>
-                  <span className="font-black">₹{billTotal || 650}</span>
+                  <span className="font-black text-[#F96E8F]">₹{billTotal}</span>
                 </div>
 
-                {/* Paid By Box */}
-                <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
-                  <span>Paid By</span>
-                  <div className="flex items-center gap-2">
-                    <span>UPI</span>
-                    <img src={upiIcon} alt="UPI" className="h-5 w-auto object-contain" />
+                {/* Paid By Box - Only shows the chosen payment option */}
+                {isCod ? (
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                    <span>Paid By</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-extrabold text-gray-800">Cash On Delivery</span>
+                      <span className="text-[#F96E8F] font-black text-[15px]">(₹{billTotal})</span>
+                    </div>
                   </div>
-                </div>
+                ) : isUpi ? (
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                    <span>Paid By</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-gray-800">UPI</span>
+                      <img src={upiIcon} alt="UPI" className="h-5 w-auto object-contain" />
+                    </div>
+                  </div>
+                ) : isNetBanking ? (
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                    <span>Paid By</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-gray-800">{paymentMethod}</span>
+                      <img src={netBankingIcon} alt="Net Banking" className="h-5 w-auto object-contain" />
+                    </div>
+                  </div>
+                ) : isDebit ? (
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                    <span>Paid By</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-gray-800">Debit Card</span>
+                      <img src={debitCardIcon} alt="Debit Card" className="h-5 w-auto object-contain" />
+                    </div>
+                  </div>
+                ) : isCredit ? (
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                    <span>Paid By</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-gray-800">Credit Card</span>
+                      <img src={creditCardIcon} alt="Credit Card" className="h-5 w-auto object-contain" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                    <span>Paid By</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-gray-800">{paymentMethod}</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Download Invoice Button */}
                 <button

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCartCount } from '../redux/cartSlice';
 import { selectWishlistCount } from '../redux/wishlistSlice';
+import { gridItems } from './Shop';
 import logo from '../assets/Header/peekaaboo.png';
 import profile from '../assets/Header/profile.png';
 import heart from '../assets/Header/heart.png';
@@ -31,6 +32,61 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch }) {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [currentPath, setCurrentPath] = useState(() => typeof window !== 'undefined' ? window.location.pathname : '');
+
+    // Search state
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [mobileSearchQuery, setMobileSearchQuery] = useState('');
+    const [isMobileSearchFocused, setIsMobileSearchFocused] = useState(false);
+
+    const desktopSearchRef = useRef(null);
+    const mobileSearchRef = useRef(null);
+
+    const shopProducts = (gridItems || []).filter(item => item.type === 'product');
+
+    const getFilteredProducts = (query) => {
+        if (!query || !query.trim()) return [];
+        const q = query.toLowerCase().trim();
+        return shopProducts.filter(p =>
+            (p.title && p.title.toLowerCase().includes(q)) ||
+            (p.code && p.code.toLowerCase().includes(q)) ||
+            (p.category && p.category.toLowerCase().includes(q)) ||
+            (p.productType && p.productType.toLowerCase().includes(q)) ||
+            (p.color && p.color.toLowerCase().includes(q)) ||
+            (p.pattern && p.pattern.toLowerCase().includes(q))
+        );
+    };
+
+    const desktopResults = getFilteredProducts(searchQuery);
+    const mobileResults = getFilteredProducts(mobileSearchQuery);
+
+    const handleSelectSearchResult = (prod) => {
+        try {
+            localStorage.setItem('pkb_selected_product', JSON.stringify(prod));
+        } catch (e) {
+            console.error(e);
+        }
+        window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: prod }));
+        window.history.pushState({}, '', '/product');
+        window.dispatchEvent(new Event('popstate'));
+        setSearchQuery('');
+        setMobileSearchQuery('');
+        setIsSearchFocused(false);
+        setIsMobileSearchFocused(false);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (desktopSearchRef.current && !desktopSearchRef.current.contains(e.target)) {
+                setIsSearchFocused(false);
+            }
+            if (mobileSearchRef.current && !mobileSearchRef.current.contains(e.target)) {
+                setIsMobileSearchFocused(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     useEffect(() => {
         const handleLocationChange = () => {
@@ -133,21 +189,85 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch }) {
 
                 {/* Mobile Search Bar: Only shown for Shop and Cart at mobile responsive */}
                 {shouldShowMobileSearch && (
-                    <div
-                        className="flex lg:hidden items-center w-[250px] sm:w-[300px] h-[40px] transition-colors bg-no-repeat bg-center bg-transparent mt-4 sm:mt-2.5 translate-y-[28px] lg:translate-y-0 lg:mt-0 z-40"
-                        style={{ backgroundImage: `url(${searchbarBg})`, backgroundSize: '100% 100%' }}
-                    >
-                        <input
-                            type="text"
-                            placeholder="Search Everything"
-                            className="flex-1 pl-6 pr-3 h-full outline-none text-[13px] text-gray-500 font-extrabold bg-transparent border-none"
-                        />
-                        <button
-                            className="w-[60px] h-full flex items-center justify-center transition-colors cursor-pointer bg-transparent bg-no-repeat bg-center"
-                            style={{ backgroundImage: `url(${searchbar1Bg})`, backgroundSize: '100% 100%' }}
+                    <div ref={mobileSearchRef} className="relative flex lg:hidden flex-col items-center w-[250px] sm:w-[300px] mt-4 sm:mt-2.5 translate-y-[28px] lg:translate-y-0 lg:mt-0 z-40">
+                        <div
+                            className="flex items-center w-full h-[40px] transition-colors bg-no-repeat bg-center bg-transparent"
+                            style={{ backgroundImage: `url(${searchbarBg})`, backgroundSize: '100% 100%' }}
                         >
-                            <img src={search} alt="search" className="w-4 h-4" />
-                        </button>
+                            <input
+                                type="text"
+                                placeholder="Search Everything"
+                                value={mobileSearchQuery}
+                                onChange={(e) => {
+                                    setMobileSearchQuery(e.target.value);
+                                    setIsMobileSearchFocused(true);
+                                }}
+                                onFocus={() => setIsMobileSearchFocused(true)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && mobileResults.length > 0) {
+                                        handleSelectSearchResult(mobileResults[0]);
+                                    }
+                                }}
+                                className="flex-1 pl-6 pr-3 h-full outline-none text-[13px] text-gray-700 font-extrabold bg-transparent border-none placeholder-gray-400"
+                            />
+                            <button
+                                onClick={() => {
+                                    if (mobileResults.length > 0) {
+                                        handleSelectSearchResult(mobileResults[0]);
+                                    }
+                                }}
+                                className="w-[60px] h-full flex items-center justify-center transition-colors cursor-pointer bg-transparent bg-no-repeat bg-center"
+                                style={{ backgroundImage: `url(${searchbar1Bg})`, backgroundSize: '100% 100%' }}
+                            >
+                                <img src={search} alt="search" className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                        {/* Mobile Search Results Dropdown */}
+                        {isMobileSearchFocused && mobileSearchQuery.trim() && (
+                            <div className="absolute top-[44px] left-0 right-0 bg-white rounded-2xl shadow-2xl border border-pink-200/80 p-2 z-50 max-h-[300px] overflow-y-auto font-['Nunito']">
+                                {mobileResults.length > 0 ? (
+                                    <div className="flex flex-col gap-1">
+                                        <div className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider px-2 py-1">
+                                            Found {mobileResults.length} {mobileResults.length === 1 ? 'Product' : 'Products'}
+                                        </div>
+                                        {mobileResults.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                onClick={() => handleSelectSearchResult(item)}
+                                                className="flex items-center gap-3 p-2 rounded-xl hover:bg-pink-50/80 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-0"
+                                            >
+                                                <div className="w-11 h-11 rounded-lg bg-[#F9E2E8]/40 flex-shrink-0 overflow-hidden border border-pink-100 flex items-center justify-center p-0.5">
+                                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover rounded-md" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between gap-1">
+                                                        <h4 className="font-bold text-gray-800 text-[13px] truncate">
+                                                            {item.title}
+                                                        </h4>
+                                                        <span className="font-black text-[#F96E8F] text-[13px]">
+                                                            ₹{item.price}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                        <span className="text-[10px] text-gray-500 font-bold">
+                                                            {item.code || `64A288${item.id}`}
+                                                        </span>
+                                                        <span className="text-[9px] bg-pink-100 text-[#F96E8F] font-extrabold px-1.5 py-0.5 rounded">
+                                                            {item.category || item.productType}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-4 text-center text-gray-400 font-bold text-[12px]">
+                                        No products found matching "{mobileSearchQuery}"
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -169,21 +289,90 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch }) {
                     {/* Desktop Right Actions (Search Bar + Profile/Heart/Cart) */}
                     <div className="flex items-center gap-4 lg:gap-6">
                         {/* Desktop Search Bar */}
-                        <div
-                            className="flex items-center w-[200px] md:w-[280px] h-[42px] transition-colors bg-no-repeat bg-center bg-transparent"
-                            style={{ backgroundImage: `url(${searchbarBg})`, backgroundSize: '100% 100%' }}
-                        >
-                            <input
-                                type="text"
-                                placeholder="Search Everything"
-                                className="flex-1 pl-6 pr-3 h-full outline-none text-[13px] text-gray-500 font-extrabold bg-transparent border-none"
-                            />
-                            <button
-                                className="w-[65px] h-full flex items-center justify-center transition-colors cursor-pointer bg-transparent bg-no-repeat bg-center"
-                                style={{ backgroundImage: `url(${searchbar1Bg})`, backgroundSize: '100% 100%' }}
+                        <div ref={desktopSearchRef} className="relative flex flex-col items-center">
+                            <div
+                                className="flex items-center w-[200px] md:w-[280px] h-[42px] transition-colors bg-no-repeat bg-center bg-transparent"
+                                style={{ backgroundImage: `url(${searchbarBg})`, backgroundSize: '100% 100%' }}
                             >
-                                <img src={search} alt="search" className="w-5 h-5" />
-                            </button>
+                                <input
+                                    type="text"
+                                    placeholder="Search Everything"
+                                    value={searchQuery}
+                                    onChange={(e) => {
+                                        setSearchQuery(e.target.value);
+                                        setIsSearchFocused(true);
+                                    }}
+                                    onFocus={() => setIsSearchFocused(true)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && desktopResults.length > 0) {
+                                            handleSelectSearchResult(desktopResults[0]);
+                                        }
+                                    }}
+                                    className="flex-1 pl-6 pr-3 h-full outline-none text-[13px] text-gray-700 font-extrabold bg-transparent border-none placeholder-gray-400"
+                                />
+                                <button
+                                    onClick={() => {
+                                        if (desktopResults.length > 0) {
+                                            handleSelectSearchResult(desktopResults[0]);
+                                        }
+                                    }}
+                                    className="w-[65px] h-full flex items-center justify-center transition-colors cursor-pointer bg-transparent bg-no-repeat bg-center"
+                                    style={{ backgroundImage: `url(${searchbar1Bg})`, backgroundSize: '100% 100%' }}
+                                >
+                                    <img src={search} alt="search" className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            {/* Desktop Search Results Dropdown */}
+                            {isSearchFocused && searchQuery.trim() && (
+                                <div className="absolute top-[46px] left-0 w-[320px] bg-white rounded-2xl shadow-2xl border border-pink-200/80 p-2.5 z-50 max-h-[360px] overflow-y-auto font-['Nunito']">
+                                    {desktopResults.length > 0 ? (
+                                        <div className="flex flex-col gap-1">
+                                            <div className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider px-2 py-1">
+                                                Found {desktopResults.length} {desktopResults.length === 1 ? 'Product' : 'Products'}
+                                            </div>
+                                            {desktopResults.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    onClick={() => handleSelectSearchResult(item)}
+                                                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-pink-50/80 cursor-pointer transition-all duration-200 group border-b border-gray-100 last:border-0"
+                                                >
+                                                    <div className="w-12 h-12 rounded-lg bg-[#F9E2E8]/40 flex-shrink-0 overflow-hidden border border-pink-100 flex items-center justify-center p-0.5">
+                                                        <img src={item.image} alt={item.title} className="w-full h-full object-cover rounded-md group-hover:scale-105 transition-transform" />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center justify-between gap-1">
+                                                            <h4 className="font-bold text-gray-800 text-[14px] truncate group-hover:text-[#F96E8F] transition-colors">
+                                                                {item.title}
+                                                            </h4>
+                                                            <span className="font-black text-[#F96E8F] text-[14px]">
+                                                                ₹{item.price}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 mt-0.5">
+                                                            <span className="text-[11px] text-gray-500 font-bold">
+                                                                {item.code || `64A288${item.id}`}
+                                                            </span>
+                                                            <span className="text-[10px] bg-pink-100 text-[#F96E8F] font-extrabold px-1.5 py-0.5 rounded">
+                                                                {item.category || item.productType}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-gray-300 group-hover:text-[#F96E8F] transition-colors">
+                                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="p-4 text-center text-gray-400 font-bold text-[13px]">
+                                            No products found matching "{searchQuery}"
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Action Icons (Profile, Wishlist, Cart) */}

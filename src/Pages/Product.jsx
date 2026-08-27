@@ -56,7 +56,16 @@ const Product = ({ product, cartItems, addToCart }) => {
     const itemsPerPage = isMobile ? 1 : 4;
     const maxCarouselIndex = Math.max(0, shopProducts.length - itemsPerPage);
 
-    const defaultProduct = product || shopProducts[0];
+    const getStoredProduct = () => {
+        try {
+            const saved = localStorage.getItem('pkb_selected_product');
+            return saved ? JSON.parse(saved) : null;
+        } catch (e) {
+            return null;
+        }
+    };
+
+    const defaultProduct = product || getStoredProduct() || shopProducts[0];
     const productImages = defaultProduct?.images || Array(4).fill(defaultProduct?.image);
 
     const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -285,10 +294,10 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 {defaultProduct?.rating || 4.5} <span className="text-yellow-300 text-[13px] leading-none">★</span> | {defaultProduct?.reviews || 42} Reviews
                             </div>
                             <h1 className="text-3xl md:text-[34px] font-black text-gray-900 leading-tight mb-2">
-                                {product?.title || "Name Of The Product"}
+                                {defaultProduct?.title || "Name Of The Product"}
                             </h1>
                             <p className="text-gray-600 font-bold text-[14px]">
-                                Product Code : {product?.code || product?.id || '64A288075'}
+                                Product Code : {defaultProduct?.code || (defaultProduct?.id ? `64A288${defaultProduct.id}` : '64A288075')}
                             </p>
                         </div>
 
@@ -434,7 +443,7 @@ const Product = ({ product, cartItems, addToCart }) => {
 
                                 {/* Add to Cart */}
                                 <button
-                                    onClick={() => addToCart && addToCart(product || shopProducts[0], quantity, selectedSize, selectedColor)}
+                                    onClick={() => addToCart && addToCart(defaultProduct, quantity, selectedSize, selectedColor)}
                                     className="flex-1 h-full border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] rounded-full font-bold text-[20.78px] hover:bg-[#F96E8F] hover:text-white transition-colors tracking-wide bg-white shadow-sm"
                                 >
                                     Add to Cart
@@ -444,7 +453,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                             {/* Buy Now */}
                             <button
                                 onClick={() => {
-                                    if (addToCart) addToCart(product || shopProducts[0], quantity, selectedSize, selectedColor);
+                                    if (addToCart) addToCart(defaultProduct, quantity, selectedSize, selectedColor);
                                     window.history.pushState({}, '', '/cart');
                                 }}
                                 className="w-full h-[55px] bg-[#F96E8F] text-white rounded-full font-bold text-[20.78px] hover:bg-[#E44971] transition-colors shadow-md tracking-wide"
@@ -503,7 +512,7 @@ const Product = ({ product, cartItems, addToCart }) => {
             </div>
 
             {/* Third Section: You May Also Like */}
-            <div className="w-[calc(100%-2rem)] max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-5 sm:p-8 md:p-10 lg:p-12 mt-12 sm:mt-16 mb-12">
+            <div className="w-[calc(100%-2rem)] max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-4 pb-4 sm:p-6 sm:pb-6 md:p-8 md:pb-6 mt-8 sm:mt-12 mb-0">
                 <h2 className="text-[28px] md:text-[36px] font-bold text-gray-800 mb-8 font-['Baloo_2']">
                     You May <span className="text-[#F96E8F]">Also Like</span>
                 </h2>
@@ -629,7 +638,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                 </div>
 
                 {/* Slider Controls */}
-                <div className="w-full flex items-center justify-between mt-8 sm:mt-12 gap-4">
+                <div className="w-full flex items-center justify-between mt-4 sm:mt-6 gap-4">
                     {/* Progress Line */}
                     <div className="flex-1 min-w-0 h-[3px] bg-gray-200 rounded-full relative overflow-hidden">
                         <div
@@ -1057,12 +1066,15 @@ const ReviewsSection = () => {
                 {/* Right Section */}
                 <div className="w-full lg:w-[65%] flex flex-col">
                     {/* Filters */}
-                    <div className="flex flex-wrap gap-3 pb-6 border-b border-gray-300">
+                    <div
+                        className="flex flex-nowrap items-center gap-2.5 sm:gap-3 pb-4 sm:pb-6 border-b border-gray-300 overflow-x-auto sm:overflow-visible"
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
                         {['Highest', 'Lowest', 'Most Recent', 'Most Helpful'].map(filter => (
                             <button
                                 key={filter}
                                 onClick={() => setFilterBy(filter)}
-                                className={`px-6 py-2 rounded-[0.8rem] border-[1.5px] font-[Baloo_2] font-bold text-[17px] transition-colors ${filterBy === filter ? 'bg-[#F76188] text-white border-[#F76188]' : 'bg-transparent border-gray-400 text-gray-700 hover:border-gray-800'}`}
+                                className={`px-4 sm:px-6 py-2 rounded-[0.8rem] border-[1.5px] font-['Baloo_2'] font-bold text-[15px] sm:text-[17px] transition-colors whitespace-nowrap flex-shrink-0 cursor-pointer ${filterBy === filter ? 'bg-[#F76188] text-white border-[#F76188]' : 'bg-transparent border-gray-400 text-gray-700 hover:border-gray-800'}`}
                             >
                                 {filter}
                             </button>

@@ -19,12 +19,13 @@ import bgVector6 from '../assets/shop/v4.png';
 import badge from '../assets/shop/star-badge.png';
 import spark1 from '../assets/shop/spark1.png';
 import spark2 from '../assets/shop/spark2.png';
-// import headerBunny from '../assets/cart/right-img.png';
 import pink from '../assets/shop/peekaaboo-pink.png';
 import headerCar from '../assets/cart/left-img.png';
 import Footer from './Footer';
 import wlist from '../assets/shop/wlist.png';
 import save from '../assets/shop/save.png';
+import filter from '../assets/shop/filter.png';
+import sort from '../assets/shop/sort.png';
 
 // Subcomponents
 const FilterSection = ({ title, options = [], selectedOptions = [], onChange }) => {
@@ -111,7 +112,7 @@ const ProductCard = ({
                         </div>
                     </div>
 
-                    <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -122,14 +123,14 @@ const ProductCard = ({
                         >
                             <img src={wlist} alt="wishlist" className="h-4" />
                         </button>
-                        <button
+                        {/* <button
                             onClick={(e) => {
                                 e.stopPropagation();
                             }}
                             className="w-9 h-9 bg-[#00D0CC] rounded-[8px] flex items-center justify-center text-white hover:bg-[#00b3b0] transition-colors shadow-sm cursor-pointer hover:scale-105 active:scale-95"
                         >
                             <img src={save} alt="cart" className="h-4" />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
 
@@ -234,23 +235,23 @@ const ageCollections = [
 ];
 
 export const gridItems = [
-    { id: 101, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'pink', category: 'Girls Collections', age: '1-5 years', size: '22.7mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.5, date: '2023-10-01' },
-    { id: 102, type: 'product', image: prod2, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'blue', category: 'Boys Collections', age: '5-8 years', size: '24mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.8, date: '2023-09-15' },
-    { id: 103, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '23mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.9, date: '2023-11-20' },
+    { id: 101, code: '64A288101', type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'pink', category: 'Girls Collections', age: '1-5 years', size: '22.7mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.5, date: '2023-10-01' },
+    { id: 102, code: '64A288102', type: 'product', image: prod2, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'blue', category: 'Boys Collections', age: '5-8 years', size: '24mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.8, date: '2023-09-15' },
+    { id: 103, code: '64A288103', type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '23mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.9, date: '2023-11-20' },
 
-    { id: 104, type: 'product', image: prod1, title: 'Name of the product', price: '6710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', age: '8-10 years', size: '22mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.2, date: '2023-08-05' },
-    { id: 105, type: 'product', image: prod2, title: 'Name of the product', price: '5710', oldPrice: '7000', theme: 'blue', category: 'Boys Collections', age: '10-12 years', size: '21mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.7, date: '2023-10-12' },
-    { id: 106, type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '22.7mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.5, date: '2023-07-22' },
+    { id: 104, code: '64A288104', type: 'product', image: prod1, title: 'Name of the product', price: '6710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', age: '8-10 years', size: '22mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.2, date: '2023-08-05' },
+    { id: 105, code: '64A288105', type: 'product', image: prod2, title: 'Name of the product', price: '5710', oldPrice: '7000', theme: 'blue', category: 'Boys Collections', age: '10-12 years', size: '21mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.7, date: '2023-10-12' },
+    { id: 106, code: '64A288106', type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '22.7mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.5, date: '2023-07-22' },
 
-    { id: 107, type: 'product', image: prod1, title: 'Name of the product', price: '7710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', age: '1-5 years', size: '24mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 5.0, date: '2023-12-01' },
+    { id: 107, code: '64A288107', type: 'product', image: prod1, title: 'Name of the product', price: '7710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', age: '1-5 years', size: '24mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 5.0, date: '2023-12-01' },
     { id: 108, type: 'banner', bannerTheme: 'pink', bannerImage: banner1, title: 'Girls Collections', subtitle: 'Get an extra 30% discount', category: 'Girls Collections' },
 
-    { id: 109, type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'pink', category: 'Girls Collections', age: '5-8 years', size: '23mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.1, date: '2023-09-30' },
-    { id: 110, type: 'product', image: prod2, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'blue', category: 'Boys Collections', age: '8-10 years', size: '22mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.6, date: '2023-11-05' },
-    { id: 111, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '10-12 years', size: '21mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 4.3, date: '2023-10-25' },
+    { id: 109, code: '64A288109', type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'pink', category: 'Girls Collections', age: '5-8 years', size: '23mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.1, date: '2023-09-30' },
+    { id: 110, code: '64A288110', type: 'product', image: prod2, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'blue', category: 'Boys Collections', age: '8-10 years', size: '22mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.6, date: '2023-11-05' },
+    { id: 111, code: '64A288111', type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '10-12 years', size: '21mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 4.3, date: '2023-10-25' },
 
     { id: 112, type: 'banner', bannerTheme: 'blue', bannerImage: banner2, title: 'Boys Collections', subtitle: 'Get an extra 30% discount', category: 'Boys Collections' },
-    { id: 113, type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '22.7mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.8, date: '2023-12-10' },
+    { id: 113, code: '64A288113', type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '22.7mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.8, date: '2023-12-10' },
 ];
 
 export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddToWishlist }) {
@@ -281,6 +282,8 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
     const [selectedAge, setSelectedAge] = useState(null);
     const [sortBy, setSortBy] = useState('default');
     const [sortOpen, setSortOpen] = useState(false);
+    const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+    const [mobileSortOpen, setMobileSortOpen] = useState(false);
     const [viewMode, setViewMode] = useState('grid');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
@@ -316,6 +319,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
         return { first: "All", second: "Collections" };
     };
     const headingParts = getHeadingParts();
+    const  activeFilterCount = Object.values(filters).reduce((acc, arr) => acc + arr.length, 0) + (selectedAge ? 1 : 0);
 
     const filteredItems = gridItems.filter(item => {
         if (selectedCategory !== "All items" && item.category !== selectedCategory) return false;
@@ -392,10 +396,9 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 </div>
                 <img src={cloud} alt="cloud" className="absolute top-[-115px] sm:top-[-110px] lg:top-[-25px] left-[54%] -translate-x-1/2 lg:left-0 lg:translate-x-0 w-full md:w-[340px] lg:w-[330px] xl:w-[360px] h-auto object-contain pointer-events-none z-30 lg:z-auto" />
                 {/* Left Decoration (Car) */}
-                <img src={headerCar} alt="Car" className="hidden lg:block absolute bottom-[15%] top-[200px] left-[2%] xl:left-[4%] w-[90px] xl:w-[100px] object-contain pointer-events-none" />
-
+                <img src={headerCar} alt="Car" className="block absolute top-[148px] sm:top-[160px] lg:top-[200px] lg:bottom-[15%] left-1 sm:left-3 lg:left-[2%] xl:left-[4%] w-[65px] sm:w-[80px] lg:w-[90px] xl:w-[100px] object-contain pointer-events-none z-20" />
                 {/* Right Decoration (Bunny) */}
-                <img src={pink} alt="Bunny" className="hidden lg:block absolute bottom-[46px] right-[2%] xl:right-[5%] w-[120px] xl:w-[100px] object-contain pointer-events-none z-30" />
+                <img src={pink} alt="Bunny" className="hidden md:block absolute bottom-[30px] md:bottom-[46px] right-[2%] xl:right-[5%] w-[80px] md:w-[100px] lg:w-[120px] xl:w-[100px] object-contain pointer-events-none z-30" />
             </div>
 
             <div className="bg-white relative z-20">
@@ -406,7 +409,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                     </h2>
 
                     <div
-                        className="flex lg:flex-wrap lg:justify-center items-end gap-6 sm:gap-8 md:gap-10 lg:gap-14 overflow-x-auto lg:overflow-visible pb-2 pt-1 px-4 lg:px-0"
+                        className="flex min-[1106px]:flex-wrap min-[1106px]:justify-center items-end gap-6 sm:gap-8 md:gap-10 min-[1106px]:gap-14 overflow-x-auto min-[1106px]:overflow-visible pb-2 pt-1 px-4 min-[1106px]:px-0"
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
                         {ageCollections.map((item, index) => {
@@ -430,10 +433,10 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 </div>
 
                 {/* Main Content Layout */}
-                <div className="max-w-[1440px] mx-auto px-6 pt-2 md:pt-4 pb-20">
+                <div className="max-w-[1440px] mx-auto px-4 md:px-6 pt-2 md:pt-4 pb-28 md:pb-20">
 
                     {/* Category Tags */}
-                    <div className="flex gap-2 md:gap-4 mb-8 flex-nowrap overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    <div className="flex gap-2 md:gap-4 mb-3 md:mb-8 flex-nowrap overflow-x-auto pb-1 md:pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                         {categoryTags.map((tag, index) => (
                             <button
                                 key={index}
@@ -448,7 +451,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         ))}
                     </div>
 
-                    <div className="flex flex-col lg:flex-row gap-8">
+                    <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
 
                         {/* Filters Sidebar */}
                         <div className="hidden lg:flex flex-col w-full lg:w-[300px] flex-shrink-0">
@@ -484,7 +487,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         {/* Right Area (Products) */}
                         <div className="flex-1">
                             {/* Top Sort Bar */}
-                            <div className="flex justify-between items-center mb-6 border border-gray-200 bg-white rounded-[8px] py-1.5 md:py-2 pl-3 md:pl-6 pr-1.5 md:pr-2 shadow-sm">
+                            <div className="flex justify-between items-center mb-3 md:mb-6 border border-gray-200 bg-white rounded-[8px] py-1.5 md:py-2 pl-3 md:pl-6 pr-1.5 md:pr-2 shadow-sm">
                                 <div className="flex items-center gap-2 flex-wrap">
                                     <span className="text-gray-900 font-extrabold text-[11px] md:text-[15px]">Showing {sortedItems.filter(i => i.type === 'product').length} Results</span>
                                     {selectedAge && (
@@ -514,7 +517,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                             <svg className="w-3 h-3 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                                         </button>
                                     </div>
-                                    <div className="relative">
+                                    <div className="relative hidden lg:block">
                                         <button
                                             onClick={() => setSortOpen(!sortOpen)}
                                             className="bg-[#F96E8F] text-white px-3 md:px-5 h-8 md:h-10 rounded-[6px] font-bold text-[11px] md:text-[14px] flex items-center gap-1 md:gap-2 hover:bg-[#E44971] transition-colors shadow-sm"
@@ -553,7 +556,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             </div>
 
                             {/* Product Grid / List */}
-                            <div className={viewMode === 'grid' ? "grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6" : "flex flex-col gap-4 md:gap-6"}>
+                            <div className={viewMode === 'grid' ? "grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6" : "flex flex-col gap-4 md:gap-6"}>
                                 {paginatedItems.map((item, index) => {
                                     if (item.type === 'product') {
                                         return (
@@ -655,6 +658,146 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                     >
                         ✕
                     </button>
+                </div>
+            )}
+
+            {/* Fixed Bottom Filter & Sort Bar for Mobile */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white  py-3 px-4  flex items-center gap-3">
+                {/* Filter By Button */}
+                <button
+                    onClick={() => setMobileFilterOpen(true)}
+                    className="flex-1 bg-[#F96E8F] hover:bg-[#E44971] font-[Helvetica] text-white py-2.5 px-4 rounded-[10px] font-bold text-[15px] flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                >
+                    <img src={filter} alt="filter" className="w-5" />
+                    <span>Filter By</span>
+                    {activeFilterCount > 0 && (
+                        <span className="w-5 h-5 bg-white text-[#F96E8F] text-xs rounded-full flex items-center justify-center font-black">
+                            {activeFilterCount}
+                        </span>
+                    )}
+                </button>
+
+                {/* Sort By Button */}
+                <button
+                    onClick={() => setMobileSortOpen(true)}
+                    className="flex-1 bg-white hover:bg-pink-50/40 border-[1.5px] border-[#F96E8F] font-[Helvetica] text-[#F96E8F] py-2.5 px-4 rounded-[10px] font-bold text-[15px] flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                >
+                    <img src={sort} alt="sort" className="w-5" />
+                    <span>Sort By</span>
+                </button>
+            </div>
+
+            {/* Mobile Filter Modal / Drawer */}
+            {mobileFilterOpen && (
+                <div
+                    className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end bg-black/50 backdrop-blur-xs transition-opacity duration-300"
+                    onClick={() => setMobileFilterOpen(false)}
+                >
+                    <div
+                        className="bg-white rounded-t-[24px] max-h-[85vh] flex flex-col shadow-2xl overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white">
+                            <div className="flex items-center gap-2">
+                                <span className="text-gray-900 font-extrabold text-[18px]">Filters</span>
+                                {activeFilterCount > 0 && (
+                                    <span className="bg-[#F96E8F] text-white text-xs px-2.5 py-0.5 rounded-full font-bold">
+                                        {activeFilterCount} active
+                                    </span>
+                                )}
+                            </div>
+                            <button
+                                onClick={() => setMobileFilterOpen(false)}
+                                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 font-bold transition-colors cursor-pointer"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Filter Options Body */}
+                        <div className="p-5 flex-1 overflow-y-auto flex flex-col gap-5">
+                            <FilterSection title="Categories" options={['Boys', 'Girls', 'Just Born', '0-5']} selectedOptions={filters.Categories} onChange={handleFilterChange} />
+                            <FilterSection title="Price" options={['₹ 0 - 2000', '₹ 2000 - 10000', '₹ 10000 - 20000', '₹ 20000 - 50000']} selectedOptions={filters.Price} onChange={handleFilterChange} />
+                            <FilterSection title="Colours" options={['Gold', 'Silver', 'Brass', 'Rose Gold']} selectedOptions={filters.Colours} onChange={handleFilterChange} />
+                            <FilterSection title="Sizes" options={['22.7mm', '24mm', '23mm', '22mm', '21mm']} selectedOptions={filters.Sizes} onChange={handleFilterChange} />
+                            <FilterSection title="Patterns" options={['Eternity', 'Three Stones', 'Gem Stones', 'Diamond']} selectedOptions={filters.Patterns} onChange={handleFilterChange} />
+                            <FilterSection title="Product Type" options={['Bangles', 'Rings', 'Earrings', 'Bracelets']} selectedOptions={filters['Product Type']} onChange={handleFilterChange} />
+                        </div>
+
+                        {/* Footer Buttons */}
+                        <div className="p-4 bg-white border-t border-gray-100 flex gap-3">
+                            <button
+                                onClick={() => {
+                                    setSelectedAge(null);
+                                    setFilters({ Categories: [], Price: [], Colours: [], Sizes: [], Patterns: [], 'Product Type': [] });
+                                }}
+                                className="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 font-extrabold py-3 rounded-xl transition-colors cursor-pointer text-sm"
+                            >
+                                Reset All
+                            </button>
+                            <button
+                                onClick={() => setMobileFilterOpen(false)}
+                                className="flex-1 bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold py-3 rounded-xl transition-colors shadow-md cursor-pointer text-sm"
+                            >
+                                Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Mobile Sort Modal / Bottom Sheet */}
+            {mobileSortOpen && (
+                <div
+                    className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end bg-black/50 backdrop-blur-xs transition-opacity duration-300"
+                    onClick={() => setMobileSortOpen(false)}
+                >
+                    <div
+                        className="bg-white rounded-t-[24px] p-5 shadow-2xl max-h-[70vh] flex flex-col"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-2">
+                            <span className="text-gray-900 font-extrabold text-[18px]">Sort By</span>
+                            <button
+                                onClick={() => setMobileSortOpen(false)}
+                                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 font-bold transition-colors cursor-pointer"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Sort Options */}
+                        <div className="flex flex-col py-1">
+                            {[
+                                { id: 'default', label: 'Default' },
+                                { id: 'price-low-high', label: 'Price: Low to High' },
+                                { id: 'price-high-low', label: 'Price: High to Low' },
+                                { id: 'rating-low-high', label: 'Rating: Low to High' },
+                                { id: 'rating-high-low', label: 'Rating: High to Low' },
+                                { id: 'latest', label: 'Latest' },
+                                { id: 'oldest', label: 'Oldest' }
+                            ].map(option => (
+                                <button
+                                    key={option.id}
+                                    onClick={() => {
+                                        setSortBy(option.id);
+                                        setMobileSortOpen(false);
+                                    }}
+                                    className={`w-full text-left py-3 px-3 rounded-xl font-bold text-sm flex items-center justify-between transition-colors cursor-pointer ${sortBy === option.id
+                                            ? 'bg-[#F96E8F]/10 text-[#F96E8F]'
+                                            : 'text-gray-700 hover:bg-gray-50'
+                                        }`}
+                                >
+                                    <span>{option.label}</span>
+                                    {sortBy === option.id && (
+                                        <span className="text-[#F96E8F] font-black text-base">✓</span>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             )}
 

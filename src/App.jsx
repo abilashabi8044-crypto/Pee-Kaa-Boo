@@ -12,11 +12,26 @@ import Cart from './Pages/Cart';
 import Checkout from './Pages/Checkout';
 import Account from './Pages/Account';
 import Orderdetails from './Pages/Orderdetails';
+import Returnpolicy from './Pages/Returnpolicy';
+import Aboutus from './Pages/Aboutus';
+import Privacypolicy from './Pages/Privacypolicy';
+import Termsandconditions from './Pages/Termsandconditions';
+import Faq from './Pages/Faq';
+import Certifiedjewllery from './Pages/Certifiedjewllery';
+import Dgrp from './Pages/Dgrp';
+import Offers from './Pages/Offers';
 
 function App() {
   const dispatch = useDispatch();
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pkb_selected_product');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
 
   const cartItems = useSelector(selectCartItems);
   const wishlist = useSelector(selectWishlistItems);
@@ -43,10 +58,22 @@ function App() {
   useEffect(() => {
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleProductSelectEvent = (e) => {
+      if (e.detail) {
+        setSelectedProduct(e.detail);
+        try {
+          localStorage.setItem('pkb_selected_product', JSON.stringify(e.detail));
+        } catch (err) {
+          console.error(err);
+        }
+      }
     };
 
     window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('pkb_select_product', handleProductSelectEvent);
 
     // Intercept pushState
     const originalPushState = window.history.pushState;
@@ -57,6 +84,7 @@ function App() {
 
     return () => {
       window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('pkb_select_product', handleProductSelectEvent);
       window.history.pushState = originalPushState;
     };
   }, []);
@@ -67,11 +95,35 @@ function App() {
   const isOrderDetailsPage = currentPath.includes('/order-details') || currentPath.includes('/orderdetails');
   const isAccountPage = currentPath.includes('/account');
   const isLoginPage = currentPath.includes('/login');
+  const isReturnPolicyPage = currentPath.includes('/return-policy') || currentPath.includes('/returnpolicy');
+  const isAboutUsPage = currentPath.includes('/about-us') || currentPath.includes('/aboutus');
+  const isPrivacyPolicyPage = currentPath.includes('/privacy-policy') || currentPath.includes('/privacypolicy');
+  const isTermsAndConditionsPage = currentPath.includes('/terms-and-conditions') || currentPath.includes('/termsandconditions');
+  const isFaqPage = currentPath.includes('/faq') || currentPath.includes('/faqs');
+  const isCertifiedJewelleryPage = currentPath.includes('/certified-jewellery') || currentPath.includes('/certifiedjewllery');
+  const isDgrpPage = currentPath.includes('/dgrp');
+  const isOffersPage = currentPath.includes('/offers');
 
   return (
     <section>
       {isLoginPage ? (
         <Login />
+      ) : isReturnPolicyPage ? (
+        <Returnpolicy cartItems={cartItems} />
+      ) : isAboutUsPage ? (
+        <Aboutus cartItems={cartItems} />
+      ) : isPrivacyPolicyPage ? (
+        <Privacypolicy cartItems={cartItems} />
+      ) : isTermsAndConditionsPage ? (
+        <Termsandconditions cartItems={cartItems} />
+      ) : isFaqPage ? (
+        <Faq cartItems={cartItems} />
+      ) : isCertifiedJewelleryPage ? (
+        <Certifiedjewllery cartItems={cartItems} />
+      ) : isDgrpPage ? (
+        <Dgrp cartItems={cartItems} />
+      ) : isOffersPage ? (
+        <Offers cartItems={cartItems} />
       ) : isOrderDetailsPage ? (
         <Orderdetails cartItems={cartItems} wishlist={wishlist} />
       ) : isAccountPage ? (
@@ -83,7 +135,7 @@ function App() {
           addToWishlist={addToWishlist}
         />
       ) : isCheckoutPage ? (
-        <Checkout cartItems={cartItems} updateQuantity={updateQuantity} placeOrder={placeOrder} />
+        <Checkout cartItems={cartItems} updateQuantity={updateQuantity} addToCart={addToCart} placeOrder={placeOrder} />
       ) : isCartPage ? (
         <Cart cartItems={cartItems} updateQuantity={updateQuantity} addToCart={addToCart} />
       ) : isProductPage ? (
@@ -94,6 +146,9 @@ function App() {
           <Shop
             onSelectProduct={(prod) => {
               setSelectedProduct(prod);
+              try {
+                localStorage.setItem('pkb_selected_product', JSON.stringify(prod));
+              } catch (err) {}
               window.history.pushState({}, '', '/product');
               setCurrentPath('/product');
             }}
