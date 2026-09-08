@@ -20,6 +20,7 @@ import flower from '../assets/Homepage/flashsale/flower.png';
 import boy from '../assets/Homepage/flashsale/boy.png';
 import girl from '../assets/Homepage/flashsale/girl.jpg';
 import shopbg from '../assets/shop/shop-bg.png';
+import fly from '../assets/Homepage/fly.png';
 
 // Carousel Images
 import c1 from '../assets/Homepage/carousel/c1.jpg';
@@ -160,8 +161,8 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
     const handleFlashNext = () => setFlashSaleIndex(prev => Math.min(Math.max(0, products.length - 3), prev + 1));
     const displayFlashProducts = products.slice(flashSaleIndex, flashSaleIndex + 3);
 
-    const [trendingCategory, setTrendingCategory] = useState('All items');
-    const trendingProducts = trendingCategory === 'All items'
+    const [trendingCategory, setTrendingCategory] = useState('All Items');
+    const trendingProducts = trendingCategory === 'All Items'
         ? products
         : products.filter(item => item.category === trendingCategory);
     const displayTrendingProducts = trendingProducts.slice(0, 5);
@@ -194,7 +195,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                 <div className="flex-1 w-full max-w-[1920px] mx-auto px-6 md:px-20 lg:px-32 flex flex-col lg:flex-row items-center justify-between relative z-20">
 
                     {/* Left Column (Text & Button) */}
-                    <div className="w-full lg:w-[45%] flex flex-col justify-center items-start -mt-8 lg:-mt-[80px] relative z-30">
+                    <div className="w-full lg:w-[45%] flex flex-col justify-center items-start -mt-8 lg:-mt-[150px] relative z-30">
                         <h1 className="text-[#333333] font-['Baloo_2'] font-extrabold text-[40px] sm:text-[50px] md:text-[65px] lg:text-[72px] leading-[1.1] mb-6">
                             Best Kids Store <br />
                             & <span className="text-[#F96E8F]">Online Shop</span>
@@ -222,11 +223,11 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                     </div>
 
                     {/* Right Column (Jewelry Ornaments) */}
-                    <div className="w-full lg:w-[55%] flex justify-center lg:justify-end items-center relative mt-16 lg:mt-0 z-20">
+                    <div className="w-full lg:w-[65%] flex justify-center lg:justify-end items-center relative mr-36 mt-16 lg:mt-0 z-120">
                         <img
                             src={ornaments}
                             alt="Jewelry"
-                            className="w-full max-w-[600px] lg:max-w-[500px] object-contain drop-shadow-2xl"
+                            className="w-full max-w-[600px] lg:max-w-[600px] rotate-[-10.24deg] object-contain drop-shadow-2xl "
                         />
                     </div>
                 </div>
@@ -235,14 +236,14 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                 <img
                     src={flying}
                     alt="Airplane"
-                    className="absolute bottom-16 md:bottom-1 right-4 md:right-16 w-[150px] md:w-[250px] object-contain z-30 pointer-events-none"
+                    className="absolute bottom-16 md:-bottom-30 right-4 md:right-16 w-[150px] md:w-[250px] object-contain z-50 pointer-events-none"
                 />
 
                 {/* Bottom Cloud Border */}
                 <img
                     src={cloudDwn}
                     alt="Cloud Border"
-                    className="absolute -bottom-4 right-0 h-auto w-full md:w-[150px] lg:w-[400px] object-cover md:object-fill z-40 pointer-events-none"
+                    className="absolute -bottom-4 right-0 h-auto w-full md:w-[150px] lg:w-[470px] object-cover md:object-fill z-40 pointer-events-none"
                 />
 
                 {/* Global style for slow bounce animation */}
@@ -364,20 +365,20 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                 }}
             >
                 {/* Airplane */}
-                <img src={section3Plane} alt="Airplane" className="absolute top-10 left-10 md:left-[10%] w-24 md:w-32 z-10 animate-bounce-slow" />
+                <img src={fly} alt="Airplane" className="absolute top-20 left-10 md:left-55 w-24 md:w-[280px] z-10 animate-bounce-slow" />
 
                 {/* Main Box */}
-                <div className="relative w-full min-h-[250px] border-[2px] border-[#333333] rounded-[30px] md:rounded-[40px] py-16 md:py-20 px-6 md:px-16 flex flex-col md:flex-row justify-center items-center z-20 mt-10 md:mt-0">
+                <div className="relative w-full min-h-[250px] border-[6px] border-[#333333] rounded-[30px] md:rounded-[40px] py-16 md:py-20 px-6 md:px-16 flex flex-col md:flex-row justify-center items-center z-20 mt-10 md:mt-15">
 
                     {/* Title overlapping border */}
-                    <div className="absolute -top-[24px] md:-top-[32px] left-1/2 -translate-x-1/2 bg-[#FCDCEA] px-6 md:px-10 py-1.5 md:py-2 border-[2px] border-[#333333] rounded-2xl md:rounded-[30px] whitespace-nowrap z-30">
+                    <div className="absolute -top-[24px] md:-top-[32px] left-1/2 -translate-x-1/2 bg-[#FCDCEA] px-6 md:px-10 py-1.5 md:py-2 border-[4px] border-[#333333] rounded-2xl md:rounded-[30px] whitespace-nowrap z-30">
                         <h2 className="text-xl md:text-[50px] font-['Baloo_2'] font-bold text-[#333333] flex items-center gap-2 font-['Lobster_Two']">
                             Certified Big Care for Little <span className="text-[#F96E8F]">Jewellery</span>
                         </h2>
                     </div>
 
                     {/* Logos */}
-                    <div className="w-full flex flex-wrap justify-center items-center gap-10 md:gap-24 md:pr-[150px]">
+                    <div className="w-full flex flex-wrap justify-center items-center gap-10 md:gap-30 md:pr-[150px]">
                         <img src={section3Tested} alt="Dermatologically Tested" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Glp} alt="GLP" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Butterfly} alt="Sensitive Skin" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
@@ -386,7 +387,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                     </div>
 
                     {/* Rabbit Image */}
-                    <img src={section3Rabbit} alt="Rabbit Mascot" className="absolute -right-6 md:-right-16 bottom-0 translate-y-[20%] h-40 md:h-[280px] object-contain z-30 pointer-events-none" />
+                    <img src={section3Rabbit} alt="Rabbit Mascot" className="absolute -right-6 md:-right-34 bottom-0 translate-y-[20%] h-40 md:h-[280px] object-contain z-30 pointer-events-none" />
                 </div>
             </div>
             {/* Flash Sale Section */}
@@ -498,7 +499,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <img src={butterfly} alt="Butterfly" className="absolute top-10 right-10 w-[60px] md:w-[80px] object-contain rotate-12 z-10 pointer-events-none" />
+                <img src={requestButterflyRight} alt="Butterfly" className="absolute top-10 right-10 w-[60px] md:w-[140px] object-contain rotate-12 z-10 pointer-events-none" />
 
                 <h2 className="text-3xl md:text-[43px] font-black text-gray-900 font-['Baloo_2'] tracking-tight mb-8 relative z-20">
                     Trending <span className="text-[#F96E8F]">products</span>
@@ -583,7 +584,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
             <div className="w-full relative py-20 lg:py-28 bg-gradient-to-r from-[#F7FCFD] to-[#E9F9FA] flex flex-col items-center overflow-hidden">
                 {/* Decorative Images */}
                 <img src={butterfly} alt="Butterfly" className="absolute top-10 left-10 w-[80px] md:w-[120px] object-contain pointer-events-none drop-shadow-sm" />
-                <img src={car} alt="Car" className="absolute bottom-10 right-10 w-[80px] md:w-[150px] object-contain pointer-events-none drop-shadow-sm z-10" />
+                <img src={car} alt="Car" className="absolute bottom-10 right-10 w-[80px] md:w-[100px] object-contain pointer-events-none drop-shadow-sm z-10" />
 
                 {/* Header */}
                 <div className="text-center px-4 mb-16 relative z-20">
