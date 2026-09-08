@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCartCount } from '../redux/cartSlice';
 import { selectWishlistCount } from '../redux/wishlistSlice';
-import { gridItems } from './Shop';
+import { gridItems } from '../Pages/Shop';
 import logo from '../assets/Header/peekaaboo.png';
 import profile from '../assets/Header/profile.png';
 import heart from '../assets/Header/heart.png';
@@ -18,7 +18,7 @@ const actionIcons = [
     { name: 'cart', icon: cart },
 ];
 
-export default function Header({ cartItems, wishlistCount, showMobileSearch }) {
+export default function Header({ cartItems, wishlistCount, showMobileSearch, customLogo }) {
     const reduxCartCount = useSelector(selectCartCount);
     const reduxWishlistCount = useSelector(selectWishlistCount);
 
@@ -144,10 +144,9 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch }) {
                         </svg>
                     </button>
 
-                    {/* Logo (Centered on mobile, left on desktop) */}
                     <div className="cursor-pointer flex items-center absolute left-1/2 top-[72%] lg:top-auto -translate-x-1/2 -translate-y-1/2 lg:translate-x-0 lg:translate-y-0 lg:static lg:flex-shrink-0 z-50">
                         <a href="/" className="block">
-                            <img src={logo} alt="PEE KAA BOO" className="w-[60px] sm:w-[80px] -ml-1.5 lg:ml-24 object-contain" />
+                            <img src={customLogo || logo} alt="PEE KAA BOO" className="w-[60px] sm:w-[80px] -ml-1.5 lg:ml-24 object-contain" />
                         </a>
                     </div>
 

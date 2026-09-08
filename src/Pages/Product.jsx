@@ -1,7 +1,8 @@
+import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import React, { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from '../redux/wishlistSlice';
-import Header from './Header';
+import Header from '../components/Header';
 
 // Assets
 import bisLogo from '../assets/product/bis-logo.png';
@@ -20,7 +21,8 @@ import arrowLeft from '../assets/product/arrow-l.png';
 import user from '../assets/product/user.png';
 import arrowRight from '../assets/product/arrow-r.png';
 import { gridItems } from './Shop';
-import Footer from './Footer';
+import { prod1, prod2 } from '../data/shopproducts';
+import Footer from '../components/Footer';
 import wishlist from '../assets/product/w-list.png';
 import share from '../assets/product/share.png';
 import whatsapp from '../assets/product/social-icons/w-app.png';
@@ -40,6 +42,7 @@ const Product = ({ product, cartItems, addToCart }) => {
     const [deliveryStatus, setDeliveryStatus] = useState(null);
     const [locationDetails, setLocationDetails] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [selectedColorImage, setSelectedColorImage] = useState(null);
 
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
@@ -66,22 +69,43 @@ const Product = ({ product, cartItems, addToCart }) => {
     };
 
     const defaultProduct = product || getStoredProduct() || shopProducts[0];
-    const productImages = defaultProduct?.images || Array(4).fill(defaultProduct?.image);
+    const productImages = defaultProduct?.images || [
+        defaultProduct?.image,
+        prod2,
+        prod1,
+        prod2,
+        prod1
+    ];
 
     const [shareModalOpen, setShareModalOpen] = useState(false);
     const [copied, setCopied] = useState(false);
     const [addedItems, setAddedItems] = useState({});
+    const [wishlistToast, setWishlistToast] = useState(null);
+
+    React.useEffect(() => {
+        if (wishlistToast) {
+            const timer = setTimeout(() => {
+                setWishlistToast(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [wishlistToast]);
 
     const wishlistItems = useSelector(selectWishlistItems);
     const isWishlisted = Boolean(wishlistItems?.some(item =>
         item.id && defaultProduct?.id ? item.id === defaultProduct.id : item.title === defaultProduct?.title
     ));
 
-    const handleWishlistClick = (e) => {
+    const handleWishlistClick = (e, productItem = defaultProduct) => {
         if (e) e.preventDefault();
-        const activeProduct = defaultProduct;
+        const activeProduct = productItem;
         if (activeProduct) {
+            const isRemoving = wishlistItems?.some(w => (w.id && activeProduct.id ? w.id === activeProduct.id : w.title === activeProduct.title));
             dispatch(toggleWishlistAction(activeProduct));
+            setWishlistToast({
+                action: isRemoving ? 'removed' : 'added',
+                title: activeProduct.title || 'Product'
+            });
         }
     };
 
@@ -230,7 +254,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                         <div className="relative w-full aspect-square rounded-[2rem] overflow-hidden flex items-center justify-center shadow-sm">
 
                             {/* Product Image */}
-                            <img src={productImages[currentImageIndex]} alt={product?.title || "Product"} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300" />
+                            <img src={selectedColorImage || productImages[currentImageIndex]} alt={product?.title || "Product"} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300" />
 
                             {/* Badges */}
                             <div className="absolute top-6 left-6 font-['Helvetica'] bg-[#00D0CC] text-white text-[11px] font-bold px-4 py-2 rounded-lg flex items-center gap-2 shadow-md z-10">
@@ -245,8 +269,8 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 <button
                                     onClick={handleWishlistClick}
                                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer hover:scale-105 active:scale-95 ${isWishlisted
-                                            ? 'bg-[#F96E8F] text-white ring-2 ring-pink-300 shadow-pink-200'
-                                            : 'bg-[#00D0CC] text-white hover:bg-[#00b3b0]'
+                                        ? 'bg-[#F96E8F] text-white ring-2 ring-pink-300 shadow-pink-200'
+                                        : 'bg-[#00D0CC] text-white hover:bg-[#00b3b0]'
                                         }`}
                                     title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                                 >
@@ -266,8 +290,11 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 {productImages.map((_, idx) => (
                                     <div
                                         key={idx}
-                                        onClick={() => setCurrentImageIndex(idx)}
-                                        className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-colors shadow-sm ${currentImageIndex === idx ? 'bg-[#F96E8F]' : 'bg-white'
+                                        onClick={() => {
+                                            setCurrentImageIndex(idx);
+                                            setSelectedColorImage(null);
+                                        }}
+                                        className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-colors shadow-sm ${(!selectedColorImage && currentImageIndex === idx) ? 'bg-[#F96E8F]' : 'bg-white'
                                             }`}
                                     ></div>
                                 ))}
@@ -347,7 +374,11 @@ const Product = ({ product, cartItems, addToCart }) => {
                                     return (
                                         <div
                                             key={color.name}
-                                            onClick={() => setSelectedColor(color.name)}
+                                            onClick={() => {
+                                                setSelectedColor(color.name);
+                                                const idx = colors.findIndex(c => c.name === color.name);
+                                                setSelectedColorImage(productImages[idx < productImages.length ? idx : 0]);
+                                            }}
                                             className="flex flex-col items-center gap-1.5 cursor-pointer group w-full"
                                         >
                                             <div className="relative w-11 h-11 sm:w-14 sm:h-14 rounded-full p-[2px]">
@@ -379,15 +410,25 @@ const Product = ({ product, cartItems, addToCart }) => {
                                     placeholder="Enter Pincode"
                                     value={pincode}
                                     onChange={(e) => {
-                                        setPincode(e.target.value);
+                                        const onlyNums = e.target.value.replace(/\D/g, '');
+                                        setPincode(onlyNums);
                                         setDeliveryStatus(null);
                                     }}
                                     maxLength="6"
                                     className="flex-1 min-w-0 h-full px-3 sm:px-4 text-[13px] sm:text-sm outline-none border border-gray-300 border-r-0 rounded-l-md font-bold text-gray-700 placeholder-gray-400"
                                 />
                                 <button
-                                    onClick={checkPincode}
-                                    className="h-full px-3 sm:px-6 bg-[#F96E8F] font-['Nunito'] text-white text-[12px] sm:text-[14px] font-bold rounded-r-md hover:bg-[#E44971] transition-colors whitespace-nowrap flex-shrink-0 cursor-pointer flex items-center justify-center"
+                                    onClick={() => {
+                                        if (pincode.trim()) {
+                                            checkPincode();
+                                        }
+                                    }}
+                                    disabled={!pincode.trim()}
+                                    className={`h-full px-3 sm:px-6 font-['Nunito'] text-white text-[12px] sm:text-[14px] font-bold rounded-r-md transition-colors whitespace-nowrap flex-shrink-0 flex items-center justify-center ${
+                                        !pincode.trim()
+                                            ? 'bg-pink-300 cursor-not-allowed'
+                                            : 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
+                                    }`}
                                 >
                                     Check availability
                                 </button>
@@ -511,162 +552,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                 </div>
             </div>
 
-            {/* Third Section: You May Also Like */}
-            <div className="w-[calc(100%-2rem)] max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-4 pb-4 sm:p-6 sm:pb-6 md:p-8 md:pb-6 mt-8 sm:mt-12 mb-0">
-                <h2 className="text-[28px] md:text-[36px] font-bold text-gray-800 mb-8 font-['Baloo_2']">
-                    You May <span className="text-[#F96E8F]">Also Like</span>
-                </h2>
-
-                <div className={`grid ${isMobile ? 'grid-cols-1 max-w-xs mx-auto' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-6`}>
-                    {shopProducts.slice(carouselIndex, carouselIndex + itemsPerPage).map((item, index) => {
-                        const itemWishlisted = Boolean(wishlistItems?.some(w => w.id && item.id ? w.id === item.id : w.title === item.title));
-                        const themeBg = item.theme === 'yellow' ? 'bg-[#FFF8E7]' : item.theme === 'blue' ? 'bg-[#EBF7FF]' : 'bg-[#FFE5EC]';
-
-                        return (
-                            <div
-                                key={item.id || index}
-                                onClick={() => {
-                                    window.history.pushState({ product: item }, '', '/product');
-                                    window.dispatchEvent(new Event('popstate'));
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                                className={`rounded-[24px] overflow-hidden flex flex-col justify-between group transition-all duration-300 relative cursor-pointer border border-pink-100/40 ${themeBg} shadow-sm hover:shadow-xl`}
-                            >
-                                {/* Top Image Area */}
-                                <div className="h-[210px] sm:h-[240px] w-full p-0 relative flex items-center justify-center">
-                                    <img
-                                        src={item.image}
-                                        alt={item.title}
-                                        className="w-full h-full object-cover rounded-t-[17px] group-hover:scale-105 transition-transform duration-300"
-                                    />
-
-                                    {/* Best Selling Badge (Top Left - Appears on Hover) */}
-                                    <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                                        <div className="bg-[#00D0CC] text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-md">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                                                <path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
-                                                <path d="m8.21 13.89-3 4.1c-.26.36-.02.85.43.85h3.6l1.26 3.16c.16.4.74.4 1 0L12.76 18.84h3.6c.45 0 .69-.49.43-.85l-3-4.1" />
-                                            </svg>
-                                            <span className="text-[12px] font-extrabold tracking-wide">Best Selling</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Action Buttons (Top Right - Wishlist & Copy) */}
-                                    <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                                        {/* Wishlist Heart */}
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                dispatch(toggleWishlistAction(item));
-                                            }}
-                                            title="Add to Wishlist"
-                                            className={`w-9 h-9 text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer ${
-                                                itemWishlisted ? 'bg-[#F96E8F]' : 'bg-[#00D0CC] hover:bg-[#00b3b0]'
-                                            }`}
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={itemWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                                            </svg>
-                                        </button>
-                                        {/* Compare / Copy Icon */}
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (navigator.clipboard) {
-                                                    navigator.clipboard.writeText(window.location.origin + '/product');
-                                                }
-                                            }}
-                                            title="Copy Link"
-                                            className="w-9 h-9 bg-[#00D0CC] hover:bg-[#00b3b0] text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                                                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Content area */}
-                                <div className="bg-white m-[10px] mt-0 rounded-[18px] p-4 text-center flex-1 flex flex-col justify-center relative transition-all duration-300 shadow-xs">
-                                    <span className="text-gray-400 text-[11px] font-[Nunito] uppercase mb-1">
-                                        {item.category || 'Category'}
-                                    </span>
-
-                                    <h4 className="text-gray-900 font-bold text-[18px] sm:text-[20px] leading-tight mb-1 tracking-wide font-['Nunito'] group-hover:text-[#F96E8F] transition-colors truncate">
-                                        {item.title}
-                                    </h4>
-
-                                    <div className="flex justify-center items-center gap-2">
-                                        {item.oldPrice && (
-                                            <del className="text-gray-400 font-bold text-[16px] font-[Nunito]">₹ {item.oldPrice}</del>
-                                        )}
-                                        <span className="text-[#F96E8F] font-bold text-[24px] sm:text-[27px] font-['Nunito']">₹ {item.price}</span>
-                                    </div>
-
-                                    {/* Expandable Content (Add to Cart) */}
-                                    <div className="w-full max-h-0 opacity-0 overflow-hidden group-hover:max-h-[60px] group-hover:opacity-100 group-hover:mt-3 transition-all duration-500 ease-in-out">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (addToCart) {
-                                                    addToCart(item, 1);
-                                                }
-                                                setAddedItems(prev => ({ ...prev, [item.id || index]: true }));
-                                                setTimeout(() => {
-                                                    setAddedItems(prev => ({ ...prev, [item.id || index]: false }));
-                                                }, 2000);
-                                            }}
-                                            className={`w-full py-2.5 px-4 border-2 border-[#F96E8F] rounded-full font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center shadow-xs ${
-                                                addedItems[item.id || index]
-                                                    ? 'bg-[#F96E8F] text-white border-solid scale-95'
-                                                    : 'border-dashed text-[#F96E8F] hover:bg-[#F96E8F] hover:text-white hover:border-solid active:scale-95'
-                                            }`}
-                                        >
-                                            {addedItems[item.id || index] ? (
-                                                <span className="flex items-center gap-2 transform transition-transform duration-300">
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                                                    Added!
-                                                </span>
-                                            ) : 'Add to Cart'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-
-                {/* Slider Controls */}
-                <div className="w-full flex items-center justify-between mt-4 sm:mt-6 gap-4">
-                    {/* Progress Line */}
-                    <div className="flex-1 min-w-0 h-[3px] bg-gray-200 rounded-full relative overflow-hidden">
-                        <div
-                            className="absolute left-0 top-0 h-full bg-[#F96E8F] rounded-full transition-all duration-300"
-                            style={{ width: `${progressWidth}%` }}
-                        ></div>
-                    </div>
-                    {/* Arrows */}
-                    <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                        <button
-                            onClick={handlePrevCarousel}
-                            disabled={carouselIndex === 0}
-                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
-                            title="Previous"
-                        >
-                            <img src={arrowLeft} alt="Previous" className="w-3.5 h-3.5 object-contain" />
-                        </button>
-                        <button
-                            onClick={handleNextCarousel}
-                            disabled={carouselIndex >= maxCarouselIndex}
-                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
-                            title="Next"
-                        >
-                            <img src={arrowRight} alt="Next" className="w-3.5 h-3.5 object-contain" />
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <YouMayAlsoLike addToCart={addToCart} />
 
             {/* Dynamic Share Product Modal */}
             {shareModalOpen && (
@@ -788,8 +674,8 @@ const Product = ({ product, cartItems, addToCart }) => {
                             <button
                                 onClick={() => handleShareClick('copy')}
                                 className={`px-4 py-2 rounded-[10px] font-black text-[12px] transition-all cursor-pointer shadow-xs ${copied
-                                        ? 'bg-green-600 text-white'
-                                        : 'bg-[#F96E8F] hover:bg-[#E44971] text-white'
+                                    ? 'bg-green-600 text-white'
+                                    : 'bg-[#F96E8F] hover:bg-[#E44971] text-white'
                                     }`}
                             >
                                 {copied ? '✓ Copied' : 'Copy'}
@@ -802,6 +688,35 @@ const Product = ({ product, cartItems, addToCart }) => {
             <ReviewsSection />
             <FAQSection />
             <Footer />
+
+            {/* Wishlist Added / Removed Popup Notification */}
+            {wishlistToast && (
+                <div className={`fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] bg-white border-[2px] ${wishlistToast.action === 'removed' ? 'border-gray-300 shadow-lg' : 'border-[#F96E8F]' ? 'border-[#F96E8F] shadow-lg' : ''} text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 min-w-[280px] max-w-[360px] animate-toast-up`}>
+                    <div className={`w-10 h-10 rounded-[12px] ${wishlistToast.action === 'removed' ? 'bg-gray-100 text-gray-500' : 'bg-[#F96E8F]/15 text-[#F96E8F]'} flex items-center justify-center flex-shrink-0`}>
+                        {wishlistToast.action === 'removed' ? (
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        ) : (
+                            <img src={wishlist} alt="wishlist" className="h-5" />
+                        )}
+                    </div>
+                    <div className="flex-1 pr-2 text-left">
+                        <h4 className={`font-black ${wishlistToast.action === 'removed' ? 'text-gray-700' : 'text-[#F96E8F]'} text-[15px] font-['Nunito'] leading-tight`}>
+                            {wishlistToast.action === 'removed' ? 'Wishlist removed' : 'Wishlist added'}
+                        </h4>
+                        <p className="text-gray-500 text-[12px] font-bold font-['Nunito'] line-clamp-1 mt-0.5">
+                            {wishlistToast.title || "Product"}
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => setWishlistToast(null)}
+                        className="w-7 h-7 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center font-bold text-sm cursor-pointer transition-colors"
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
@@ -968,6 +883,16 @@ const ReviewsSection = () => {
     const [reviewText, setReviewText] = useState('');
     const [reviewRating, setReviewRating] = useState(5);
     const [previewMedia, setPreviewMedia] = useState(null);
+    const [reviewToast, setReviewToast] = useState(false);
+
+    React.useEffect(() => {
+        if (reviewToast) {
+            const timer = setTimeout(() => {
+                setReviewToast(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [reviewToast]);
 
     const handleSubmitReview = (e) => {
         e.preventDefault();
@@ -980,6 +905,7 @@ const ReviewsSection = () => {
                 media: capturedMedia,
                 mediaType: capturedMediaType
             }, ...reviews]);
+            setReviewToast(true);
         }
         stopCamera();
         setReviewStep(null);
@@ -1282,6 +1208,31 @@ const ReviewsSection = () => {
                             </p>
                         )}
                     </div>
+                </div>
+            )}
+
+            {/* Review Submitted Toast Notification */}
+            {reviewToast && (
+                <div className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] bg-white border-[2px] border-[#F96E8F] text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 min-w-[280px] max-w-[360px] animate-toast-up shadow-lg">
+                    <div className="w-10 h-10 rounded-[12px] bg-[#F96E8F]/15 text-[#F96E8F] flex items-center justify-center flex-shrink-0">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div className="flex-1 pr-2 text-left">
+                        <h4 className="font-black text-[#F96E8F] text-[15px] font-['Nunito'] leading-tight">
+                            Review Submitted
+                        </h4>
+                        <p className="text-gray-500 text-[12px] font-bold font-['Nunito'] mt-0.5">
+                            Thank you for your feedback!
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => setReviewToast(false)}
+                        className="w-7 h-7 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center font-bold text-sm cursor-pointer transition-colors"
+                    >
+                        ✕
+                    </button>
                 </div>
             )}
         </div>

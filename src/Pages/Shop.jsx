@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react';
 import shopbg from '../assets/shop/shop-bg.png';
 import shopMobBg from '../assets/shop/shop-mob-bg.png';
 import cloud from '../assets/shop/cloud.png';
-import prod1 from '../assets/shop/product1.jpg';
-import banner1 from '../assets/shop/5ac2235c236dda0548ffadcb89a2362280a7f92c.png';
-import banner2 from '../assets/shop/silver-yellow.png';
-import prod2 from '../assets/shop/e6d33d54f4b94cee7f7fa20b4b7d7c16f7b1464d.png';
+import { gridItems } from '../data/shopproducts';
+export { gridItems };
 import baby1 from '../assets/shop/00.png';
 import baby2 from '../assets/shop/11.png';
 import baby3 from '../assets/shop/22.png';
@@ -16,16 +14,13 @@ import bgVector3 from '../assets/shop/v2.png';
 import bgVector4 from '../assets/shop/v1.png';
 import bgVector5 from '../assets/shop/v5.png';
 import bgVector6 from '../assets/shop/v4.png';
-import badge from '../assets/shop/star-badge.png';
-import spark1 from '../assets/shop/spark1.png';
-import spark2 from '../assets/shop/spark2.png';
 import pink from '../assets/shop/peekaaboo-pink.png';
 import headerCar from '../assets/cart/left-img.png';
-import Footer from './Footer';
+import Footer from '../components/Footer';
 import wlist from '../assets/shop/wlist.png';
-import save from '../assets/shop/save.png';
 import filter from '../assets/shop/filter.png';
 import sort from '../assets/shop/sort.png';
+import ProductCard from '../components/ProductCard';
 
 // Subcomponents
 const FilterSection = ({ title, options = [], selectedOptions = [], onChange }) => {
@@ -64,165 +59,7 @@ const FilterSection = ({ title, options = [], selectedOptions = [], onChange }) 
     );
 };
 
-const ProductCard = ({
-    item,
-    image,
-    title,
-    price,
-    oldPrice,
-    theme,
-    category,
-    onClick,
-    onAddToCart,
-    onAddToWishlist,
-    isWishlisted,
-    viewMode = 'grid'
-}) => {
-    const [isAdded, setIsAdded] = useState(false);
-    const isGrid = viewMode === 'grid';
 
-    if (isGrid) {
-        let borderColor = 'border-[#FFB7D5]';
-        let bg = 'bg-[#FFB7D5]/20';
-
-        if (theme === 'blue') {
-            borderColor = 'border-[#85CDFD]';
-            bg = 'bg-[#85CDFD]/20';
-        } else if (theme === 'yellow') {
-            borderColor = 'border-[#FFE2A0]';
-            bg = 'bg-[#FFE2A0]/20';
-        }
-
-        return (
-            <div
-                onClick={onClick}
-                className={`rounded-[12px] md:rounded-[20px] border-[2px] md:border-[3px] ${borderColor} ${bg} overflow-hidden flex flex-col shadow-sm relative group cursor-pointer transition-all duration-300`}
-            >
-                {/* Top Image area */}
-                <div className="h-[140px] md:h-[240px] w-full p-0 relative flex items-center justify-center">
-                    <img src={image} alt={title} className="w-full h-full  object-fill rounded-t-[10px] md:rounded-t-[17px]" />
-
-                    {/* Hover Elements on Image */}
-                    <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="bg-[#00D0CC] text-white px-2.5 py-1.5 rounded-[8px] flex items-center gap-1.5 shadow-sm">
-                            <img src={spark1} alt="spark" className="h-3" />
-                            <img src={badge} alt="badge" className="h-3" />
-                            <img src={spark2} alt="spark" className="h-3" />
-                            <span className="text-[12px] font-semibold tracking-wide">Best Selling</span>
-                        </div>
-                    </div>
-
-                    <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (onAddToWishlist) onAddToWishlist(item || { image, title, price, oldPrice, theme, category });
-                            }}
-                            title="Add to Wishlist"
-                            className={`w-9 h-9 rounded-[8px] flex items-center justify-center transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95 ${isWishlisted ? 'bg-[#F96E8F] text-white' : 'bg-[#00D0CC] hover:bg-[#00b3b0] text-white'}`}
-                        >
-                            <img src={wlist} alt="wishlist" className="h-4" />
-                        </button>
-                        {/* <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                            }}
-                            className="w-9 h-9 bg-[#00D0CC] rounded-[8px] flex items-center justify-center text-white hover:bg-[#00b3b0] transition-colors shadow-sm cursor-pointer hover:scale-105 active:scale-95"
-                        >
-                            <img src={save} alt="cart" className="h-4" />
-                        </button> */}
-                    </div>
-                </div>
-
-                {/* Content area */}
-                <div className="bg-white m-[6px] md:m-[10px] mt-[-20px] md:mt-[-30px] rounded-[16px] md:rounded-[20px] p-2 md:p-4 text-center flex-1 flex flex-col justify-center relative z-10 transition-all duration-300 shadow-sm">
-                    <div className="text-gray-400 text-[10px] md:text-[13px] font-medium mb-1">
-                        {category || "Category"}
-                    </div>
-
-                    <h4 className="text-[#333] font-['Nunito'] font-bold text-[13px] md:text-[20px] leading-tight mb-1 md:mb-2 tracking-wide md:group-hover:text-[17px] md:group-hover:mb-3 transition-all duration-300">{title}</h4>
-
-                    <div className="flex justify-center items-center gap-1 md:gap-2 mb-0 md:group-hover:mb-4 transition-all duration-300">
-                        <span className="text-gray-400 font-['Nunito'] font-medium text-[13px] md:text-[16px] line-through">₹ {oldPrice}</span>
-                        <span className="text-[#F76188] font-['Nunito'] font-bold text-[18px] md:text-[27px] md:group-hover:text-[24px] transition-all">₹ {price}</span>
-                    </div>
-
-                    <div className="h-0 opacity-0 group-hover:h-[42px] group-hover:opacity-100 transition-all duration-300 overflow-hidden w-full">
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (onAddToCart) onAddToCart();
-                                setIsAdded(true);
-                                setTimeout(() => setIsAdded(false), 2000);
-                            }}
-                            className={`w-full h-[40px] border-[2px] rounded-full font-semibold text-[16px] transition-all duration-300 flex items-center justify-center tracking-wide ${isAdded
-                                ? 'bg-[#F96E8F] text-white border-solid border-[#F96E8F] scale-95'
-                                : 'border-dashed border-[#F96E8F] text-[#F96E8F] hover:bg-[#F96E8F] hover:text-white hover:border-solid active:scale-95'
-                                }`}
-                        >
-                            {isAdded ? (
-                                <span className="flex items-center gap-2 transform transition-transform duration-300">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                                    Added!
-                                </span>
-                            ) : 'Add to Cart'}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // List View Layout
-    return (
-        <div
-            onClick={onClick}
-            className="flex flex-row items-center p-3 border border-gray-200 rounded-[12px] bg-white w-full gap-4 md:gap-8 cursor-pointer hover:border-[#F87597]/30 transition-colors duration-300 shadow-sm"
-        >
-            <div className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-[8px] overflow-hidden relative flex-shrink-0 bg-gray-50 border border-gray-100">
-                <img src={image} alt={title} className="w-full h-full object-fill" />
-                <div
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        if (onAddToWishlist) onAddToWishlist(item || { image, title, price, oldPrice, theme, category });
-                    }}
-                    className={`absolute top-1.5 right-1.5 transition-colors cursor-pointer ${isWishlisted ? 'text-[#F96E8F]' : 'text-[#F87597]/40 hover:text-[#F87597]'}`}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>
-                </div>
-            </div>
-
-            <div className="flex flex-col flex-1 gap-1">
-                <h4 className="text-[#F87597] font-['Nunito'] font-semibold text-[15px] md:text-[16px] tracking-wide">{title}</h4>
-                <div className="flex items-center">
-                    <span className="text-[#F87597] font-['Nunito'] font-extrabold text-[16px] md:text-[18px]">₹{price}</span>
-                </div>
-            </div>
-
-            <div className="flex-shrink-0 pr-2 md:pr-4">
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        if (onAddToCart) onAddToCart();
-                        setIsAdded(true);
-                        setTimeout(() => setIsAdded(false), 2000);
-                    }}
-                    className={`px-4 md:px-6 py-2 rounded-[4px] font-bold text-[12px] md:text-[13px] transition-all duration-300 flex items-center justify-center uppercase ${isAdded
-                        ? 'bg-[#F87597]/80 text-white scale-95'
-                        : 'bg-[#F87597] text-white hover:opacity-90 active:scale-95'
-                        }`}
-                >
-                    {isAdded ? (
-                        <span className="flex items-center gap-1.5 transform transition-transform duration-300">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                            Added
-                        </span>
-                    ) : 'Add to Cart'}
-                </button>
-            </div>
-        </div>
-    );
-};
 
 const categoryTags = ["All items", "Boys Collections", "Girls Collections", "Just Born Collections"];
 
@@ -234,28 +71,48 @@ const ageCollections = [
     { image: baby5, label: "10-12 years", bgVector: bgVector6 },
 ];
 
-export const gridItems = [
-    { id: 101, code: '64A288101', type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'pink', category: 'Girls Collections', age: '1-5 years', size: '22.7mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.5, date: '2023-10-01' },
-    { id: 102, code: '64A288102', type: 'product', image: prod2, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'blue', category: 'Boys Collections', age: '5-8 years', size: '24mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.8, date: '2023-09-15' },
-    { id: 103, code: '64A288103', type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '23mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.9, date: '2023-11-20' },
 
-    { id: 104, code: '64A288104', type: 'product', image: prod1, title: 'Name of the product', price: '6710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', age: '8-10 years', size: '22mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.2, date: '2023-08-05' },
-    { id: 105, code: '64A288105', type: 'product', image: prod2, title: 'Name of the product', price: '5710', oldPrice: '7000', theme: 'blue', category: 'Boys Collections', age: '10-12 years', size: '21mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.7, date: '2023-10-12' },
-    { id: 106, code: '64A288106', type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '22.7mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 3.5, date: '2023-07-22' },
 
-    { id: 107, code: '64A288107', type: 'product', image: prod1, title: 'Name of the product', price: '7710', oldPrice: '8000', theme: 'pink', category: 'Girls Collections', age: '1-5 years', size: '24mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 5.0, date: '2023-12-01' },
-    { id: 108, type: 'banner', bannerTheme: 'pink', bannerImage: banner1, title: 'Girls Collections', subtitle: 'Get an extra 30% discount', category: 'Girls Collections' },
-
-    { id: 109, code: '64A288109', type: 'product', image: prod1, title: 'Name of the product', price: '2710', oldPrice: '4000', theme: 'pink', category: 'Girls Collections', age: '5-8 years', size: '23mm', color: 'Rose Gold', pattern: 'Diamond', productType: 'Bracelets', rating: 4.1, date: '2023-09-30' },
-    { id: 110, code: '64A288110', type: 'product', image: prod2, title: 'Name of the product', price: '3710', oldPrice: '5000', theme: 'blue', category: 'Boys Collections', age: '8-10 years', size: '22mm', color: 'Gold', pattern: 'Eternity', productType: 'Bangles', rating: 4.6, date: '2023-11-05' },
-    { id: 111, code: '64A288111', type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '10-12 years', size: '21mm', color: 'Silver', pattern: 'Three Stones', productType: 'Rings', rating: 4.3, date: '2023-10-25' },
-
-    { id: 112, type: 'banner', bannerTheme: 'blue', bannerImage: banner2, title: 'Boys Collections', subtitle: 'Get an extra 30% discount', category: 'Boys Collections' },
-    { id: 113, code: '64A288113', type: 'product', image: prod1, title: 'Name of the product', price: '3710', oldPrice: '4000', theme: 'yellow', category: 'Just Born Collections', age: '0-12 months', size: '22.7mm', color: 'Brass', pattern: 'Gem Stones', productType: 'Earrings', rating: 4.8, date: '2023-12-10' },
-];
-
-export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddToWishlist }) {
+export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddToWishlist, cartItems = [], updateQuantity }) {
     const [wishlistToast, setWishlistToast] = useState(null);
+    const [cartToast, setCartToast] = useState(null);
+    const [filterToast, setFilterToast] = useState(false);
+    const [resetToast, setResetToast] = useState(false);
+
+    useEffect(() => {
+        if (resetToast) {
+            const timer = setTimeout(() => {
+                setResetToast(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [resetToast]);
+
+    useEffect(() => {
+        if (filterToast) {
+            const timer = setTimeout(() => {
+                setFilterToast(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [filterToast]);
+
+    useEffect(() => {
+        if (cartToast) {
+            const timer = setTimeout(() => {
+                setCartToast(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [cartToast]);
+
+    const triggerCartToast = (message, type = 'updated') => {
+        setCartToast({
+            message,
+            type,
+            id: Date.now()
+        });
+    };
 
     const handleWishlistClick = (product) => {
         const isRemoving = wishlist.some(w => (w.id && product.id ? w.id === product.id : w.title === product.title));
@@ -286,7 +143,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
     const [mobileSortOpen, setMobileSortOpen] = useState(false);
     const [viewMode, setViewMode] = useState('grid');
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
+    const itemsPerPage = 12;
 
     const [filters, setFilters] = useState({
         Categories: [],
@@ -297,12 +154,30 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
         'Product Type': [],
     });
 
+    const [tempFilters, setTempFilters] = useState({
+        Categories: [],
+        Price: [],
+        Colours: [],
+        Sizes: [],
+        Patterns: [],
+        'Product Type': [],
+    });
+
+    useEffect(() => {
+        setTempFilters(filters);
+    }, [filters]);
+
+    const applyFilters = () => {
+        setFilters(tempFilters);
+        setFilterToast(true);
+    };
+
     useEffect(() => {
         setCurrentPage(1);
     }, [selectedCategory, filters, sortBy]);
 
     const handleFilterChange = (title, option, isChecked) => {
-        setFilters(prev => {
+        setTempFilters(prev => {
             const current = prev[title] || [];
             if (isChecked) {
                 return { ...prev, [title]: [...current, option] };
@@ -319,7 +194,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
         return { first: "All", second: "Collections" };
     };
     const headingParts = getHeadingParts();
-    const  activeFilterCount = Object.values(filters).reduce((acc, arr) => acc + arr.length, 0) + (selectedAge ? 1 : 0);
+    const activeFilterCount = Object.values(filters).reduce((acc, arr) => acc + arr.length, 0) + (selectedAge ? 1 : 0);
 
     const filteredItems = gridItems.filter(item => {
         if (selectedCategory !== "All items" && item.category !== selectedCategory) return false;
@@ -390,15 +265,21 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                     <h1 className="text-[32px] sm:text-[40px] md:text-[50px] font-black text-gray-900 leading-tight tracking-wide">
                         {headingParts.first} <span className="text-[#F96E8F]">{headingParts.second}</span>
                     </h1>
-                    <p className="text-[12px] sm:text-[14px] text-gray-800 font-extrabold mt-1 tracking-wide">
-                        Home &gt; shop &gt; <span className="text-[#F96E8F]">{selectedCategory === "All items" ? "All Collections" : selectedCategory}</span>
+                    <p className="text-[12px] sm:text-[14px] text-gray-800 font-extrabold mt-0 tracking-wide">
+                        <span 
+                            className="cursor-pointer hover:text-[#F96E8F] transition-colors"
+                            onClick={() => {
+                                window.history.pushState({}, '', '/');
+                                window.dispatchEvent(new Event('popstate'));
+                            }}
+                        >Home</span> &gt; shop &gt; <span className="text-[#F96E8F]">{selectedCategory === "All items" ? "All Collections" : selectedCategory}</span>
                     </p>
                 </div>
                 <img src={cloud} alt="cloud" className="absolute top-[-115px] sm:top-[-110px] lg:top-[-25px] left-[54%] -translate-x-1/2 lg:left-0 lg:translate-x-0 w-full md:w-[340px] lg:w-[330px] xl:w-[360px] h-auto object-contain pointer-events-none z-30 lg:z-auto" />
                 {/* Left Decoration (Car) */}
                 <img src={headerCar} alt="Car" className="block absolute top-[148px] sm:top-[160px] lg:top-[200px] lg:bottom-[15%] left-1 sm:left-3 lg:left-[2%] xl:left-[4%] w-[65px] sm:w-[80px] lg:w-[90px] xl:w-[100px] object-contain pointer-events-none z-20" />
                 {/* Right Decoration (Bunny) */}
-                <img src={pink} alt="Bunny" className="hidden md:block absolute bottom-[30px] md:bottom-[46px] right-[2%] xl:right-[5%] w-[80px] md:w-[100px] lg:w-[120px] xl:w-[100px] object-contain pointer-events-none z-30" />
+                <img src={pink} alt="Bunny" className="block absolute bottom-[16px] sm:bottom-[30px] md:bottom-[46px] right-[2%] sm:right-[3%] xl:right-[5%] w-[60px] sm:w-[68px] md:w-[100px] lg:w-[120px] xl:w-[100px] object-contain pointer-events-none z-30" />
             </div>
 
             <div className="bg-white relative z-20">
@@ -457,26 +338,34 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         <div className="hidden lg:flex flex-col w-full lg:w-[300px] flex-shrink-0">
                             {/* Filter Section */}
                             <div className="flex flex-col gap-4">
-                                <div className="bg-[#F96E8F] text-white px-5 py-4 rounded-[8px] font-black flex justify-between items-center cursor-pointer shadow-sm">
+                                <div className="bg-[#F96E8F] text-white px-5 py-4 rounded-[8px] font-black flex justify-between items-center shadow-sm">
                                     <span className="text-[18px] font-[Nunito] tracking-wide">Filters</span>
-                                    <span className="text-[10px] font-[Nunito] font-bold">Apply</span>
+                                    <span 
+                                        onClick={applyFilters}
+                                        className="text-[11px] font-[Nunito] font-extrabold uppercase tracking-wider bg-white/20 hover:bg-white/30 px-3 py-1 rounded-[6px] cursor-pointer transition-colors"
+                                    >
+                                        Apply
+                                    </span>
                                 </div>
 
                                 <div className="border border-gray-200 rounded-[15px] overflow-hidden shadow-sm bg-white">
                                     <div className="p-6 flex flex-col gap-5">
-                                        <FilterSection title="Categories" options={['Boys', 'Girls', 'Just Born', '0-5']} selectedOptions={filters.Categories} onChange={handleFilterChange} />
-                                        <FilterSection title="Price" options={['₹ 0 - 2000', '₹ 2000 - 10000', '₹ 10000 - 20000', '₹ 20000 - 50000']} selectedOptions={filters.Price} onChange={handleFilterChange} />
-                                        <FilterSection title="Colours" options={['Gold', 'Silver', 'Brass', 'Rose Gold']} selectedOptions={filters.Colours} onChange={handleFilterChange} />
-                                        <FilterSection title="Sizes" options={['22.7mm', '24mm', '23mm', '22mm', '21mm']} selectedOptions={filters.Sizes} onChange={handleFilterChange} />
-                                        <FilterSection title="Patterns" options={['Eternity', 'Three Stones', 'Gem Stones', 'Diamond']} selectedOptions={filters.Patterns} onChange={handleFilterChange} />
-                                        <FilterSection title="Product Type" options={['Bangles', 'Rings', 'Earrings', 'Bracelets']} selectedOptions={filters['Product Type']} onChange={handleFilterChange} />
+                                        <FilterSection title="Categories" options={['Boys', 'Girls', 'Just Born', '0-5']} selectedOptions={tempFilters.Categories} onChange={handleFilterChange} />
+                                        <FilterSection title="Price" options={['₹ 0 - 2000', '₹ 2000 - 10000', '₹ 10000 - 20000', '₹ 20000 - 50000']} selectedOptions={tempFilters.Price} onChange={handleFilterChange} />
+                                        <FilterSection title="Colours" options={['Gold', 'Silver', 'Brass', 'Rose Gold']} selectedOptions={tempFilters.Colours} onChange={handleFilterChange} />
+                                        <FilterSection title="Sizes" options={['22.7mm', '24mm', '23mm', '22mm', '21mm']} selectedOptions={tempFilters.Sizes} onChange={handleFilterChange} />
+                                        <FilterSection title="Patterns" options={['Eternity', 'Three Stones', 'Gem Stones', 'Diamond']} selectedOptions={tempFilters.Patterns} onChange={handleFilterChange} />
+                                        <FilterSection title="Product Type" options={['Bangles', 'Rings', 'Earrings', 'Bracelets']} selectedOptions={tempFilters['Product Type']} onChange={handleFilterChange} />
                                     </div>
                                 </div>
 
                                 <button
                                     onClick={() => {
                                         setSelectedAge(null);
-                                        setFilters({ Categories: [], Price: [], Colours: [], Sizes: [], Patterns: [], 'Product Type': [] });
+                                        const cleared = { Categories: [], Price: [], Colours: [], Sizes: [], Patterns: [], 'Product Type': [] };
+                                        setFilters(cleared);
+                                        setTempFilters(cleared);
+                                        setResetToast(true);
                                     }}
                                     className="w-full bg-[#F96E8F] text-white font-extrabold py-3.5 rounded-[8px] hover:bg-[#E44971] transition-colors shadow-sm text-[14px]">
                                     RESET ALL FILTER
@@ -559,6 +448,8 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             <div className={viewMode === 'grid' ? "grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6" : "flex flex-col gap-4 md:gap-6"}>
                                 {paginatedItems.map((item, index) => {
                                     if (item.type === 'product') {
+                                        const cartItem = cartItems.find(c => (c.id && item.id) ? c.id === item.id : c.title === item.title);
+                                        const cartQuantity = cartItem ? cartItem.quantity : 0;
                                         return (
                                             <ProductCard
                                                 key={item.id || index}
@@ -572,8 +463,23 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                                 isWishlisted={wishlist.some(w => (w.id && item.id ? w.id === item.id : w.title === item.title))}
                                                 onAddToWishlist={handleWishlistClick}
                                                 onClick={() => onSelectProduct && onSelectProduct(item)}
-                                                onAddToCart={() => addToCart && addToCart(item, 1)}
+                                                onAddToCart={() => {
+                                                    if (addToCart) addToCart(item, 1);
+                                                    triggerCartToast('cart item updated', 'updated');
+                                                }}
                                                 viewMode={viewMode}
+                                                cartQuantity={cartQuantity}
+                                                onUpdateQuantity={(productItem, delta) => {
+                                                    const matchingCartItem = cartItems.find(c => (c.id && productItem.id) ? c.id === productItem.id : c.title === productItem.title);
+                                                    if (matchingCartItem) {
+                                                        if (delta === -1 && matchingCartItem.quantity <= 1) {
+                                                            triggerCartToast('Item removed from cart', 'removed');
+                                                        } else {
+                                                            triggerCartToast('cart item updated', 'updated');
+                                                        }
+                                                        updateQuantity(matchingCartItem, delta);
+                                                    }
+                                                }}
                                             />
                                         );
                                     } else if (item.type === 'banner') {
@@ -582,7 +488,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                         return (
                                             <div key={index} className={`col-span-2 md:col-span-2 rounded-[12px] md:rounded-[20px] overflow-hidden relative shadow-sm border-[2px] md:border-[3px] ${borderClass} ${bgClass} group cursor-pointer h-[120px] md:h-auto`}>
                                                 <img src={item.bannerImage} alt={item.title} className="w-[45%] h-full object-cover absolute right-0 inset-y-0" />
-                                                <div className="relative z-10 px-4 md:px-8 py-2 md:py-8 h-full flex flex-col justify-center max-w-[55%]">
+                                                <div className="relative z-10 px-4 pt-5 md:px-8 py-2 md:py-8 h-full flex flex-col justify-center max-w-[55%]">
                                                     <h3 className="text-[20px] md:text-[52.5px] whitespace-nowrap w-full font-black text-gray-900 leading-none mb-1 font-['Lobster_Two'] tracking-tight">{item.title}</h3>
                                                     <p className="text-gray-900 font-['Nunito'] font-bold text-[10px] md:text-[22.5px] mb-2 md:mb-6">{item.subtitle}</p>
                                                     <button className="bg-white text-[#F96E8F] border-[2px] border-dashed border-[#F96E8F] px-4 md:px-8 py-1 md:py-2.5 rounded-full font-black w-fit shadow-sm hover:shadow-md transition-shadow uppercase tracking-wide text-[9px] md:text-[13px]">View Shop</button>
@@ -634,7 +540,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
 
             {/* Wishlist Added / Removed Popup Notification */}
             {wishlistToast && (
-                <div className={`fixed top-8 right-8 z-50 bg-white border-[2px] ${wishlistToast.action === 'removed' ? 'border-gray-300 shadow-lg' : 'border-[#F96E8F] shadow-lg'} text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 min-w-[280px] max-w-[360px]`}>
+                <div className={`fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] bg-white border-[2px] ${wishlistToast.action === 'removed' ? 'border-gray-300 shadow-lg' : 'border-[#F96E8F] shadow-lg'} text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 min-w-[280px] max-w-[360px] animate-toast-up`}>
                     <div className={`w-10 h-10 rounded-[12px] ${wishlistToast.action === 'removed' ? 'bg-gray-100 text-gray-500' : 'bg-[#F96E8F]/15 text-[#F96E8F]'} flex items-center justify-center flex-shrink-0`}>
                         {wishlistToast.action === 'removed' ? (
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -661,11 +567,103 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 </div>
             )}
 
+            {/* Cart Update Toast Notification */}
+            {cartToast && (
+                <div key={cartToast.id} className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] animate-toast-up bg-white rounded-2xl shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-[#F87597]/20 px-5 py-4 font-['Nunito'] flex items-center gap-3">
+                    {cartToast.type === 'removed' ? (
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-50 text-rose-500">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-500">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                    )}
+                    <div className="flex flex-col text-left">
+                        <span className="text-[#F87597] text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+                            {cartToast.type === 'removed' ? 'Item Removed' : 'Cart Updated'}
+                        </span>
+                        <span className="text-gray-500 text-xs font-semibold">
+                            {cartToast.message}
+                        </span>
+                    </div>
+                    <button 
+                        onClick={() => setCartToast(null)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            )}
+
+            {/* Filter Applied Toast Notification */}
+            {filterToast && (
+                <div className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] animate-toast-up bg-white rounded-2xl shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-[#F87597]/20 px-5 py-4 font-['Nunito'] flex items-center gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-500">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div className="flex flex-col text-left">
+                        <span className="text-[#F87597] text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+                            Filters Applied
+                        </span>
+                        <span className="text-gray-500 text-xs font-semibold">
+                            Your product list has been updated
+                        </span>
+                    </div>
+                    <button 
+                        onClick={() => setFilterToast(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            )}
+
+            {/* Filters Reset Toast Notification */}
+            {resetToast && (
+                <div className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] animate-toast-up bg-white rounded-2xl shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-[#F87597]/20 px-5 py-4 font-['Nunito'] flex items-center gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-500">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div className="flex flex-col text-left">
+                        <span className="text-[#F87597] text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+                            Filters Reset
+                        </span>
+                        <span className="text-gray-500 text-xs font-semibold">
+                            All filters have been cleared
+                        </span>
+                    </div>
+                    <button 
+                        onClick={() => setResetToast(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            )}
+
             {/* Fixed Bottom Filter & Sort Bar for Mobile */}
             <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white  py-3 px-4  flex items-center gap-3">
                 {/* Filter By Button */}
                 <button
-                    onClick={() => setMobileFilterOpen(true)}
+                    onClick={() => {
+                        setTempFilters(filters);
+                        setMobileFilterOpen(true);
+                    }}
                     className="flex-1 bg-[#F96E8F] hover:bg-[#E44971] font-[Helvetica] text-white py-2.5 px-4 rounded-[10px] font-bold text-[15px] flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
                 >
                     <img src={filter} alt="filter" className="w-5" />
@@ -717,12 +715,12 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
 
                         {/* Filter Options Body */}
                         <div className="p-5 flex-1 overflow-y-auto flex flex-col gap-5">
-                            <FilterSection title="Categories" options={['Boys', 'Girls', 'Just Born', '0-5']} selectedOptions={filters.Categories} onChange={handleFilterChange} />
-                            <FilterSection title="Price" options={['₹ 0 - 2000', '₹ 2000 - 10000', '₹ 10000 - 20000', '₹ 20000 - 50000']} selectedOptions={filters.Price} onChange={handleFilterChange} />
-                            <FilterSection title="Colours" options={['Gold', 'Silver', 'Brass', 'Rose Gold']} selectedOptions={filters.Colours} onChange={handleFilterChange} />
-                            <FilterSection title="Sizes" options={['22.7mm', '24mm', '23mm', '22mm', '21mm']} selectedOptions={filters.Sizes} onChange={handleFilterChange} />
-                            <FilterSection title="Patterns" options={['Eternity', 'Three Stones', 'Gem Stones', 'Diamond']} selectedOptions={filters.Patterns} onChange={handleFilterChange} />
-                            <FilterSection title="Product Type" options={['Bangles', 'Rings', 'Earrings', 'Bracelets']} selectedOptions={filters['Product Type']} onChange={handleFilterChange} />
+                            <FilterSection title="Categories" options={['Boys', 'Girls', 'Just Born', '0-5']} selectedOptions={tempFilters.Categories} onChange={handleFilterChange} />
+                            <FilterSection title="Price" options={['₹ 0 - 2000', '₹ 2000 - 10000', '₹ 10000 - 20000', '₹ 20000 - 50000']} selectedOptions={tempFilters.Price} onChange={handleFilterChange} />
+                            <FilterSection title="Colours" options={['Gold', 'Silver', 'Brass', 'Rose Gold']} selectedOptions={tempFilters.Colours} onChange={handleFilterChange} />
+                            <FilterSection title="Sizes" options={['22.7mm', '24mm', '23mm', '22mm', '21mm']} selectedOptions={tempFilters.Sizes} onChange={handleFilterChange} />
+                            <FilterSection title="Patterns" options={['Eternity', 'Three Stones', 'Gem Stones', 'Diamond']} selectedOptions={tempFilters.Patterns} onChange={handleFilterChange} />
+                            <FilterSection title="Product Type" options={['Bangles', 'Rings', 'Earrings', 'Bracelets']} selectedOptions={tempFilters['Product Type']} onChange={handleFilterChange} />
                         </div>
 
                         {/* Footer Buttons */}
@@ -730,14 +728,20 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             <button
                                 onClick={() => {
                                     setSelectedAge(null);
-                                    setFilters({ Categories: [], Price: [], Colours: [], Sizes: [], Patterns: [], 'Product Type': [] });
+                                    const cleared = { Categories: [], Price: [], Colours: [], Sizes: [], Patterns: [], 'Product Type': [] };
+                                    setFilters(cleared);
+                                    setTempFilters(cleared);
+                                    setResetToast(true);
                                 }}
                                 className="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 font-extrabold py-3 rounded-xl transition-colors cursor-pointer text-sm"
                             >
                                 Reset All
                             </button>
                             <button
-                                onClick={() => setMobileFilterOpen(false)}
+                                onClick={() => {
+                                    applyFilters();
+                                    setMobileFilterOpen(false);
+                                }}
                                 className="flex-1 bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold py-3 rounded-xl transition-colors shadow-md cursor-pointer text-sm"
                             >
                                 Apply Filters
@@ -786,8 +790,8 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                         setMobileSortOpen(false);
                                     }}
                                     className={`w-full text-left py-3 px-3 rounded-xl font-bold text-sm flex items-center justify-between transition-colors cursor-pointer ${sortBy === option.id
-                                            ? 'bg-[#F96E8F]/10 text-[#F96E8F]'
-                                            : 'text-gray-700 hover:bg-gray-50'
+                                        ? 'bg-[#F96E8F]/10 text-[#F96E8F]'
+                                        : 'text-gray-700 hover:bg-gray-50'
                                         }`}
                                 >
                                     <span>{option.label}</span>

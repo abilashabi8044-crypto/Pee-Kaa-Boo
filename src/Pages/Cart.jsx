@@ -1,6 +1,7 @@
+import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import React, { useState, useEffect } from 'react';
-import Header from './Header';
-import Footer from './Footer';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 // Assets
 import leftCar from '../assets/cart/left-img.png';
@@ -27,12 +28,14 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
   const [pincode, setPincode] = useState('');
   const [isChangingPincode, setIsChangingPincode] = useState(false);
   const [newPincode, setNewPincode] = useState('');
-  const [pincodeStatus, setPincodeStatus] = useState(null); // null | 'loading' | 'available' | 'unavailable' | 'error'
+  const [pincodeStatus, setPincodeStatus] = useState(null);
   const [pincodeLocation, setPincodeLocation] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [addedItems, setAddedItems] = useState({});
   const [showOrderSummaryModal, setShowOrderSummaryModal] = useState(false);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 640 : false);
+  const [toastTrigger, setToastTrigger] = useState(0);
+  const [toastType, setToastType] = useState('updated'); 
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,6 +44,24 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    if (toastTrigger > 0) {
+      const timer = setTimeout(() => {
+        setToastTrigger(0);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastTrigger]);
+
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      setAppliedCoupon(false);
+      setAppliedCouponCode('');
+      setCouponCode('');
+      setShowCouponInput(false);
+    }
+  }, [cartItems]);
 
   const navigateTo = (path) => {
     window.history.pushState({}, '', path);
@@ -73,8 +94,28 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
   const handleQtyChange = (item, delta) => {
     if (updateQuantity) {
+      if (delta === -1 && (item.quantity || 1) <= 1) {
+        setToastType('removed');
+      } else {
+        setToastType('updated');
+      }
       updateQuantity(item, delta);
+      setToastTrigger(prev => prev + 1);
     }
+  };
+
+  const getExpectedDeliveryDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 2);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'long' });
+
+    let suffix = "th";
+    if (day % 10 === 1 && day !== 11) suffix = "st";
+    else if (day % 10 === 2 && day !== 12) suffix = "nd";
+    else if (day % 10 === 3 && day !== 13) suffix = "rd";
+
+    return `${day}${suffix} ${month}`;
   };
 
   // Financial calculations
@@ -191,7 +232,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                           Product Code : {item.code || (item.id ? `64A288${item.id}` : '64A288075')}
                         </p>
                         <p className="text-gray-900 sm:text-gray-700 font-extrabold text-[12px] sm:text-[17px] my-1.5 sm:mt-16 sm:mb-3">
-                          Expected Delivery Date : {item.deliveryDate || (item.weight && !item.weight.includes('Gram') ? item.weight : '20 Jan')}
+                          Expected Delivery Date : {getExpectedDeliveryDate()}
                         </p>
                       </div>
 
@@ -296,7 +337,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
             {/* Apply Coupon Box */}
             <div
-              className="rounded-xl flex bg-white shadow-xs"
+              className={`rounded-xl flex bg-white shadow-xs ${cartItems.length === 0 ? 'opacity-60' : ''}`}
               style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100%25\' height=\'100%25\' fill=\'none\' rx=\'12\' ry=\'12\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'14%2c 14\' stroke-dashoffset=\'0\' stroke-linecap=\'square\'/%3e%3c/svg%3e")' }}
             >
               <div
@@ -304,14 +345,15 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cline x1=\'100%25\' y1=\'15%25\' x2=\'100%25\' y2=\'85%25\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'8%2c 8\' /%3e%3c/svg%3e")' }}
               >
                 <div className="w-10 h-10 rounded-full bg-[#FFFFFF] text-white flex items-center justify-center font-black">
-                  <img src={discount} alt="" className='h-[36px] w-[36px]' />
+                  <img src={discount} alt="" className={`h-[36px] w-[36px] ${cartItems.length === 0 ? 'grayscale opacity-60' : ''}`} />
                 </div>
-                <span className="text-[#F96E8F] font-bold text-[21px] md:text-[28px] font-[Baloo_2] tracking-wide">
+                <span className={`font-bold text-[21px] md:text-[28px] font-[Baloo_2] tracking-wide ${cartItems.length === 0 ? 'text-gray-400' : 'text-[#F96E8F]'}`}>
                   Apply Coupon
                 </span>
               </div>
               <button
                 onClick={() => {
+                  if (cartItems.length === 0) return;
                   if (appliedCoupon) {
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
@@ -320,25 +362,27 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                     setShowCouponInput(true);
                   }
                 }}
-                className="text-[#F96E8F] font-bold text-[16px] md:text-[21px] px-8 hover:underline cursor-pointer"
+                disabled={cartItems.length === 0}
+                className={`font-bold text-[16px] md:text-[21px] px-8 cursor-pointer ${cartItems.length === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#F96E8F] hover:underline'}`}
               >
                 {appliedCoupon ? 'Remove' : 'Apply'}
               </button>
             </div>
 
             {/* Specific Offer Card */}
-            <div className="border border-[#F96E8F] rounded-xl p-4 bg-white flex justify-between items-center shadow-xs">
+            <div className={`border rounded-xl p-4 bg-white flex justify-between items-center shadow-xs ${cartItems.length === 0 ? 'border-gray-200 opacity-60' : 'border-[#F96E8F]'}`}>
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#Fffff] text-white flex items-center justify-center font-black">
-                  <img src={discount} alt="" className='h-[24px] w-[24px]' />
+                  <img src={discount} alt="" className={`h-[24px] w-[24px] ${cartItems.length === 0 ? 'grayscale opacity-60' : ''}`} />
                 </div>
                 <div>
-                  <h4 className="font-[Baloo_2] font-bold text-gray-900 text-[14px] md:text-[17px] uppercase">FLAT ₹1000</h4>
-                  <p className="text-gray-800 font-[Baloo_2] font-bold text-[12px] md:text-[15px]">Flat 1000 off on Preset jewellery</p>
+                  <h4 className={`font-[Baloo_2] font-bold text-[14px] md:text-[17px] uppercase ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-900'}`}>FLAT ₹1000</h4>
+                  <p className={`font-[Baloo_2] font-bold text-[12px] md:text-[15px] ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-800'}`}>Flat 1000 off on Preset jewellery</p>
                 </div>
               </div>
               <button
                 onClick={() => {
+                  if (cartItems.length === 0) return;
                   if (appliedCoupon && appliedCouponCode === 'FLAT1000') {
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
@@ -348,7 +392,8 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                     setShowCouponInput(false);
                   }
                 }}
-                className="text-gray-400 font-extrabold text-[12px] md:text-[14px] px-4 hover:underline cursor-pointer"
+                disabled={cartItems.length === 0}
+                className={`font-extrabold text-[12px] md:text-[14px] px-4 cursor-pointer ${cartItems.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-400 hover:underline'}`}
               >
                 {appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'Applied' : 'Apply'}
               </button>
@@ -428,8 +473,16 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
             {/* Full Width Apply More Coupons Button */}
             <button
-              onClick={() => setShowCouponInput(!showCouponInput)}
-              className="w-full bg-[#F96E8F] hover:bg-[#E44971] text-white font-medium py-3 rounded-b-xl text-[15px] font-[Nunito] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2"
+              onClick={() => {
+                if (cartItems.length === 0) return;
+                setShowCouponInput(!showCouponInput);
+              }}
+              disabled={cartItems.length === 0}
+              className={`w-full font-medium py-3 rounded-b-xl text-[15px] font-[Nunito] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2 ${
+                cartItems.length === 0
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60 border border-gray-200 border-t-0'
+                  : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer'
+              }`}
             >
               {showCouponInput ? 'Close Coupon Input' : 'Apply More Coupons'}
             </button>
@@ -545,148 +598,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
         </div>
 
-        {/* You May Also Like Section */}
-        <section className="bg-[#F4FCFF] rounded-[2rem] p-4 pb-4 sm:p-6 sm:pb-6 md:p-8 md:pb-6 mt-6 sm:mt-8 mb-0 shadow-xs">
-          <h2 className="text-[24px] md:text-[41px] font-black text-gray-900 mb-6 sm:mb-8 font-['Baloo_2']">
-            You May <span className="text-[#F96E8F]">Also Like</span>
-          </h2>
-
-          {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {recommendedProducts.slice(carouselIndex, carouselIndex + itemsPerPage).map((product, idx) => {
-              let borderColor = 'border-[#FFB7D5]';
-              let bgTheme = 'bg-[#FFB7D5]/20';
-              if (product.theme === 'blue') {
-                borderColor = 'border-[#85CDFD]';
-                bgTheme = 'bg-[#85CDFD]/20';
-              } else if (product.theme === 'yellow') {
-                borderColor = 'border-[#FFE2A0]';
-                bgTheme = 'bg-[#FFE2A0]/20';
-              }
-
-              return (
-                <div
-                  key={product.id || idx}
-                  onClick={() => navigateTo('/product')}
-                  className={`rounded-[20px] border-[3px] ${borderColor} ${bgTheme} overflow-hidden flex flex-col shadow-sm relative group cursor-pointer transition-all duration-300 hover:shadow-md`}
-                >
-                  {/* Top Image area */}
-                  <div className="h-[240px] w-full p-0 relative flex items-center justify-center">
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="w-full h-full object-cover rounded-t-[17px] group-hover:scale-105 transition-transform duration-300"
-                    />
-
-                    {/* Best Selling Badge (Top Left - Appears on Hover / Active) */}
-                    <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                      <div className="bg-[#00D0CC] text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                          <path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
-                          <path d="m8.21 13.89-3 4.1c-.26.36-.02.85.43.85h3.6l1.26 3.16c.16.4.74.4 1 0L12.76 18.84h3.6c.45 0 .69-.49.43-.85l-3-4.1" />
-                        </svg>
-                        <span className="text-[12px] font-extrabold tracking-wide">Best Selling</span>
-                      </div>
-                    </div>
-
-                    {/* Action Buttons (Top Right - Wishlist & Copy) */}
-                    <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                      {/* Wishlist Heart */}
-                      <button className="w-9 h-9 bg-[#00D0CC] hover:bg-[#00b3b0] text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                        </svg>
-                      </button>
-                      {/* Compare / Copy Icon */}
-                      <button className="w-9 h-9 bg-[#00D0CC] hover:bg-[#00b3b0] text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Content area */}
-                  <div className="bg-white m-[10px] mt-0 rounded-[14px] p-4 text-center flex-1 flex flex-col justify-center relative transition-all duration-300 shadow-xs">
-                    <span className="text-gray-400 text-[11px] font-[Nunito] font-[13px] uppercase mb-1">
-                      {product.category}
-                    </span>
-
-                    <h4 className="text-gray-900 font-bold text-[24px] sm:text-[20px] leading-tight mb-1 tracking-wide font-['Nunito'] group-hover:text-[#F96E8F] transition-colors">
-                      {product.title}
-                    </h4>
-
-                    <div className="flex justify-center items-center gap-2">
-                      <del className="text-gray-400 font-bold text-[19px] font-[Nunito]">₹ {product.oldPrice}</del>
-                      <span className="text-[#F96E8F] font-bold text-[33px] font-['Nunito']">₹ {product.price}</span>
-                    </div>
-
-                    {/* Expandable Content (Add to Cart) */}
-                    <div className="w-full max-h-0 opacity-0 overflow-hidden group-hover:max-h-[60px] group-hover:opacity-100 group-hover:mt-3 transition-all duration-500 ease-in-out">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (addToCart) {
-                            addToCart(product, 1);
-                          } else if (updateQuantity) {
-                            updateQuantity(product, 1);
-                          }
-
-                          // Trigger success animation
-                          setAddedItems(prev => ({ ...prev, [product.id]: true }));
-                          setTimeout(() => {
-                            setAddedItems(prev => ({ ...prev, [product.id]: false }));
-                          }, 2000);
-                        }}
-                        className={`w-full py-2.5 px-4 border-2 border-[#F96E8F] rounded-full font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center shadow-xs ${addedItems[product.id]
-                          ? 'bg-[#F96E8F] text-white border-solid scale-95'
-                          : 'border-dashed text-[#F96E8F] hover:bg-[#F96E8F] hover:text-white hover:border-solid active:scale-95'
-                          }`}
-                      >
-                        {addedItems[product.id] ? (
-                          <span className="flex items-center gap-2 transform transition-transform duration-300">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                            Added!
-                          </span>
-                        ) : 'Add to Cart'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Slider Controls */}
-          <div className="flex items-center justify-between mt-4 sm:mt-6">
-            {/* Progress Bar */}
-            <div className="flex-1 h-1.5 bg-gray-200 rounded-full mr-6 relative overflow-hidden">
-              <div
-                className="absolute left-0 top-0 h-full bg-[#F96E8F] rounded-full transition-all duration-300"
-                style={{ width: `${progressWidth}%` }}
-              ></div>
-            </div>
-
-            {/* Next / Prev Circle Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={handlePrevCarousel}
-                disabled={carouselIndex === 0}
-                className="w-10 h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-600 hover:border-gray-800 hover:text-gray-800 transition-colors bg-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-              >
-                <img src={arrowLeft} alt="Previous" className="w-8 h-8" />
-              </button>
-              <button
-                onClick={handleNextCarousel}
-                disabled={carouselIndex >= maxCarousel}
-                className="w-10 h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-600 hover:border-gray-800 hover:text-gray-800 transition-colors bg-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-              >
-                <img src={arrowRight} alt="Next" className="w-8 h-8" />
-              </button>
-            </div>
-          </div>
-        </section>
+        <YouMayAlsoLike addToCart={addToCart} updateQuantity={updateQuantity} />
 
       </main>
 
@@ -796,6 +708,41 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
       {/* Footer */}
       <Footer />
+
+      {/* Toast Notification */}
+      {toastTrigger > 0 && (
+        <div className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] animate-toast-up bg-white rounded-2xl shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-[#F96E8F]/20 px-5 py-4 font-['Nunito'] flex items-center gap-3">
+          {toastType === 'removed' ? (
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-50 text-rose-500">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-500">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          )}
+          <div className="flex flex-col text-left">
+            <span className="text-[#F96E8F] text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+              {toastType === 'removed' ? 'Item Removed' : 'Cart Updated'}
+            </span>
+            <span className="text-gray-500 text-xs font-semibold">
+              {toastType === 'removed' ? 'Item removed from cart' : 'Your items have been updated'}
+            </span>
+          </div>
+          <button 
+            onClick={() => setToastTrigger(0)}
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,60 +1,30 @@
+import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addOrders as addOrdersAction } from '../redux/ordersSlice';
 import { clearCart } from '../redux/cartSlice';
-import Header from './Header';
-import Footer from './Footer';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 // Icons & Assets
 import discount from '../assets/cart/discount.png';
-import giftWrap1 from '../assets/checkout/wrap1.png';
-import giftWrap2 from '../assets/checkout/wrap2.png';
-import giftWrap3 from '../assets/checkout/wrap3.png';
-import netBankingIcon from '../assets/checkout/noto_bank.png';
-import debitCardIcon from '../assets/checkout/twemoji_credit-card (1).png';
-import creditCardIcon from '../assets/checkout/twemoji_credit-card.png';
-import upiIcon from '../assets/checkout/upi-id 1.png';
-import axisLogo from '../assets/checkout/bank-logo/axis.png';
-import hdfcLogo from '../assets/checkout/bank-logo/hdfc.png';
-import hsbcLogo from '../assets/checkout/bank-logo/hsbc.png';
-import iciciLogo from '../assets/checkout/bank-logo/icici.png';
-import iobLogo from '../assets/checkout/bank-logo/iob.png';
-import kotakLogo from '../assets/checkout/bank-logo/kotak.png';
-import sbiLogo from '../assets/checkout/bank-logo/sbi.png';
 import arrowLeft from '../assets/product/arrow-l.png';
 import arrowRight from '../assets/product/arrow-r.png';
 import { gridItems } from './Shop';
-import location from '../assets/cart/location.png';
-import visa from '../assets/checkout/visa.png';
-import mastercard from '../assets/checkout/mastercard.png';
-import rupay from '../assets/checkout/rupay.png';
-import check from '../assets/checkout/check.png';
-import gpayLogo from '../assets/checkout/bank-logo/g-pay.png';
-import phonepeLogo from '../assets/checkout/bank-logo/p-pay.png';
-import paytmLogo from '../assets/checkout/bank-logo/paytm.png';
-import paypalLogo from '../assets/checkout/bank-logo/pay-pal.png';
 
-
+// Subcomponents
+import CheckoutAddress from '../components/CheckoutAddress';
+import CheckoutPayment from '../components/CheckoutPayment';
 
 const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => {
   const dispatch = useDispatch();
+  const giftWraps = [
+    { id: 'wrap1', name: 'Warm Hugs' },
+    { id: 'wrap2', name: 'Purple Sun' },
+    { id: 'wrap3', name: 'Fairy Tales' },
+  ];
   const [checkoutStep, setCheckoutStep] = useState('address');
-  const [selectedPayment, setSelectedPayment] = useState('netbanking');
-  const [showBankModal, setShowBankModal] = useState(false);
-  const [showCardModal, setShowCardModal] = useState(false);
-  const [showUpiModal, setShowUpiModal] = useState(false);
-  const [upiId, setUpiId] = useState('');
-  const [selectedUpiApp, setSelectedUpiApp] = useState('');
-  const [cardHolderName, setCardHolderName] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiryMM, setCardExpiryMM] = useState('');
-  const [cardExpiryYYYY, setCardExpiryYYYY] = useState('');
-  const [cardCVV, setCardCVV] = useState('');
-  const [saveCard, setSaveCard] = useState(true);
-  const [selectedBankId, setSelectedBankId] = useState('');
-  const [dropdownBankId, setDropdownBankId] = useState('');
-  const [bankSearchQuery, setBankSearchQuery] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState('online');
   const [showThankYouModal, setShowThankYouModal] = useState(false);
   const [showOrderSummaryModal, setShowOrderSummaryModal] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -68,6 +38,15 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      setAppliedCoupon(false);
+      setAppliedCouponCode('');
+      setCouponCode('');
+      setShowCouponInput(false);
+    }
+  }, [cartItems]);
 
   const recommendedProducts = gridItems.filter(item => item.type === 'product');
   const itemsPerPage = isMobile ? 1 : 4;
@@ -111,51 +90,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
     }
   };
 
-  const [allBanks, setAllBanks] = useState([]);
 
-  useEffect(() => {
-    fetch('/banks.json')
-      .then(res => res.json())
-      .then(data => setAllBanks(data))
-      .catch(err => console.error("Error fetching banks:", err));
-  }, []);
-
-  const filteredBanks = allBanks.filter(bank => bank.name.toLowerCase().includes(bankSearchQuery.toLowerCase()));
-
-  const popularBanks = [
-    { id: 'axis', name: 'Axis', logo: axisLogo },
-    { id: 'icici', name: 'ICICI', logo: iciciLogo },
-    { id: 'iob', name: 'IOB', logo: iobLogo },
-    { id: 'hdfc', name: 'HDFC', logo: hdfcLogo },
-    { id: 'kotak', name: 'Kotak', logo: kotakLogo },
-    { id: 'sbi', name: 'SBI', logo: sbiLogo },
-    { id: 'hsbc', name: 'HSBC', logo: hsbcLogo },
-  ];
-
-  const PaymentOption = ({ id, icon, title, subtitle }) => {
-    const isSelected = selectedPayment === id;
-    return (
-      <div
-        onClick={() => setSelectedPayment(id)}
-        className="flex items-center gap-4 py-2 cursor-pointer group"
-      >
-        <div className="w-[45px] h-[45px] rounded-[10px] bg-gray-50 flex items-center justify-center border border-gray-100 shadow-sm shrink-0">
-          {typeof icon === 'string' ? (
-            <img src={icon} alt={title} className="w-[28px] h-[28px] object-contain" />
-          ) : (
-            icon
-          )}
-        </div>
-        <div className="flex-1">
-          <h4 className="font-black text-[22px] text-gray-900">{title}</h4>
-          <p className="font-extrabold text-[11px] text-gray-400 mt-1 leading-none">{subtitle}</p>
-        </div>
-        <div className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors ${isSelected ? 'border-[#F96E8F]' : 'border-gray-300'}`}>
-          {isSelected && <div className="w-2.5 h-2.5 bg-[#F96E8F] rounded-full"></div>}
-        </div>
-      </div>
-    );
-  };
   const [isGift, setIsGift] = useState(false);
   const [selectedGiftWrap, setSelectedGiftWrap] = useState('');
   const [giftMessage, setGiftMessage] = useState('');
@@ -225,15 +160,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
         address: `${deliveryAddress.line1 || ''}, ${deliveryAddress.line2 || ''}`.replace(/^,\s*|,\s*$/g, '') || '123 Anywhere St., Any City, ST 12345',
         phone: deliveryAddress.phone || currentUserPhone
       },
-      paymentMethod: selectedPayment === 'cod'
-        ? 'Cash On Delivery'
-        : selectedPayment === 'netbanking'
-        ? `Net Banking${selectedBankId ? ` (${selectedBankId.toUpperCase()})` : ''}`
-        : selectedPayment === 'debit'
-        ? 'Debit Card'
-        : selectedPayment === 'credit'
-        ? 'Credit Card'
-        : 'UPI',
+      paymentMethod: selectedPayment === 'cod' ? 'Cash On Delivery' : 'Online Payment',
       itemTotal: displayItemTotal,
       savedAmount: displaySaved,
       couponDiscount,
@@ -253,7 +180,6 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
       console.error(e);
     }
 
-    setShowBankModal(false);
     setShowThankYouModal(true);
   };
 
@@ -379,386 +305,13 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
     setAddresses(addresses.filter(addr => addr.id !== id));
   };
 
-  const giftWraps = [
-    { id: 'wrap1', name: 'Warm Hugs', image: giftWrap1 },
-    { id: 'wrap2', name: 'Purple Sun', image: giftWrap2 },
-    { id: 'wrap3', name: 'Fairy Tales', image: giftWrap3 },
-  ];
 
-  const renderAddressCard = (addr, selectedId, onSelect) => {
-    const isSelected = selectedId === addr.id;
-    return (
-      <div
-        key={addr.id}
-        onClick={() => onSelect(addr.id)}
-        className={`rounded-[12px] border cursor-pointer overflow-hidden transition-all duration-200 ${isSelected ? 'border-[#F96E8F]' : 'border-gray-200'} bg-white flex flex-col`}
-      >
-        <div className={`flex justify-between items-center p-3 font-['Baloo_2'] font-bold ${isSelected ? 'bg-[#F96E8F] text-white' : 'bg-white text-gray-800 border-b border-gray-100'}`}>
-          <span className="text-[14px] font-extrabold">{addr.name}</span>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={(e) => handleEditAddress(e, addr)} className={`hover:opacity-70 cursor-pointer ${isSelected ? 'text-white' : 'text-blue-500'}`} title="Edit">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-            </button>
-            <button type="button" onClick={(e) => handleDeleteAddress(e, addr.id)} className={`hover:opacity-70 cursor-pointer ${isSelected ? 'text-white' : 'text-red-500'}`} title="Delete">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-            </button>
-            <svg className={`w-4 h-4 ml-1 ${isSelected ? 'text-white' : 'text-[#F96E8F]'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-          </div>
-        </div>
-        <div className={`p-4 font-['Baloo_2'] text-[13px] text-gray-600 flex-1 relative`}>
-          {isSelected && (
-            <div className="absolute inset-0 border-[2px] border-dashed border-[#F96E8F] pointer-events-none" style={{ borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}></div>
-          )}
-          <div className="relative z-10">
-            <p className="font-extrabold text-[15px] text-gray-900 mb-1">{addr.username}</p>
-            <p>{addr.line1}</p>
-            <p>{addr.line2}</p>
-            <p className="mt-1">Phone Number : {addr.phone}</p>
-            <p>Address Type : {addr.type}</p>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
-  return (
+return (
     <div className="w-full min-h-screen bg-white font-['Baloo_2'] flex flex-col">
       <Header cartItems={cartItems} />
 
       <main className="w-full flex-grow relative pt-8 pb-20 lg:pb-0">
-        {/* Bank Popup Modal */}
-        {showBankModal && (
-          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-            <div className="bg-white rounded-[8px] p-8 w-full max-w-lg shadow-xl font-['Baloo_2'] relative">
-              <button onClick={() => setShowBankModal(false)} className="absolute top-6 right-6 text-[#F96E8F] hover:text-[#E44971] cursor-pointer">
-                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-black text-gray-800">Select & Pay via your bank</h3>
-                <p className="text-gray-400 font-bold text-[14px]">Payment will be completed on your bank's website</p>
-              </div>
-
-              <div className="flex flex-wrap justify-center gap-4 px-10">
-                {popularBanks.map(bank => (
-                  <div
-                    key={bank.id}
-                    onClick={() => { setSelectedBankId(bank.id); setDropdownBankId(bank.id); }}
-                    className={`flex flex-col items-center justify-center p-4 rounded-[12px] cursor-pointer transition-all w-[110px] h-[110px] border-2 ${selectedBankId === bank.id ? 'border-[#F96E8F] bg-[#FFF0F4]' : 'border-transparent hover:bg-gray-50'}`}
-                  >
-                    <img src={bank.logo} alt={bank.name} className="h-12 object-contain mb-2" />
-                    <span className="font-bold text-gray-700 text-sm">{bank.name}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center my-6 max-w-lg mx-auto">
-                <hr className="flex-1 border-gray-400" />
-                <span className="mx-4 font-black text-gray-800 text-[16px]">Or</span>
-                <hr className="flex-1 border-gray-400" />
-              </div>
-
-              <div className="max-w-lg mx-auto">
-                <label className="block text-gray-600 font-bold text-sm mb-2">Select Your Bank</label>
-                <div className="relative">
-                  <div
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="w-full border border-gray-200 rounded-[12px] p-4 font-bold text-gray-700 outline-none focus:border-[#F96E8F] bg-white cursor-pointer flex justify-between items-center"
-                  >
-                    <span>{dropdownBankId ? allBanks.find(b => b.id === dropdownBankId)?.name || popularBanks.find(b => b.id === dropdownBankId)?.name : 'Select from all banks'}</span>
-                    <svg className={`w-6 h-6 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-
-                  {isDropdownOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-[12px] shadow-lg z-50 overflow-hidden">
-                      <div className="p-3 border-b border-gray-100">
-                        <div className="relative">
-                          <input
-                            type="text"
-                            placeholder="Search your bank..."
-                            value={bankSearchQuery}
-                            onChange={(e) => setBankSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-[#F96E8F] text-sm"
-                            autoFocus
-                          />
-                          <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="max-h-[200px] overflow-y-auto">
-                        {filteredBanks.length > 0 ? (
-                          filteredBanks.map(bank => (
-                            <div
-                              key={bank.id}
-                              onClick={() => {
-                                setDropdownBankId(bank.id);
-                                setSelectedBankId(bank.id);
-                                setIsDropdownOpen(false);
-                                setBankSearchQuery('');
-                              }}
-                              className={`px-4 py-3 cursor-pointer text-sm font-bold transition-colors ${dropdownBankId === bank.id ? 'bg-[#FFF0F4] text-[#F96E8F]' : 'text-gray-700 hover:bg-gray-50'}`}
-                            >
-                              {bank.name}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="px-4 py-3 text-sm text-gray-500 text-center font-bold">
-                            No banks found
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex justify-center mt-8">
-                  <button 
-                    onClick={() => {
-                      if (selectedBankId) {
-                        handleCompletePayment();
-                      }
-                    }}
-                    className={`w-[260px] text-white font-extrabold py-3.5 rounded-[12px] text-[18px] shadow-sm transition-colors ${selectedBankId ? 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer' : 'bg-pink-300 cursor-not-allowed'}`}
-                    disabled={!selectedBankId}
-                  >
-                    Submit Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Card Details Modal */}
-        {showCardModal && (
-          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-            <div className="bg-white rounded-[8px] p-8 w-full max-w-lg shadow-xl font-['Baloo_2'] relative">
-              <button onClick={() => setShowCardModal(false)} className="absolute top-6 right-6 text-[#F96E8F] hover:text-[#E44971] cursor-pointer">
-                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-
-              <div className="text-center mb-6">
-                <h3 className="text-[24px] font-['Nunito'] text-gray-800">Add New Card</h3>
-                <p className="text-gray-400 font-['Nunito'] text-[14px]">Save & Pay via Cards</p>
-              </div>
-
-              {/* We Accept badges */}
-              <div className="flex items-center gap-3 mb-6">
-                <span className="font-['Nunito'] text-gray-800 text-[18px]">We Accept :</span>
-                <div className="flex items-center gap-2">
-                  <img src={visa} alt="visa" className='w-[23px] h-[10px] object-contain'/>
-                  <img src={mastercard} alt="mastercard" className='w-[23px] h-[10px] object-contain'/>
-                  <img src={rupay} alt="rupay" className='w-[23px] h-[10px] object-contain'/>
-                </div>
-              </div>
-
-              {/* Card Holders Name */}
-              <div className="mb-5">
-                <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">Card Holders Name</label>
-                <input
-                  type="text"
-                  value={cardHolderName}
-                  onChange={(e) => setCardHolderName(e.target.value)}
-                  placeholder="Enter card holder's name"
-                  className="w-full border border-gray-200 rounded-[10px] px-4 py-3 font-bold text-gray-700 text-sm outline-none focus:border-[#F96E8F] transition-colors"
-                />
-              </div>
-
-              {/* Card Number */}
-              <div className="mb-5">
-                <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">Card Number</label>
-                <input
-                  type="text"
-                  value={cardNumber}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '').slice(0, 16);
-                    const formatted = val.replace(/(\d{4})(?=\d)/g, '$1 ');
-                    setCardNumber(formatted);
-                  }}
-                  placeholder="XXXX XXXX XXXX XXXX"
-                  maxLength={19}
-                  className="w-full border border-gray-200 rounded-[10px] px-4 py-3 font-bold text-gray-700 text-sm outline-none focus:border-[#F96E8F] transition-colors tracking-widest"
-                />
-              </div>
-
-              {/* Expiry + CVV Row */}
-              <div className="flex gap-4 mb-6">
-                <div className="flex-1">
-                  <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">Expiry Details</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={cardExpiryMM}
-                      onChange={(e) => setCardExpiryMM(e.target.value.replace(/\D/g, '').slice(0, 2))}
-                      placeholder="MM"
-                      maxLength={2}
-                      className="w-[70px] border border-gray-200 rounded-[10px] px-3 py-3 font-bold text-gray-700 text-sm outline-none focus:border-[#F96E8F] transition-colors text-center"
-                    />
-                    <input
-                      type="text"
-                      value={cardExpiryYYYY}
-                      onChange={(e) => setCardExpiryYYYY(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                      placeholder="YYYY"
-                      maxLength={4}
-                      className="w-[80px] border border-gray-200 rounded-[10px] px-3 py-3 font-bold text-gray-700 text-sm outline-none focus:border-[#F96E8F] transition-colors text-center"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">CVV</label>
-                  <input
-                    type="password"
-                    value={cardCVV}
-                    onChange={(e) => setCardCVV(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                    placeholder="•••"
-                    maxLength={4}
-                    className="w-[100px] border border-gray-200 rounded-[10px] px-3 py-3 font-bold text-gray-700 text-sm outline-none focus:border-[#F96E8F] transition-colors text-center tracking-[0.3em]"
-                  />
-                </div>
-              </div>
-
-              {/* Save Card Checkbox */}
-              <div className="flex items-center gap-3 mb-6">
-                <div
-                  onClick={() => setSaveCard(!saveCard)}
-                  className={`w-5 h-5 rounded flex items-center justify-center cursor-pointer transition-colors border-2 ${
-                    saveCard ? 'border-[#F96E8F]' : 'bg-white border-gray-300'
-                  }`}
-                >
-                  {saveCard && (
-                    <img src={check} alt="checkmark" className='w-[10px] h-[10px] object-contain'/>
-                  )}
-                </div>
-                <span className="font-['Nunito'] text-gray-700 text-[14px]">Save Card With RBI Guidelines</span>
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex justify-center">
-                <button
-                  onClick={() => {
-                    if (cardHolderName && cardNumber && cardExpiryMM && cardExpiryYYYY && cardCVV) {
-                      setShowCardModal(false);
-                      handleCompletePayment();
-                    }
-                  }}
-                  className={`w-[280px] text-white font-extrabold py-3.5 rounded-full text-[18px] shadow-md transition-colors ${
-                    cardHolderName && cardNumber.replace(/\s/g, '').length >= 15 && cardExpiryMM && cardExpiryYYYY.length === 4 && cardCVV.length >= 3
-                      ? 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
-                      : 'bg-pink-300 cursor-not-allowed'
-                  }`}
-                  disabled={!(cardHolderName && cardNumber.replace(/\s/g, '').length >= 15 && cardExpiryMM && cardExpiryYYYY.length === 4 && cardCVV.length >= 3)}
-                >
-                  Submit Details
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* UPI Payment Modal */}
-        {showUpiModal && (
-          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-            <div className="bg-white rounded-[8px] p-8 w-full max-w-lg shadow-xl font-['Baloo_2'] relative">
-              <button onClick={() => setShowUpiModal(false)} className="absolute top-6 right-6 text-[#F96E8F] hover:text-[#E44971] cursor-pointer">
-                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-
-              <div className="text-center mb-8">
-                <h3 className="text-[24px] font-['Nunito'] text-gray-800">Select & Pay via UPI payment</h3>
-                <p className="text-gray-400 font-['Nunito'] text-[14px]">Pay via your Preffered UPI method</p>
-              </div>
-
-              {/* UPI ID Input */}
-              <div className="mb-6">
-                <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">UPI ID</label>
-                <div className="flex items-stretch h-12">
-                  <input
-                    type="text"
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                    placeholder="yourname@upi"
-                    className="flex-1 border border-gray-200 border-r-0 rounded-l-[10px] px-4 py-3 font-bold text-gray-700 text-sm outline-none focus:border-[#F96E8F] transition-colors"
-                  />
-                  <button
-                    className="px-6 border border-gray-200 border-l-0 rounded-r-[10px] text-gray-500 font-['Nunito'] font-bold text-[14px] hover:text-[#F96E8F] transition-colors cursor-pointer bg-white"
-                  >
-                    Verify
-                  </button>
-                </div>
-              </div>
-
-              {/* Or Divider */}
-              <div className="flex items-center my-6 max-w-lg mx-auto">
-                <hr className="flex-1 border-gray-300" />
-                <span className="mx-4 font-black text-gray-800 text-[16px]">Or</span>
-                <hr className="flex-1 border-gray-300" />
-              </div>
-
-              {/* UPI App Options */}
-              <div className="flex justify-center gap-6 mb-8">
-                {[
-                  { id: 'gpay', name: 'Google Pay', logo: gpayLogo },
-                  { id: 'phonepe', name: 'PhonePe', logo: phonepeLogo },
-                  { id: 'paytm', name: 'Paytm', logo: paytmLogo },
-                  { id: 'paypal', name: 'PayPal', logo: paypalLogo },
-                ].map(app => (
-                  <div
-                    key={app.id}
-                    onClick={() => {
-                      setSelectedUpiApp(app.id);
-                      const urls = {
-                        gpay: 'https://pay.google.com',
-                        phonepe: 'https://www.phonepe.com',
-                        paytm: 'https://paytm.com',
-                        paypal: 'https://www.paypal.com'
-                      };
-                      if (urls[app.id]) {
-                        window.open(urls[app.id], '_blank');
-                      }
-                    }}
-                    className={`flex flex-col items-center justify-center p-4 rounded-[12px] cursor-pointer transition-all w-[100px] h-[100px] border-2 ${
-                      selectedUpiApp === app.id ? 'border-[#F96E8F] bg-[#FFF0F4]' : 'border-transparent hover:bg-gray-50'
-                    }`}
-                  >
-                    <img src={app.logo} alt={app.name} className="h-12 w-12 object-contain mb-2" />
-                    <span className="font-bold text-gray-700 text-[12px] font-['Nunito']">{app.name}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex justify-center">
-                <button
-                  onClick={() => {
-                    if (upiId || selectedUpiApp) {
-                      setShowUpiModal(false);
-                      handleCompletePayment();
-                    }
-                  }}
-                  className={`w-[280px] text-[#ffffff] font-[Nunito] py-3.5 rounded-[18px] text-[18px] shadow-md transition-colors ${
-                    upiId || selectedUpiApp
-                      ? 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
-                      : 'bg-pink-300 cursor-not-allowed'
-                  }`}
-                  disabled={!(upiId || selectedUpiApp)}
-                >
-                  Submit Details
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Address Form Modal */}
         {showAddressForm && (
@@ -898,206 +451,32 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
           {/* Left Column (Forms) */}
           <div className="lg:col-span-7 flex flex-col gap-6 bg-[#F4FCFF] p-6 md:p-8 rounded-[30px] border border-blue-50">
             {checkoutStep === 'address' ? (
-              <>
-                {/* Billing Addresses */}
-                <div>
-                  <h2 className="text-[20px] font-black text-gray-900 mb-4 tracking-wide">
-                    Select Billing <span className="text-[#F96E8F]">Addresses</span>
-                  </h2>
-                  {addresses.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {addresses.map(addr => renderAddressCard(addr, billingAddressId, setBillingAddressId))}
-                    </div>
-                  ) : (
-                    <div className="bg-white rounded-[16px] p-6 border-2 border-dashed border-gray-200 text-center text-gray-500 font-bold">
-                      <p className="text-[16px] text-gray-700 mb-1">No address added yet</p>
-                      <p className="text-[13px] text-gray-400">Please click below to add your billing & delivery address.</p>
-                    </div>
-                  )}
-                  <div className="mt-4 flex justify-center">
-                    <button onClick={() => setShowAddressForm(true)} className="flex items-center justify-center gap-2 border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] font-bold py-2 px-12 rounded-[12px] hover:bg-[#FFF0F4] transition-colors w-full sm:w-[50%] cursor-pointer">
-                      <span className="text-[24px] leading-none mb-1">+</span> Add New Address
-                    </button>
-                  </div>
-                </div>
-
-                {/* Checkbox */}
-                <div className="flex items-center gap-3 my-4 cursor-pointer" onClick={() => setSameAsBilling(!sameAsBilling)}>
-                  <div className={`w-[22px] h-[22px] rounded-full flex items-center justify-center border-2 ${sameAsBilling ? 'border-transparent' : 'border-gray-300 bg-white'}`}>
-                    {sameAsBilling && (
-                      <svg className="w-6 h-6 text-[#F96E8F]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
-                  <span className="font-black text-[15px] text-gray-800">Use Shipping Address as Billing Address</span>
-                </div>
-
-                {/* Shipping Addresses */}
-                <div className={`transition-opacity duration-300 ${sameAsBilling ? 'opacity-50 pointer-events-none hidden' : 'opacity-100 block'}`}>
-                  <h2 className="text-[20px] font-black text-gray-900 mb-4 tracking-wide">
-                    Select shipping <span className="text-[#F96E8F]">Addresses</span>
-                  </h2>
-                  {addresses.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {addresses.map(addr => renderAddressCard(addr, shippingAddressId, setShippingAddressId))}
-                    </div>
-                  ) : (
-                    <div className="bg-white rounded-[16px] p-6 border-2 border-dashed border-gray-200 text-center text-gray-500 font-bold">
-                      <p className="text-[16px] text-gray-700 mb-1">No address added yet</p>
-                      <p className="text-[13px] text-gray-400">Please click below to add a shipping address.</p>
-                    </div>
-                  )}
-                  <div className="mt-4 flex justify-center">
-                    <button onClick={() => setShowAddressForm(true)} className="flex items-center justify-center gap-2 border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] font-bold py-2 px-12 rounded-[12px] hover:bg-[#FFF0F4] transition-colors w-full sm:w-[50%] cursor-pointer">
-                      <span className="text-[24px] leading-none mb-1">+</span> Add New Address
-                    </button>
-                  </div>
-                </div>
-
-                {/* Gift Wrap Section */}
-                <div className="bg-white rounded-[20px] p-6 shadow-sm mt-2 border border-gray-100">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-black text-[16px] text-gray-900">Want to make it special</h3>
-                      <p className="text-gray-500 text-[11px] font-extrabold mt-1 leading-snug max-w-[90%]">
-                        Make your order extra special with our elegant gift wrapping and a personalized message perfect for any occasion. Because thoughtful details turn a simple purchase into a memorable gift.
-                      </p>
-                    </div>
-                    {/* Toggle Switch */}
-                    <div
-                      className={`w-20 h-5 rounded-full flex items-center cursor-pointer px-1 mt-1 transition-colors ${isGift ? 'bg-[#F96E8F]' : 'bg-gray-300'}`}
-                      onClick={() => setIsGift(!isGift)}
-                    >
-                      <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-200 ${isGift ? 'translate-x-7' : 'translate-x-0'}`}></div>
-                    </div>
-                  </div>
-
-                  {isGift && (
-                    <div className="mt-6 animate-fade-in">
-                      <h4 className="font-black text-[15px] text-gray-900 mb-4">Choose a Gift Wrap</h4>
-                      <div className="grid grid-cols-3 gap-4">
-                        {giftWraps.map(wrap => (
-                          <div
-                            key={wrap.id}
-                            onClick={() => setSelectedGiftWrap(wrap.id)}
-                            className={`rounded-[16px] overflow-hidden cursor-pointer border-2 transition-all flex flex-col ${selectedGiftWrap === wrap.id ? 'border-[#F96E8F] scale-[1.02] shadow-xl' : 'border-transparent shadow-md'}`}
-                          >
-                            <div className="h-[200px] w-full bg-gray-100">
-                              <img src={wrap.image} alt={wrap.name} className="w-full h-full object-cover" />
-                            </div>
-                            <div className="bg-[#F96E8F] text-white text-center py-2 font-bold text-[14px]">
-                              {wrap.name}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="mt-8">
-                        <h4 className="font-black text-[15px] text-gray-900 mb-2">Add a Gift Message (optional)</h4>
-                        <textarea
-                          value={giftMessage}
-                          onChange={(e) => setGiftMessage(e.target.value)}
-                          placeholder="You can add a personal note With Your Gift"
-                          className="w-full border border-gray-200 rounded-[12px] p-4 text-[13px] text-gray-700 outline-none focus:border-[#F96E8F] min-h-[100px] resize-none font-bold shadow-xs"
-                        />
-                        <button className="mt-3 bg-[#F96E8F] text-white px-8 py-2 rounded-lg font-bold text-[14px] hover:bg-[#E44971] transition-colors shadow-sm">
-                          Submit
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="hidden lg:block mt-8 mb-2">
-                  <button
-                    disabled={addresses.length === 0 || !billingAddressId}
-                    onClick={() => {
-                      if (addresses.length > 0 && billingAddressId) {
-                        setCheckoutStep('payment');
-                      }
-                    }}
-                    className={`w-full font-extrabold py-4 rounded-[12px] text-[18px] transition-all tracking-wide shadow-md ${
-                      addresses.length > 0 && billingAddressId
-                        ? 'bg-[#F96E8F] text-white hover:bg-[#E44971] cursor-pointer active:scale-[0.99]'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
-                    }`}
-                  >
-                    Deliver To this Address
-                  </button>
-                  {addresses.length === 0 && (
-                    <p className="text-center text-[#F96E8F] font-bold text-[13px] mt-2.5">
-                      * Please add an address to proceed with your order
-                    </p>
-                  )}
-                </div>
-              </>
+              <CheckoutAddress
+                addresses={addresses}
+                billingAddressId={billingAddressId}
+                setBillingAddressId={setBillingAddressId}
+                shippingAddressId={shippingAddressId}
+                setShippingAddressId={setShippingAddressId}
+                sameAsBilling={sameAsBilling}
+                setSameAsBilling={setSameAsBilling}
+                showAddressForm={showAddressForm}
+                setShowAddressForm={setShowAddressForm}
+                isGift={isGift}
+                setIsGift={setIsGift}
+                selectedGiftWrap={selectedGiftWrap}
+                setSelectedGiftWrap={setSelectedGiftWrap}
+                giftMessage={giftMessage}
+                setGiftMessage={setGiftMessage}
+                handleEditAddress={handleEditAddress}
+                handleDeleteAddress={handleDeleteAddress}
+                setCheckoutStep={setCheckoutStep}
+              />
             ) : (
-              <div className="animate-fade-in font-['Baloo_2']">
-                <h2 className="text-[28px] font-black text-gray-900 mb-8 tracking-wide">
-                  Select <span className="text-[#F96E8F]">Payment Method</span>
-                </h2>
-
-                <div className="flex flex-col bg-white rounded-[20px] p-6 shadow-sm border border-gray-100">
-                  <PaymentOption
-                    id="netbanking"
-                    icon={netBankingIcon}
-                    title="Net Banking"
-                    subtitle="Select from a list of Banks"
-                  />
-                  <div className="border-t border-dashed border-gray-200 my-4"></div>
-
-                  <PaymentOption
-                    id="debit"
-                    icon={debitCardIcon}
-                    title="Debit Card"
-                    subtitle="Save & Pay via Debit Cards"
-                  />
-                  <div className="border-t border-dashed border-gray-200 my-4"></div>
-
-                  <PaymentOption
-                    id="credit"
-                    icon={creditCardIcon}
-                    title="Credit Card"
-                    subtitle="Save & Pay via Credit Cards"
-                  />
-                  <div className="border-t border-dashed border-gray-200 my-4"></div>
-
-                  <PaymentOption
-                    id="upi"
-                    icon={upiIcon}
-                    title="UPI"
-                    subtitle="Paytm, Phonepe, Google Pay, & more"
-                  />
-                  <div className="border-t border-dashed border-gray-200 my-4"></div>
-
-                  <PaymentOption
-                    id="cod"
-                    icon={<span className="text-[24px]">💰</span>}
-                    title="Cash On Delivery"
-                    subtitle="Payment will be made on delivery by cash"
-                  />
-                </div>
-
-                <div className="hidden lg:flex mt-10 justify-end">
-                  <button
-                    onClick={() => {
-                      if (selectedPayment === 'netbanking') {
-                        setShowBankModal(true);
-                      } else if (selectedPayment === 'credit' || selectedPayment === 'debit') {
-                        setShowCardModal(true);
-                      } else if (selectedPayment === 'upi') {
-                        setShowUpiModal(true);
-                      } else {
-                        handleCompletePayment();
-                      }
-                    }}
-                    className="bg-[#F96E8F] text-white font-black py-3 px-12 rounded-[10px] text-[21px] hover:bg-[#E44971] transition-colors shadow-md cursor-pointer"
-                  >
-                    {selectedPayment === 'netbanking' ? 'Continue' : selectedPayment === 'cod' ? 'Place Order' : 'Pay Now'}
-                  </button>
-                </div>
-              </div>
+              <CheckoutPayment
+                selectedPayment={selectedPayment}
+                setSelectedPayment={setSelectedPayment}
+                handleCompletePayment={handleCompletePayment}
+              />
             )}
 
           </div>
@@ -1153,7 +532,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
 
             {/* Apply Coupon Box */}
             <div
-              className="rounded-xl flex bg-white shadow-xs"
+              className={`rounded-xl flex bg-white shadow-xs ${cartItems.length === 0 ? 'opacity-60' : ''}`}
               style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100%25\' height=\'100%25\' fill=\'none\' rx=\'12\' ry=\'12\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'14%2c 14\' stroke-dashoffset=\'0\' stroke-linecap=\'square\'/%3e%3c/svg%3e")' }}
             >
               <div
@@ -1161,14 +540,15 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                 style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3cline x1=\'100%25\' y1=\'15%25\' x2=\'100%25\' y2=\'85%25\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'8%2c 8\' /%3e%3c/svg%3e")' }}
               >
                 <div className="w-10 h-10 rounded-full bg-[#FFFFFF] text-white flex items-center justify-center font-black shadow-sm">
-                  <img src={discount} alt="" className='h-[30px] w-[30px]' />
+                  <img src={discount} alt="" className={`h-[30px] w-[30px] ${cartItems.length === 0 ? 'grayscale opacity-60' : ''}`} />
                 </div>
-                <span className="text-[#F96E8F] font-black text-[21px] tracking-wide">
+                <span className={`font-black text-[21px] tracking-wide ${cartItems.length === 0 ? 'text-gray-400' : 'text-[#F96E8F]'}`}>
                   Apply Coupon
                 </span>
               </div>
               <button
                 onClick={() => {
+                  if (cartItems.length === 0) return;
                   if (appliedCoupon) {
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
@@ -1177,25 +557,27 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                     setShowCouponInput(true);
                   }
                 }}
-                className="text-[#F96E8F] font-black text-[16px] px-6 hover:underline cursor-pointer"
+                disabled={cartItems.length === 0}
+                className={`font-black text-[16px] px-6 cursor-pointer ${cartItems.length === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#F96E8F] hover:underline'}`}
               >
                 {appliedCoupon ? 'Remove' : 'Apply'}
               </button>
             </div>
 
             {/* Specific Offer Card */}
-            <div className={`border rounded-[12px] p-4 bg-white flex justify-between items-center shadow-xs transition-colors ${appliedCoupon ? 'border-green-400 bg-green-50/20' : 'border-[#F96E8F]'}`}>
+            <div className={`border rounded-[12px] p-4 bg-white flex justify-between items-center shadow-xs transition-colors ${cartItems.length === 0 ? 'border-gray-200 opacity-60' : (appliedCoupon ? 'border-green-400 bg-green-50/20' : 'border-[#F96E8F]')}`}>
               <div className="flex items-center gap-4">
                 <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center font-black shadow-xs">
-                  <img src={discount} alt="" className='h-[20px] w-[20px]' />
+                  <img src={discount} alt="" className={`h-[20px] w-[20px] ${cartItems.length === 0 ? 'grayscale opacity-60' : ''}`} />
                 </div>
                 <div>
-                  <h4 className="font-black text-gray-900 text-[13px] uppercase">FLAT ₹1000</h4>
-                  <p className="text-gray-600 font-bold text-[12px]">Flat 1000 off on Preset jewellery</p>
+                  <h4 className={`font-black text-gray-900 text-[13px] uppercase ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-900'}`}>FLAT ₹1000</h4>
+                  <p className={`font-bold text-[12px] ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-600'}`}>Flat 1000 off on Preset jewellery</p>
                 </div>
               </div>
               <button
                 onClick={() => {
+                  if (cartItems.length === 0) return;
                   if (appliedCoupon && appliedCouponCode === 'FLAT1000') {
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
@@ -1205,7 +587,8 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                     setShowCouponInput(false);
                   }
                 }}
-                className={`font-extrabold text-[12px] px-4 hover:underline cursor-pointer ${appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'text-green-600 font-black' : 'text-gray-400'}`}
+                disabled={cartItems.length === 0}
+                className={`font-extrabold text-[12px] px-4 cursor-pointer ${cartItems.length === 0 ? 'text-gray-300 cursor-not-allowed' : (appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'text-green-600 font-black' : 'text-gray-400 hover:underline')}`}
               >
                 {appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'Applied ✓' : 'Apply'}
               </button>
@@ -1285,8 +668,16 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
 
             {/* Full Width Apply More Coupons Button */}
             <button
-              onClick={() => setShowCouponInput(!showCouponInput)}
-              className="w-full bg-[#F96E8F] hover:bg-[#E44971] text-white font-medium py-3 rounded-b-xl text-[12px] font-[Nunito] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2"
+              onClick={() => {
+                if (cartItems.length === 0) return;
+                setShowCouponInput(!showCouponInput);
+              }}
+              disabled={cartItems.length === 0}
+              className={`w-full font-medium py-3 rounded-b-xl text-[12px] font-[Nunito] transition-colors shadow-xs flex items-center justify-center gap-2 ${
+                cartItems.length === 0
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60 border border-gray-200 border-t-0'
+                  : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer'
+              }`}
             >
               {showCouponInput ? 'Close Coupon Input' : 'Apply More Coupons'}
             </button>
@@ -1405,147 +796,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
           </div>
         </div>
 
-        {/* You May Also Like Section */}
-        <section className="max-w-[1400px] mx-auto px-4 md:px-8 xl:px-16 mt-6 sm:mt-10 mb-0">
-          <div className="bg-[#F4FCFF] rounded-[2rem] p-4 pb-4 sm:p-6 sm:pb-6 md:p-8 md:pb-6 shadow-xs border border-blue-50">
-            <h2 className="text-[24px] md:text-[41px] font-black text-gray-900 mb-6 sm:mb-8 font-['Baloo_2']">
-              You May <span className="text-[#F96E8F]">Also Like</span>
-            </h2>
-
-            {/* Product Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {recommendedProducts.slice(carouselIndex, carouselIndex + itemsPerPage).map((product, idx) => {
-                let borderColor = 'border-[#FFB7D5]';
-                let bgTheme = 'bg-[#FFB7D5]/20';
-                if (product.theme === 'blue') {
-                  borderColor = 'border-[#85CDFD]';
-                  bgTheme = 'bg-[#85CDFD]/20';
-                } else if (product.theme === 'yellow') {
-                  borderColor = 'border-[#FFE2A0]';
-                  bgTheme = 'bg-[#FFE2A0]/20';
-                }
-
-                return (
-                  <div
-                    key={product.id || idx}
-                    onClick={() => navigateTo('/product')}
-                    className={`rounded-[20px] border-[3px] ${borderColor} ${bgTheme} overflow-hidden flex flex-col shadow-sm relative group cursor-pointer transition-all duration-300 hover:shadow-md`}
-                  >
-                    {/* Top Image area */}
-                    <div className="h-[240px] w-full p-0 relative flex items-center justify-center">
-                      <img
-                        src={product.image}
-                        alt={product.title}
-                        className="w-full h-full object-cover rounded-t-[17px] group-hover:scale-105 transition-transform duration-300"
-                      />
-
-                      {/* Best Selling Badge */}
-                      <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                        <div className="bg-[#00D0CC] text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-md">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                            <path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
-                            <path d="m8.21 13.89-3 4.1c-.26.36-.02.85.43.85h3.6l1.26 3.16c.16.4.74.4 1 0L12.76 18.84h3.6c.45 0 .69-.49.43-.85l-3-4.1" />
-                          </svg>
-                          <span className="text-[12px] font-extrabold tracking-wide">Best Selling</span>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                        <button className="w-9 h-9 bg-[#00D0CC] hover:bg-[#00b3b0] text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                          </svg>
-                        </button>
-                        <button className="w-9 h-9 bg-[#00D0CC] hover:bg-[#00b3b0] text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Content area */}
-                    <div className="bg-white m-[10px] mt-0 rounded-[14px] p-4 text-center flex-1 flex flex-col justify-center relative transition-all duration-300 shadow-xs">
-                      <span className="text-gray-400 text-[11px] font-[Nunito] uppercase mb-1">
-                        {product.category}
-                      </span>
-
-                      <h4 className="text-gray-900 font-bold text-[24px] sm:text-[20px] leading-tight mb-1 tracking-wide font-['Nunito'] group-hover:text-[#F96E8F] transition-colors">
-                        {product.title}
-                      </h4>
-
-                      <div className="flex justify-center items-center gap-2">
-                        <del className="text-gray-400 font-bold text-[19px] font-[Nunito]">₹ {product.oldPrice}</del>
-                        <span className="text-[#F96E8F] font-bold text-[33px] font-['Nunito']">₹ {product.price}</span>
-                      </div>
-
-                      {/* Expandable Content (Add to Cart) */}
-                      <div className="w-full max-h-0 opacity-0 overflow-hidden group-hover:max-h-[60px] group-hover:opacity-100 group-hover:mt-3 transition-all duration-500 ease-in-out">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (addToCart) {
-                              addToCart(product, 1);
-                            } else if (updateQuantity) {
-                              updateQuantity(product, 1);
-                            }
-
-                            setAddedItems(prev => ({ ...prev, [product.id]: true }));
-                            setTimeout(() => {
-                              setAddedItems(prev => ({ ...prev, [product.id]: false }));
-                            }, 2000);
-                          }}
-                          className={`w-full py-2.5 px-4 border-2 border-[#F96E8F] rounded-full font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center shadow-xs ${addedItems[product.id]
-                            ? 'bg-[#F96E8F] text-white border-solid scale-95'
-                            : 'border-dashed text-[#F96E8F] hover:bg-[#F96E8F] hover:text-white hover:border-solid active:scale-95'
-                            }`}
-                        >
-                          {addedItems[product.id] ? (
-                            <span className="flex items-center gap-2 transform transition-transform duration-300">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                              Added!
-                            </span>
-                          ) : 'Add to Cart'}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Slider Controls */}
-            <div className="flex items-center justify-between mt-4 sm:mt-6">
-              {/* Progress Bar */}
-              <div className="flex-1 h-1.5 bg-gray-200 rounded-full mr-6 relative overflow-hidden">
-                <div
-                  className="absolute left-0 top-0 h-full bg-[#F96E8F] rounded-full transition-all duration-300"
-                  style={{ width: `${progressWidth}%` }}
-                ></div>
-              </div>
-
-              {/* Next / Prev Circle Buttons */}
-              <div className="flex gap-3">
-                <button
-                  onClick={handlePrevCarousel}
-                  disabled={carouselIndex === 0}
-                  className="w-10 h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-600 hover:border-gray-800 hover:text-gray-800 transition-colors bg-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  <img src={arrowLeft} alt="Previous" className="w-8 h-8" />
-                </button>
-                <button
-                  onClick={handleNextCarousel}
-                  disabled={carouselIndex >= maxCarousel}
-                  className="w-10 h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-600 hover:border-gray-800 hover:text-gray-800 transition-colors bg-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  <img src={arrowRight} alt="Next" className="w-8 h-8" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+        <YouMayAlsoLike />
 
         {/* Thank You / Order Confirmation Popup Modal */}
         {showThankYouModal && (
@@ -1642,20 +893,10 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
           </button>
         ) : (
           <button
-            onClick={() => {
-              if (selectedPayment === 'netbanking') {
-                setShowBankModal(true);
-              } else if (selectedPayment === 'credit' || selectedPayment === 'debit') {
-                setShowCardModal(true);
-              } else if (selectedPayment === 'upi') {
-                setShowUpiModal(true);
-              } else {
-                handleCompletePayment();
-              }
-            }}
+            onClick={handleCompletePayment}
             className="bg-[#F96E8F] hover:bg-[#E44971] text-white px-6 py-3 rounded-[12px] font-bold text-[15px] shadow-sm transition-all tracking-wide active:scale-[0.98] cursor-pointer"
           >
-            {selectedPayment === 'netbanking' ? 'Continue' : selectedPayment === 'cod' ? 'Place Order' : 'Pay Now'}
+            {selectedPayment === 'online' ? 'Pay Now' : 'Place Order'}
           </button>
         )}
       </div>
