@@ -5,6 +5,7 @@ import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from './r
 import { addOrders as addOrdersAction, selectOrders } from './redux/ordersSlice';
 import Header from './components/Header';
 import Login from './Pages/login';
+import Signup from './Pages/Signup';
 import Forgotpassword from './Pages/Forgotpassword';
 import Footer from './components/Footer';
 import Shop from './Pages/Shop';
@@ -123,6 +124,7 @@ function App() {
   const isOrderDetailsPage = currentPath.includes('/order-details') || currentPath.includes('/orderdetails');
   const isAccountPage = currentPath.includes('/account');
   const isLoginPage = currentPath.includes('/login');
+  const isSignupPage = currentPath.includes('/signup');
   const isForgotPasswordPage = currentPath.includes('/forgotpassword') || currentPath.includes('/forgot-password');
   const isReturnPolicyPage = currentPath.includes('/return-policy') || currentPath.includes('/returnpolicy');
   const isAboutUsPage = currentPath.includes('/about-us') || currentPath.includes('/aboutus');
@@ -139,6 +141,8 @@ function App() {
     <section>
       {isLoginPage ? (
         <Login />
+      ) : isSignupPage ? (
+        <Signup />
       ) : isForgotPasswordPage ? (
         <Forgotpassword />
       ) : isReturnPolicyPage ? (
@@ -174,7 +178,7 @@ function App() {
       ) : isProductPage ? (
         <Product product={selectedProduct} addToCart={addToCart} cartItems={cartItems} wishlist={wishlist} onAddToWishlist={addToWishlist} />
       ) : isHomePage ? (
-        <Homepage cartItems={cartItems} wishlistCount={wishlist.length} />
+        <Homepage cartItems={cartItems} wishlistCount={wishlist.length} addToCart={addToCart} />
       ) : (
         <>
           <Header cartItems={cartItems} wishlistCount={wishlist.length} />

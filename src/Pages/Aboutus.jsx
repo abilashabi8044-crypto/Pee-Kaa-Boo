@@ -54,7 +54,7 @@ export default function Aboutus({ cartItems = [] }) {
                         </p>
 
                         <p className="text-[16px] font-bold text-[#F96E8F] text-center mt-8">
-                            Because at Pee-kaa-boo,jewellery is luxury beyond metal — it’s magic, refined.
+                            Because at Pee-kaa-boo,jewellery is luxury beyond metal — it's magic, refined.
                         </p>
                     </div>
                 </div>

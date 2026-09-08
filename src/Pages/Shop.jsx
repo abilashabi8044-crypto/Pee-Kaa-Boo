@@ -77,6 +77,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
     const [wishlistToast, setWishlistToast] = useState(null);
     const [cartToast, setCartToast] = useState(null);
     const [filterToast, setFilterToast] = useState(false);
+    const [emptyFilterToast, setEmptyFilterToast] = useState(false);
     const [resetToast, setResetToast] = useState(false);
 
     useEffect(() => {
@@ -96,6 +97,15 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
             return () => clearTimeout(timer);
         }
     }, [filterToast]);
+
+    useEffect(() => {
+        if (emptyFilterToast) {
+            const timer = setTimeout(() => {
+                setEmptyFilterToast(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [emptyFilterToast]);
 
     useEffect(() => {
         if (cartToast) {
@@ -169,7 +179,12 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
 
     const applyFilters = () => {
         setFilters(tempFilters);
-        setFilterToast(true);
+        const hasActiveFilters = Object.values(tempFilters).some(arr => arr.length > 0);
+        if (!hasActiveFilters) {
+            setEmptyFilterToast(true);
+        } else {
+            setFilterToast(true);
+        }
     };
 
     useEffect(() => {
@@ -620,6 +635,33 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                     </div>
                     <button 
                         onClick={() => setFilterToast(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            )}
+
+            {/* Empty Filter Toast Notification */}
+            {emptyFilterToast && (
+                <div className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] animate-toast-up bg-white rounded-2xl shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-yellow-200 px-5 py-4 font-['Nunito'] flex items-center gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-50 text-yellow-500">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <div className="flex flex-col text-left">
+                        <span className="text-yellow-600 text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+                            No Filters Selected
+                        </span>
+                        <span className="text-gray-500 text-xs font-semibold">
+                            Please select at least one filter
+                        </span>
+                    </div>
+                    <button 
+                        onClick={() => setEmptyFilterToast(false)}
                         className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @import "tailwindcss";
 
 html,
@@ -109,4 +110,41 @@ body {
 
 .animate-toast-up {
   animation: toastSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Popup animations */
+@keyframes popupFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popupFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes popupScaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popupScaleOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+.animate-popup-fade-in {
+  animation: popupFadeIn 0.3s ease-out forwards;
+}
+
+.animate-popup-fade-out {
+  animation: popupFadeOut 0.3s ease-in forwards;
+}
+
+.animate-popup-scale-in {
+  animation: popupScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-popup-scale-out {
+  animation: popupScaleOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

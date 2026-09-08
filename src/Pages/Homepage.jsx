@@ -8,7 +8,7 @@ import cloudDwn from '../assets/Homepage/cloud-dwn.png';
 import cloudDwn1 from '../assets/Homepage/Cloud-dwn1.png';
 import cloud from '../assets/Homepage/cloud.png';
 import flying from '../assets/Homepage/flying.png';
-import heroBg from '../assets/Homepage/hero-bg.png';
+import wave from '../assets/Homepage/wave.png';
 import logo from '../assets/Homepage/logo.png';
 import bunnyLogo from '../assets/Homepage/logobunny.png';
 import butterfly from '../assets/Homepage/bflyleft.png';
@@ -132,7 +132,7 @@ import section3Glp from '../assets/Homepage/Section3/glp.png';
 import section3Iso from '../assets/Homepage/Section3/iso.png';
 import section3Tested from '../assets/Homepage/Section3/tested.png';
 
-const Homepage = ({ cartItems, wishlistCount }) => {
+const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
     const [activeCategory, setActiveCategory] = useState('All Items');
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -173,13 +173,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
         <div className="w-full font-['Nunito'] overflow-x-hidden flex flex-col bg-white">
             <div
                 className="w-full h-[100dvh] relative overflow-hidden flex flex-col"
-                style={{
-                    backgroundImage: `url(${heroBg})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundColor: '#ffffff' // Fallback color matching the light blue
-                }}
+                style={{ backgroundColor: '#C3EFFF' }}
             >
                 {/* Top Left Cloud Background for Logo Area */}
                 <img
@@ -187,6 +181,9 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                     alt="Cloud"
                     className="absolute top-0 left-0 w-[250px] md:w-[400px] object-contain opacity-70 pointer-events-none -translate-y-4 -translate-x-4 z-10"
                 />
+
+                <img src={wave} alt='wave' className='absolute  bottom-0 left-0 w-[100%] h-auto object-contain z-50 ' />
+
 
                 {/* Header */}
                 <div className="relative z-50">
@@ -197,12 +194,12 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                 <div className="flex-1 w-full max-w-[1920px] mx-auto px-6 md:px-20 lg:px-32 flex flex-col lg:flex-row items-center justify-between relative z-20">
 
                     {/* Left Column (Text & Button) */}
-                    <div className="w-full lg:w-[45%] flex flex-col justify-center items-start -mt-8 lg:-mt-[100px] relative z-30">
-                        <h1 className="text-[#333333] font-extrabold text-[40px] sm:text-[50px] md:text-[65px] lg:text-[72px] leading-[1.1] mb-6">
+                    <div className="w-full lg:w-[45%] flex flex-col justify-center items-start -mt-8 lg:-mt-[80px] relative z-30">
+                        <h1 className="text-[#333333] font-['Baloo_2'] font-extrabold text-[40px] sm:text-[50px] md:text-[65px] lg:text-[72px] leading-[1.1] mb-6">
                             Best Kids Store <br />
                             & <span className="text-[#F96E8F]">Online Shop</span>
                         </h1>
-                        <p className="text-gray-800 font-bold text-[18px] md:text-[22px] mb-10">
+                        <p className="text-gray-800 font-['Baloo_2'] font-bold text-[18px] md:text-[24px] mb-10">
                             Give The Gift Of Your Children Everyday
                         </p>
                         <button
@@ -210,7 +207,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                                 window.history.pushState({}, '', '/shop');
                                 window.dispatchEvent(new Event('popstate'));
                             }}
-                            className="bg-[#F96E8F] text-white px-10 py-3.5 rounded-full font-bold text-[18px] shadow-lg hover:bg-[#E44971] transition-transform hover:scale-105 cursor-pointer"
+                            className="bg-[#F96E8F] text-white px-10 py-3.5 rounded-full font-bold font-['Baloo_2'] text-[20px] shadow-lg hover:bg-[#E44971] transition-transform hover:scale-105 cursor-pointer"
                         >
                             Shop This Now
                         </button>
@@ -219,7 +216,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                         <img
                             src={car}
                             alt="Car"
-                            className="w-[100px] md:w-[130px] mt-16 md:mt-24 ml-0 md:ml-4 object-contain "
+                            className="w-[90px] md:w-[120px] mt-16 md:mt-16 ml-0 md:ml-4 object-contain "
 
                         />
                     </div>
@@ -245,7 +242,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                 <img
                     src={cloudDwn}
                     alt="Cloud Border"
-                    className="absolute bottom-0 right-0 h-auto w-full md:w-[150px] lg:w-[400px] object-cover md:object-fill z-40 pointer-events-none"
+                    className="absolute -bottom-4 right-0 h-auto w-full md:w-[150px] lg:w-[400px] object-cover md:object-fill z-40 pointer-events-none"
                 />
 
                 {/* Global style for slow bounce animation */}
@@ -272,8 +269,8 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                         <img src={featuredBanner} alt="Kids Collection" className="absolute inset-0 w-full h-full object-cover" />
 
                         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center -mt-[200px] p-6">
-                            <span className="text-white text-xs font-black tracking-[0.2em] mb-4 uppercase shadow-sm">Featured</span>
-                            <h2 className="text-white text-3xl md:text-4xl font-extrabold leading-tight mb-8 font-['Nunito'] drop-shadow-md">
+                            <span className="text-white text-[12px] font-['Baloo_2'] font-black tracking-[0.2em] mb-4 uppercase shadow-sm">Featured</span>
+                            <h2 className="text-white text-[24px] font-['Baloo_2'] md:text-[32px] font-extrabold leading-tight mb-8 font-['Nunito'] drop-shadow-md">
                                 Kids Collection <br /> For Summer
                             </h2>
                             <button
@@ -281,7 +278,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                                     window.history.pushState({}, '', '/shop');
                                     window.dispatchEvent(new Event('popstate'));
                                 }}
-                                className="bg-white text-[#F96E8F] px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-gray-50 transition-colors cursor-pointer"
+                                className="bg-white text-[#F96E8F] px-8 py-2.5 rounded-full font-['Baloo_2'] text-[16px] font-bold border-2 border-dashed border-[#F76188] shadow-md hover:bg-gray-50 transition-colors cursor-pointer"
                             >
                                 View Shop
                             </button>
@@ -293,7 +290,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
 
                         {/* Header & Arrows */}
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center  mb-6 gap-4">
-                            <h2 className="text-3xl md:text-[38px] font-extrabold text-gray-900 font-['Nunito'] tracking-tight">
+                            <h2 className="text-3xl md:text-[42px] font-extrabold text-gray-900 font-['Baloo_2'] tracking-tight">
                                 Top Selling <span className="text-[#F96E8F]">products</span>
                             </h2>
                             <div className="flex items-center gap-2 mr-[100px]">
@@ -321,7 +318,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                                         setActiveCategory(cat);
                                         setCurrentIndex(0);
                                     }}
-                                    className={`px-6 py-2.5 rounded-full font-bold text-[13px] transition-all border-[1.5px] cursor-pointer shadow-xs ${activeCategory === cat
+                                    className={`px-6 py-2.5 rounded-full font-['Baloo_2'] font-bold text-[16px] transition-all border-[1.5px] cursor-pointer shadow-xs ${activeCategory === cat
                                             ? 'bg-[#F96E8F] text-white border-[#F96E8F]'
                                             : 'bg-white text-gray-500 border-gray-200 hover:border-[#F96E8F] hover:text-[#F96E8F]'
                                         }`}
@@ -343,6 +340,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                                     oldPrice={product.oldPrice}
                                     theme={product.theme}
                                     category={product.category}
+                                    onAddToCart={() => addToCart && addToCart(product)}
                                     onClick={() => {
                                         window.history.pushState({}, '', '/product');
                                         window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
@@ -373,7 +371,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
 
                     {/* Title overlapping border */}
                     <div className="absolute -top-[24px] md:-top-[32px] left-1/2 -translate-x-1/2 bg-[#FCDCEA] px-6 md:px-10 py-1.5 md:py-2 border-[2px] border-[#333333] rounded-2xl md:rounded-[30px] whitespace-nowrap z-30">
-                        <h2 className="text-xl md:text-3xl font-bold text-[#333333] flex items-center gap-2 font-['Lobster_Two']">
+                        <h2 className="text-xl md:text-[50px] font-['Baloo_2'] font-bold text-[#333333] flex items-center gap-2 font-['Lobster_Two']">
                             Certified Big Care for Little <span className="text-[#F96E8F]">Jewellery</span>
                         </h2>
                     </div>
@@ -400,7 +398,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
                             <div className="flex items-center gap-4">
                                 <img src={flower} alt="flower" className="w-[45px] md:w-[65px] object-contain" />
-                                <h2 className="text-4xl md:text-[42px] font-black text-gray-900 font-['Nunito'] tracking-tight">
+                                <h2 className="text-2xl md:text-[33px] font-['Baloo_2'] font-black text-[#333333] tracking-tight">
                                     Flash <span className="text-[#F96E8F]">Sale</span>
                                 </h2>
                             </div>
@@ -432,6 +430,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                                     oldPrice={product.oldPrice}
                                     theme={product.theme}
                                     category={product.category}
+                                    onAddToCart={() => addToCart && addToCart(product)}
                                     onClick={() => {
                                         window.history.pushState({}, '', '/product');
                                         window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
@@ -446,7 +445,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                         {/* Girls Collection Banner */}
                         <div className="flex-1 bg-[#FFB7D5]/40 rounded-[28px] overflow-hidden relative flex items-center p-6 lg:p-8">
                             <div className="relative z-20 flex flex-col items-start max-w-[65%] lg:max-w-[55%]">
-                                <h3 className="text-[32px] sm:text-[36px] lg:text-[40px] font-black text-gray-900 font-['Lobster_Two'] leading-tight mb-2 tracking-wide">
+                                <h3 className="text-[28px] sm:text-[32px] lg:text-[33px] font-black text-gray-900 font-['Lobster_Two'] leading-tight mb-2 tracking-wide">
                                     Girls Collections
                                 </h3>
                                 <p className="text-gray-700 font-bold text-[14px] sm:text-[16px] mb-4">
@@ -457,7 +456,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                                         window.history.pushState({}, '', '/shop/girls');
                                         window.dispatchEvent(new Event('popstate'));
                                     }}
-                                    className="px-5 py-2 sm:px-6 sm:py-2.5 bg-white border-2 border-dashed border-[#F96E8F] text-[#F96E8F] font-black rounded-full text-[13px] sm:text-[14px] hover:bg-[#F96E8F] hover:text-white transition-colors hover:border-solid shadow-sm cursor-pointer"
+                                    className="px-5 py-2 sm:px-6 sm:py-2.5 bg-white border-2 border-dashed border-[#F96E8F] text-[#F96E8F] font-['Baloo_2'] font-black rounded-full text-[13px] sm:text-[13px] hover:bg-[#F96E8F] hover:text-white transition-colors hover:border-solid shadow-sm cursor-pointer"
                                 >
                                     View Shop
                                 </button>
@@ -468,7 +467,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                         {/* Boys Collection Banner */}
                         <div className="flex-1 bg-[#85CDFD]/40 rounded-[28px] overflow-hidden relative flex items-center p-6 lg:p-8">
                             <div className="relative z-20 flex flex-col items-start max-w-[65%] lg:max-w-[55%]">
-                                <h3 className="text-[32px] sm:text-[36px] lg:text-[40px] font-black text-gray-900 font-['Lobster_Two'] leading-tight mb-2 tracking-wide">
+                                <h3 className="text-[28px] sm:text-[32px] lg:text-[33px] font-black text-gray-900 font-['Lobster_Two'] leading-tight mb-2 tracking-wide">
                                     Boys Collections
                                 </h3>
                                 <p className="text-gray-700 font-bold text-[14px] sm:text-[16px] mb-4">
@@ -479,7 +478,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                                         window.history.pushState({}, '', '/shop/boys');
                                         window.dispatchEvent(new Event('popstate'));
                                     }}
-                                    className="px-5 py-2 sm:px-6 sm:py-2.5 bg-white border-2 border-dashed border-[#F96E8F] text-[#F96E8F] font-black rounded-full text-[13px] sm:text-[14px] hover:bg-[#F96E8F] hover:text-white transition-colors hover:border-solid shadow-sm cursor-pointer"
+                                    className="px-5 py-2 sm:px-6 sm:py-2.5 bg-white border-2 border-dashed border-[#F96E8F] text-[#F96E8F] font-['Baloo_2'] font-black rounded-full text-[13px] sm:text-[13px] hover:bg-[#F96E8F] hover:text-white transition-colors hover:border-solid shadow-sm cursor-pointer"
                                 >
                                     View Shop
                                 </button>
@@ -501,7 +500,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
             >
                 <img src={butterfly} alt="Butterfly" className="absolute top-10 right-10 w-[60px] md:w-[80px] object-contain rotate-12 z-10 pointer-events-none" />
 
-                <h2 className="text-3xl md:text-[42px] font-black text-gray-900 font-['Nunito'] tracking-tight mb-8 relative z-20">
+                <h2 className="text-3xl md:text-[43px] font-black text-gray-900 font-['Baloo_2'] tracking-tight mb-8 relative z-20">
                     Trending <span className="text-[#F96E8F]">products</span>
                 </h2>
 
@@ -510,7 +509,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                         <button
                             key={cat + 'trending'}
                             onClick={() => setTrendingCategory(cat)}
-                            className={`px-6 py-2.5 rounded-full font-bold text-[13px] transition-all cursor-pointer shadow-sm ${trendingCategory === cat
+                            className={`px-6 py-2.5 rounded-full font-bold text-[16px] font-['Baloo_2'] transition-all cursor-pointer shadow-sm ${trendingCategory === cat
                                     ? 'bg-[#F96E8F] text-white'
                                     : 'bg-white text-gray-700 hover:text-[#F96E8F]'
                                 }`}
@@ -532,6 +531,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                                 oldPrice={product.oldPrice}
                                 theme={product.theme}
                                 category={product.category}
+                                onAddToCart={() => addToCart && addToCart(product)}
                                 onClick={() => {
                                     window.history.pushState({}, '', '/product');
                                     window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
@@ -559,10 +559,10 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                 `}} />
 
                 <div className="text-center px-4 mb-10">
-                    <h2 className="text-3xl md:text-[42px] font-black text-gray-900 font-['Nunito'] tracking-tight mb-4">
+                    <h2 className="text-3xl md:text-[43px] font-black text-gray-900 font-['Baloo_2'] tracking-tight mb-4">
                         Trending <span className="text-[#F96E8F]">Instagram Feeds</span>
                     </h2>
-                    <p className="text-gray-600 font-bold text-[14px] md:text-[16px]">
+                    <p className="text-gray-600 font-['Baloo_2'] font-bold text-[14px] md:text-[18px]">
                         Don't miss out on great promotional news or upcoming events in our store system
                     </p>
                 </div>
@@ -587,10 +587,10 @@ const Homepage = ({ cartItems, wishlistCount }) => {
 
                 {/* Header */}
                 <div className="text-center px-4 mb-16 relative z-20">
-                    <h2 className="text-3xl md:text-[42px] font-black text-gray-900 font-['Nunito'] tracking-tight mb-4">
+                    <h2 className="text-3xl md:text-[43px] font-black text-gray-900 font-['Baloo_2'] tracking-tight mb-4">
                         Client <span className="text-[#F96E8F]">Testimonials</span>
                     </h2>
-                    <p className="text-gray-600 font-bold text-[14px] md:text-[16px]">
+                    <p className="text-gray-600 font-bold font-['Baloo_2'] text-[14px] md:text-[18px]">
                         What Customers Say About Us What Customers Say About Us
                     </p>
                 </div>
@@ -600,7 +600,7 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                     {displayTestimonials.map((testimonial, idx) => (
                         <div key={idx} className="flex flex-col items-center relative animate-fade-in">
                             <div className="w-full rounded-[24px] p-8 md:p-10 relative mb-12 shadow-sm" style={{ backgroundColor: testimonial.color }}>
-                                <p className="text-white font-bold text-[14px] md:text-[15px] leading-relaxed mb-6">
+                                <p className="text-white font-['Baloo_2'] font-bold text-[14px] md:text-[18px] leading-relaxed mb-6">
                                     {testimonial.text}
                                 </p>
                                 <div className="flex gap-1 text-white">
@@ -701,11 +701,11 @@ const Homepage = ({ cartItems, wishlistCount }) => {
                         <img src={bunnyLogo} alt="Logo Mark" className="w-[180px] h-[180px] object-contain" />
                     </div>
                     
-                    <h2 className="text-3xl md:text-[45px] font-black text-[#333333] font-['Nunito'] mb-4">
+                    <h2 className="text-[35px] md:text-[50px] font-black text-[#333333] font-['Baloo_2'] mb-4">
                         Last-minute <span className="text-[#F96E8F]">Requests</span>
                     </h2>
                     
-                    <p className="text-gray-500 font-bold text-[14px] md:text-[16px] leading-relaxed mb-8 max-w-[500px]">
+                    <p className="text-gray-500 font-semibold text-[14px] md:text-[19px] font-['Nunito'] leading-relaxed mb-8 max-w-[700px]">
                         Cum sociis Theme natoque penatibus et magnis dis montes, semper libero nibh velit auctor parturient nascetur ridiculus mus.
                     </p>
                     
