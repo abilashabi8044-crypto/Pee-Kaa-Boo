@@ -144,7 +144,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                         </svg>
                     </button>
 
-                    <div className="cursor-pointer flex items-center absolute left-1/2 top-1/2 lg:top-auto -translate-x-1/2 -translate-y-1/2 lg:translate-x-0 lg:translate-y-0 lg:static lg:flex-shrink-0 z-50">
+                    <div className="cursor-pointer flex items-center absolute left-1/2 top-1/2 lg:top-auto -translate-x-1/2 -translate-y-1/2 lg:translate-x-0 lg:translate-y-0 lg:static lg:flex-shrink-0 z-50 mt-4 lg:mt-0">
                         <a href="/" className="block">
                             <img src={customLogo || logo} alt="PEE KAA BOO" className="w-[60px] sm:w-[80px] -ml-1.5 lg:ml-24 object-contain" />
                         </a>

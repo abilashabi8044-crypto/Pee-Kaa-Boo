@@ -172,8 +172,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
     const displayProducts = filteredProducts.slice(currentIndex, currentIndex + 3);
 
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1280);
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+            setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1280);
+        };
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -199,7 +203,11 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
     const displayTrendingProducts = trendingProducts.slice(0, 5);
 
     const [testimonialPage, setTestimonialPage] = useState(0);
-    const displayTestimonials = testimonialsData.slice(testimonialPage * 3, testimonialPage * 3 + 3);
+    const displayTestimonials = isMobile
+        ? testimonialsData.slice(testimonialPage, testimonialPage + 1)
+        : isTablet
+            ? testimonialsData.slice(testimonialPage, testimonialPage + 2)
+            : testimonialsData.slice(testimonialPage * 3, testimonialPage * 3 + 3);
 
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
@@ -225,48 +233,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
         }
     };
 
-    // Hero Search state (mobile)
-    const [heroSearchQuery, setHeroSearchQuery] = useState('');
-    const [isHeroSearchFocused, setIsHeroSearchFocused] = useState(false);
-    const heroSearchRef = useRef(null);
 
-    const shopProducts = (gridItems || []).filter(item => item.type === 'product');
-    const heroSearchResults = (!heroSearchQuery || !heroSearchQuery.trim())
-        ? []
-        : shopProducts.filter(p =>
-            (p.title && p.title.toLowerCase().includes(heroSearchQuery.toLowerCase().trim())) ||
-            (p.code && p.code.toLowerCase().includes(heroSearchQuery.toLowerCase().trim())) ||
-            (p.category && p.category.toLowerCase().includes(heroSearchQuery.toLowerCase().trim())) ||
-            (p.productType && p.productType.toLowerCase().includes(heroSearchQuery.toLowerCase().trim()))
-        );
-
-    const handleSelectHeroSearchResult = (prod) => {
-        try {
-            localStorage.setItem('pkb_selected_product', JSON.stringify(prod));
-        } catch (e) {
-            console.error(e);
-        }
-        window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: prod }));
-        window.history.pushState({}, '', '/product');
-        window.dispatchEvent(new Event('popstate'));
-        setHeroSearchQuery('');
-        setIsHeroSearchFocused(false);
-    };
-
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (heroSearchRef.current && !heroSearchRef.current.contains(e.target)) {
-                setIsHeroSearchFocused(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     return (
         <div className="w-full font-['Nunito'] overflow-x-hidden flex flex-col bg-white">
             <div
-                className="w-full min-h-[100dvh] lg:h-[100dvh] relative overflow-hidden flex flex-col"
+                className="w-full min-h-[85dvh] lg:h-auto lg:min-h-[990px] xl:h-[100dvh] xl:min-h-[100dvh] relative overflow-hidden flex flex-col pb-20 xl:pb-0"
                 style={{ backgroundColor: '#C3EFFF' }}
             >
                 {/* Top Left Cloud Background for Logo Area (Desktop only) */}
@@ -277,98 +249,27 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 />
 
                 {/* Bottom Wave Border */}
-                <img src={wave} alt='wave' className='absolute bottom-0 left-0 w-[100%] h-auto object-contain z-50 pointer-events-none' />
+                <img src={wave} alt='wave' className='absolute bottom-0 left-0 w-[100%] lg:w-[100%] h-auto object-contain z-50 pointer-events-none' />
+
+                {/* Mobile Top Center Cloud Background */}
+                <img
+                    src={cloud}
+                    alt="Cloud Background"
+                    className="block lg:hidden absolute top-[-30px] left-1/2 -translate-x-1/2 w-[300px] object-contain z-40 pointer-events-none opacity-90"
+                />
+
 
                 {/* Header */}
                 <div className="relative z-50">
-                    <Header cartItems={cartItems} wishlistCount={wishlistCount} customLogo={logo} showMobileSearch={false} />
+                    <Header cartItems={cartItems} wishlistCount={wishlistCount} customLogo={logo} />
                 </div>
 
                 {/* Mobile Responsive Hero Content (Matching mobile design exactly) */}
                 <div className="flex lg:hidden flex-1 w-full flex-col relative z-20 justify-between pb-4">
-                    {/* Top: Mobile Search Bar */}
-                    <div ref={heroSearchRef} className="w-full px-5 pt-3 pb-2 relative z-40">
-                        <div className="relative w-full max-w-[380px] mx-auto h-[48px] bg-white rounded-full border-[1.5px] border-[#1e293b] flex items-center overflow-hidden shadow-xs">
-                            <input
-                                type="text"
-                                placeholder="Search Everything"
-                                value={heroSearchQuery}
-                                onChange={(e) => {
-                                    setHeroSearchQuery(e.target.value);
-                                    setIsHeroSearchFocused(true);
-                                }}
-                                onFocus={() => setIsHeroSearchFocused(true)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && heroSearchResults.length > 0) {
-                                        handleSelectHeroSearchResult(heroSearchResults[0]);
-                                    }
-                                }}
-                                className="flex-1 pl-6 pr-3 h-full outline-none text-[15px] font-bold text-gray-700 font-['Baloo_2'] placeholder-gray-400 bg-white"
-                            />
-                            <button
-                                onClick={() => {
-                                    if (heroSearchResults.length > 0) {
-                                        handleSelectHeroSearchResult(heroSearchResults[0]);
-                                    }
-                                }}
-                                className="w-[64px] h-full bg-[#F96E8F] flex items-center justify-center cursor-pointer hover:bg-[#E44971] transition-colors flex-shrink-0"
-                                aria-label="Search"
-                            >
-                                <svg className="w-5 h-5 text-white stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </button>
-                        </div>
 
-                        {/* Search Results Dropdown */}
-                        {isHeroSearchFocused && heroSearchQuery.trim() && (
-                            <div className="absolute top-[56px] left-5 right-5 max-w-[380px] mx-auto bg-white rounded-2xl shadow-2xl border border-pink-200/80 p-2 z-50 max-h-[300px] overflow-y-auto font-['Nunito']">
-                                {heroSearchResults.length > 0 ? (
-                                    <div className="flex flex-col gap-1">
-                                        <div className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider px-2 py-1">
-                                            Found {heroSearchResults.length} {heroSearchResults.length === 1 ? 'Product' : 'Products'}
-                                        </div>
-                                        {heroSearchResults.map((item) => (
-                                            <div
-                                                key={item.id}
-                                                onClick={() => handleSelectHeroSearchResult(item)}
-                                                className="flex items-center gap-3 p-2 rounded-xl hover:bg-pink-50/80 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-0"
-                                            >
-                                                <div className="w-11 h-11 rounded-lg bg-[#F9E2E8]/40 flex-shrink-0 overflow-hidden border border-pink-100 flex items-center justify-center p-0.5">
-                                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover rounded-md" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center justify-between gap-1">
-                                                        <h4 className="font-bold text-gray-800 text-[13px] truncate">
-                                                            {item.title}
-                                                        </h4>
-                                                        <span className="font-black text-[#F96E8F] text-[13px]">
-                                                            ₹{item.price}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2 mt-0.5">
-                                                        <span className="text-[10px] text-gray-500 font-bold">
-                                                            {item.code || `64A288${item.id}`}
-                                                        </span>
-                                                        <span className="text-[9px] bg-pink-100 text-[#F96E8F] font-extrabold px-1.5 py-0.5 rounded">
-                                                            {item.category || item.productType}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="p-4 text-center text-gray-400 font-bold text-[12px]">
-                                        No products found matching "{heroSearchQuery}"
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
 
                     {/* Heading & Subtitle */}
-                    <div className="w-full px-6 pt-5 pb-1 flex flex-col items-start z-30">
+                    <div className="w-full px-6 pt-8 pb-1 flex flex-col items-start z-30">
                         <h1 className="text-[#1e293b] font-['Baloo_2'] font-black text-[38px] sm:text-[44px] leading-[1.1] mb-2 tracking-tight">
                             Best Kids Store <br />
                             & <span className="text-[#F96E8F]">Online Shop</span>
@@ -401,7 +302,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                         />
 
                         {/* Jewelry Ornaments */}
-                        <div className="absolute left-1/2 -translate-x-[47%] top-2 w-[320px] sm:w-[360px] max-w-[88%] z-20">
+                        <div className="absolute left-1/2 -translate-x-[47%] top-16 lg:top-2 w-[380px] sm:w-[360px]  max-w-[88%] z-20">
                             <img
                                 src={ornaments}
                                 alt="Jewelry Ornaments"
@@ -413,14 +314,14 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                         <img
                             src={flying}
                             alt="Airplane"
-                            className="absolute bottom-6 right-5 w-[115px] sm:w-[130px] object-contain z-30 pointer-events-none"
+                            className="absolute lg:bottom-6 -bottom-40 right-4 lg:right-5 w-[115px] sm:w-[130px] object-contain z-30 pointer-events-none"
                         />
 
                         {/* Bottom Cloud */}
                         <img
                             src={cloudDwn}
                             alt="Cloud"
-                            className="absolute -bottom-4 right-0 w-[280px] sm:w-[340px] object-contain opacity-95 z-20 pointer-events-none"
+                            className="absolute -bottom-32 right-[-50px] lg:right-0 xl:right-0 w-[280px] sm:w-[340px] object-contain opacity-95 z-20 pointer-events-none"
                         />
                     </div>
                 </div>
@@ -429,11 +330,11 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 <div className="hidden lg:flex flex-1 w-full max-w-[1920px] mx-auto px-6 md:px-20 lg:px-32 flex-row items-center justify-between relative z-20">
                     {/* Left Column (Text & Button) */}
                     <div className="w-[45%] flex flex-col justify-center items-start -mt-[150px] relative z-30">
-                        <h1 className="text-[#333333] font-['Baloo_2'] font-extrabold text-[72px] leading-[1.1] mb-6">
+                        <h1 className="text-[#333333] font-['Baloo_2'] font-extrabold text-[45px] xl:text-[72px] leading-[1.1] mb-6">
                             Best Kids Store <br />
                             & <span className="text-[#F96E8F]">Online Shop</span>
                         </h1>
-                        <p className="text-gray-800 font-['Baloo_2'] font-bold text-[24px] mb-10">
+                        <p className="text-gray-800 font-['Baloo_2'] font-bold text-[18px] xl:text-[24px] mb-10">
                             Give The Gift Of Your Children Everyday
                         </p>
                         <button
@@ -455,11 +356,11 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     </div>
 
                     {/* Right Column (Jewelry Ornaments) */}
-                    <div className="w-[65%] flex justify-end items-center relative mr-36 mt-0 z-120">
+                    <div className="lg:w-[80%] xl:w-[65%] flex justify-end items-center relative lg:mr-0 xl:mr-36 mt-0 z-120">
                         <img
                             src={ornaments}
                             alt="Jewelry"
-                            className="w-full max-w-[600px] rotate-[-10.24deg] object-contain drop-shadow-2xl"
+                            className="w-full lg:max-w-[800px] xl:max-w-[600px] rotate-[-10.24deg] object-contain drop-shadow-2xl"
                         />
                     </div>
                 </div>
@@ -475,7 +376,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 <img
                     src={cloudDwn}
                     alt="Cloud Border"
-                    className="hidden lg:block absolute -bottom-4 right-0 h-auto w-[470px] object-fill z-40 pointer-events-none"
+                    className="hidden lg:block absolute -bottom-[80px] right-0 h-auto w-[470px] object-fill z-40 pointer-events-none"
                 />
 
                 {/* Global style for slow bounce animation */}
@@ -493,12 +394,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
 
             {/* Top Selling Products Section */}
             <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 py-16 lg:py-24 relative bg-white">
-                <img src={butterfly} alt="Butterfly" className="hidden md:block absolute top-10 right-10 w-[60px] md:w-[100px] object-contain rotate-12 z-10 pointer-events-none" />
+                <img src={butterfly} alt="Butterfly" className="hidden md:block absolute top-10 lg:top-2 xl:top-10 right-10 w-[60px] md:w-[100px] lg:w-[75px] xl:w-[100px] object-contain rotate-12 z-10 pointer-events-none" />
 
                 <div className="flex flex-col xl:flex-row gap-8 lg:gap-12 relative z-20 items-stretch">
 
                     {/* Featured Card */}
-                    <div className="lg:ml-[50px] mx-auto xl:mx-0 w-full xl:w-[25%] xl:h-[500px] rounded-[30px] overflow-hidden relative min-h-[480px] xl:min-h-0 ">
+                    <div className="lg:ml-0 mx-auto xl:mx-0 w-full xl:w-[25%] xl:h-[500px] rounded-[30px] overflow-hidden relative min-h-[480px] xl:min-h-0 ">
                         <img src={featuredBanner} alt="Kids Collection" className="absolute inset-0 w-full h-full object-cover" />
 
                         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center -mt-[200px] p-6">
@@ -563,7 +464,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                         </div>
 
                         {/* Product Cards Grid */}
-                        <div 
+                        <div
                             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 xl:gap-8 max-w-[1000px] mx-auto md:mx-0 w-full"
                             onTouchStart={onTouchStart}
                             onTouchMove={onTouchMove}
@@ -621,20 +522,20 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 }}
             >
                 {/* Airplane */}
-                <img src={fly} alt="Airplane" className="absolute top-20 left-10 md:left-55 w-24 md:w-[280px] z-10 animate-bounce-slow" />
+                <img src={fly} alt="Airplane" className="absolute top-20 left-10 md:left-10 w-24 md:w-[280px] z-10 animate-bounce-slow" />
 
                 {/* Main Box */}
                 <div className="relative w-full min-h-[250px] border-[6px] border-[#333333] rounded-[30px] md:rounded-[40px] py-16 md:py-20 px-6 md:px-16 flex flex-col md:flex-row justify-center items-center z-20 mt-10 md:mt-15">
 
                     {/* Title overlapping border */}
-                    <div className="absolute -top-[24px] md:-top-[32px] left-1/2 -translate-x-1/2 bg-[#FCDCEA] px-6 md:px-10 py-1.5 md:py-2 border-[4px] border-[#333333] rounded-2xl md:rounded-[30px] whitespace-nowrap z-30">
-                        <h2 className="text-xl md:text-[50px] font-['Baloo_2'] font-bold text-[#333333] flex items-center gap-2 font-['Lobster_Two']">
+                    <div className="absolute -top-[24px] md:-top-[28px] lg:-top-[24px] xl:-top-[32px] left-1/2 -translate-x-1/2 bg-[#FCDCEA] px-6 md:px-8 lg:px-6 xl:px-10 py-1.5 lg:py-1 xl:py-2 border-[4px] lg:border-[3px] xl:border-[4px] border-[#333333] rounded-2xl md:rounded-[24px] xl:rounded-[30px] whitespace-nowrap z-30">
+                        <h2 className="text-xl md:text-[35px] lg:text-[32px] xl:text-[50px] font-['Baloo_2'] font-bold text-[#333333] flex items-center gap-2 font-['Lobster_Two']">
                             Certified Big Care for Little <span className="text-[#F96E8F]">Jewellery</span>
                         </h2>
                     </div>
 
                     {/* Logos */}
-                    <div className="w-full flex flex-wrap justify-center items-center gap-10 md:gap-30 md:pr-[20px]">
+                    <div className="w-full flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 xl:gap-30 md:pr-[20px]">
                         <img src={section3Tested} alt="Dermatologically Tested" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Glp} alt="GLP" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Butterfly} alt="Sensitive Skin" className="h-28 md:h-[160px] object-contain hover:scale-105 transition-transform" />
@@ -648,9 +549,9 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             </div>
             {/* Flash Sale Section */}
             <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 py-16 lg:py-24 relative bg-white border-t border-gray-100 mt-12 lg:mt-20">
-                <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+                <div className="flex flex-col xl:flex-row gap-8 items-stretch">
                     {/* Left Column (Header + Products) */}
-                    <div className="w-full lg:w-[65%] flex flex-col">
+                    <div className="w-full xl:w-[65%] flex flex-col">
                         {/* Header */}
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
                             <div className="flex items-center gap-4">
@@ -676,7 +577,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                         </div>
 
                         {/* Products Grid */}
-                        <div 
+                        <div
                             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1"
                             onTouchStart={onTouchStart}
                             onTouchMove={onTouchMove}
@@ -687,21 +588,21 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                                     <ProductCard
                                         isHomepage={true}
                                         item={product}
-                                    heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
-                                    image={product.image}
-                                    title={product.title}
-                                    price={product.price}
-                                    oldPrice={product.oldPrice}
-                                    theme={product.theme}
-                                    category={product.category}
-                                    onAddToCart={() => addToCart && addToCart(product)}
-                                    onAddToWishlist={() => handleWishlistClick(product)}
-                                    isWishlisted={wishlist?.some(w => w.id === product.id || w.title === product.title)}
-                                    onClick={() => {
-                                        window.history.pushState({}, '', '/product');
-                                        window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
-                                    }}
-                                />
+                                        heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
+                                        image={product.image}
+                                        title={product.title}
+                                        price={product.price}
+                                        oldPrice={product.oldPrice}
+                                        theme={product.theme}
+                                        category={product.category}
+                                        onAddToCart={() => addToCart && addToCart(product)}
+                                        onAddToWishlist={() => handleWishlistClick(product)}
+                                        isWishlisted={wishlist?.some(w => w.id === product.id || w.title === product.title)}
+                                        onClick={() => {
+                                            window.history.pushState({}, '', '/product');
+                                            window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
+                                        }}
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -721,7 +622,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     </div>
 
                     {/* Banners */}
-                    <div className="w-full lg:w-[35%] flex flex-col gap-6">
+                    <div className="w-full xl:w-[35%] flex flex-col gap-6">
                         {/* Girls Collection Banner */}
                         <div className="flex-1 bg-[#FFB7D5]/40 rounded-[28px] overflow-hidden relative flex items-center p-6 lg:p-8">
                             <div className="relative z-20 flex flex-col items-start max-w-[65%] lg:max-w-[55%]">
@@ -803,43 +704,43 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 </div>
 
                 <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 relative z-20">
-                    <div 
+                    <div
                         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5"
                         onTouchStart={onTouchStart}
                         onTouchMove={onTouchMove}
                         onTouchEnd={() => onTouchEnd(
-                            () => setTrendingIndex(prev => Math.min(Math.max(0, trendingProducts.length - (isMobile ? 1 : 5)), prev + 1)),
+                            () => setTrendingIndex(prev => Math.min(Math.max(0, trendingProducts.length - (isMobile ? 1 : isTablet ? 3 : 5)), prev + 1)),
                             () => setTrendingIndex(prev => Math.max(0, prev - 1))
                         )}
                     >
-                        {(isMobile ? trendingProducts.slice(trendingIndex, trendingIndex + 1) : displayTrendingProducts).map(product => (
+                        {(isMobile ? trendingProducts.slice(trendingIndex, trendingIndex + 1) : isTablet ? trendingProducts.slice(trendingIndex, trendingIndex + 3) : displayTrendingProducts).map(product => (
                             <div key={product.id + 'trending'} className="animate-fade-in">
                                 <ProductCard
                                     isHomepage={true}
                                     item={product}
-                                heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
-                                image={product.image}
-                                title={product.title}
-                                price={product.price}
-                                oldPrice={product.oldPrice}
-                                theme={product.theme}
-                                category={product.category}
-                                onAddToCart={() => addToCart && addToCart(product)}
-                                onAddToWishlist={() => handleWishlistClick(product)}
-                                isWishlisted={wishlist?.some(w => w.id === product.id || w.title === product.title)}
-                                onClick={() => {
-                                    window.history.pushState({}, '', '/product');
-                                    window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
-                                }}
-                            />
-                        </div>
-                    ))}
+                                    heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
+                                    image={product.image}
+                                    title={product.title}
+                                    price={product.price}
+                                    oldPrice={product.oldPrice}
+                                    theme={product.theme}
+                                    category={product.category}
+                                    onAddToCart={() => addToCart && addToCart(product)}
+                                    onAddToWishlist={() => handleWishlistClick(product)}
+                                    isWishlisted={wishlist?.some(w => w.id === product.id || w.title === product.title)}
+                                    onClick={() => {
+                                        window.history.pushState({}, '', '/product');
+                                        window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
+                                    }}
+                                />
+                            </div>
+                        ))}
                     </div>
 
-                    {/* Mobile Pagination Dots */}
-                    {isMobile && trendingProducts.length > 1 && (
-                        <div className="md:hidden flex justify-center items-center gap-2 mt-8">
-                            {Array.from({ length: trendingProducts.length }).map((_, idx) => (
+                    {/* Mobile and Tablet Pagination Dots */}
+                    {(isMobile || isTablet) && trendingProducts.length > (isTablet ? 3 : 1) && (
+                        <div className="xl:hidden flex justify-center items-center gap-2 mt-8">
+                            {Array.from({ length: trendingProducts.length - (isTablet ? 2 : 0) }).map((_, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setTrendingIndex(idx)}
@@ -905,19 +806,19 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 </div>
 
                 {/* Cards */}
-                <div 
-                    className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 relative z-20"
+                <div
+                    className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-10 relative z-20"
                     onTouchStart={onTouchStart}
                     onTouchMove={onTouchMove}
                     onTouchEnd={() => onTouchEnd(
-                        () => setTestimonialPage(prev => Math.min(prev + 1, 2)),
+                        () => setTestimonialPage(prev => Math.min(prev + 1, isMobile ? testimonialsData.length - 1 : isTablet ? testimonialsData.length - 2 : 2)),
                         () => setTestimonialPage(prev => Math.max(prev - 1, 0))
                     )}
                 >
                     {displayTestimonials.map((testimonial, idx) => (
                         <div key={idx} className="flex flex-col items-center relative animate-fade-in">
-                            <div className="w-full rounded-[24px] p-8 md:p-10 relative mb-12 shadow-sm" style={{ backgroundColor: testimonial.color }}>
-                                <p className="text-white font-['Baloo_2'] font-bold text-[14px] md:text-[18px] leading-relaxed mb-6">
+                            <div className="w-full rounded-[24px] p-8 md:p-10 lg:p-6 xl:p-10 relative mb-12 shadow-sm" style={{ backgroundColor: testimonial.color }}>
+                                <p className="text-white font-['Baloo_2'] font-bold text-[14px] md:text-[18px] lg:text-[14.5px] xl:text-[18px] leading-relaxed mb-6 lg:mb-4 xl:mb-6">
                                     {testimonial.text}
                                 </p>
                                 <div className="flex gap-1 text-white">
@@ -943,12 +844,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 </div>
 
                 {/* Pagination */}
-                <div className="flex gap-2 mt-16 relative z-20">
-                    {[0, 1, 2].map(pageIndex => (
+                <div className="flex gap-2 mt-16 relative z-20 flex-wrap justify-center px-4">
+                    {Array.from({ length: isMobile ? testimonialsData.length : isTablet ? testimonialsData.length - 1 : 3 }).map((_, pageIndex) => (
                         <button
                             key={pageIndex}
                             onClick={() => setTestimonialPage(pageIndex)}
-                            className={`w-3 h-3 rounded-full cursor-pointer transition-colors ${testimonialPage === pageIndex
+                            className={`w-3 h-3 rounded-full cursor-pointer transition-colors flex-shrink-0 ${testimonialPage === pageIndex
                                 ? 'bg-[#F96E8F]'
                                 : 'bg-transparent border-[1.5px] border-[#F96E8F] hover:bg-[#F96E8F]/30'
                                 }`}
@@ -989,7 +890,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             </div>
 
             {/* Last-minute Requests Section */}
-            <div className="w-full relative py-20 lg:py-32 flex flex-col items-center justify-center overflow-hidden"
+            <div className="w-full relative pt-[240px] pb-[320px] md:py-20 lg:py-32 flex flex-col items-center justify-center overflow-hidden"
                 style={{
                     backgroundImage: `url(${requestBg})`,
                     backgroundSize: 'cover',
@@ -997,19 +898,19 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                {/* Left Butterfly */}
-                <img src={butterfly} alt="Butterfly" className="absolute top-[10%] lg:top-[15%] left-[10%] lg:left-[15%] w-[60px] md:w-[100px] object-contain rotate-12 z-10 animate-bounce-slow" />
+                {/* Left Butterfly (Top Centered on mobile) */}
+                <img src={butterfly} alt="Butterfly" className="absolute top-[6%] md:top-[10%] lg:top-[15%] left-1/2 md:left-[10%] lg:left-[15%] -translate-x-1/2 md:-translate-x-0 w-[60px] md:w-[100px] object-contain rotate-12 z-10 animate-bounce-slow" />
 
-                {/* Right Butterfly */}
-                <img src={requestButterflyRight} alt="Butterfly" className="absolute top-[15%] lg:top-[20%] right-[10%] lg:right-[15%] w-[50px] md:w-[80px] object-contain -rotate-12 z-10 animate-bounce-slow" />
+                {/* Right Butterfly (Bottom Right on mobile) */}
+                <img src={requestButterflyRight} alt="Butterfly" className="absolute bottom-[28%] md:bottom-auto md:top-[15%] lg:top-[20%] right-[8%] md:right-[10%] lg:right-[15%] w-[45px] md:w-[80px] object-contain -rotate-12 z-10 animate-bounce-slow" />
 
-                {/* Left Bunny */}
-                <img src={bunny} alt="Bunny Left" className="absolute bottom-0 left-[2%] lg:left-[5%] w-[120px] md:w-[220px] object-contain z-20 pointer-events-none" />
+                {/* Left Bunny (Top Left on mobile) */}
+                <img src={bunny} alt="Bunny Left" className="absolute top-[12%] md:top-auto bottom-auto md:bottom-0 left-[5%] md:left-[2%] lg:left-[5%] w-[140px] md:w-[220px] object-contain z-20 pointer-events-none" />
 
-                <img src={cloudDwn1} alt='cloud' className='absolute bottom-[10%] lg:-bottom-[3%] right-[10%] lg:-right-[76px] w-[60px] md:w-[600px] object-contain  z-10 animate-bounce-slow' />
+                <img src={cloudDwn1} alt='cloud' className='absolute -bottom-[0%] lg:-bottom-[3%] -right-[15%] lg:-right-[76px] w-[360px] md:w-[600px] object-contain z-10 animate-bounce-slow' />
 
                 {/* Right Bunny */}
-                <img src={requestRightBunny} alt="Bunny Right" className="absolute bottom-0 right-[2%] lg:right-[5%] w-[150px] md:w-[280px] object-contain z-20 pointer-events-none" />
+                <img src={requestRightBunny} alt="Bunny Right" className="absolute bottom-3 md:top-auto md:bottom-0 right-1/4 translate-x-[38%] md:translate-x-0 md:right-[2%] lg:right-[5%] w-[230px] md:w-[280px] object-contain z-20 pointer-events-none" />
 
                 {/* Content */}
                 <div className="relative z-30 flex flex-col items-center text-center max-w-[800px] px-6 mt-10 md:mt-0">
