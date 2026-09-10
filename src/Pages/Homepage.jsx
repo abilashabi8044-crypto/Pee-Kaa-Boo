@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { gridItems } from '../data/shopproducts';
@@ -132,12 +132,35 @@ import section3Butterfly from '../assets/Homepage/Section3/butterfly-skin.png';
 import section3Glp from '../assets/Homepage/Section3/glp.png';
 import section3Iso from '../assets/Homepage/Section3/iso.png';
 import section3Tested from '../assets/Homepage/Section3/tested.png';
+import wlist from '../assets/shop/wlist.png';
 
-const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
+const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishlist }) => {
     const [activeCategory, setActiveCategory] = useState('All Items');
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const categories = ['All Items', 'Boys Collections', 'Girls Collections', 'Just Born Collections'];
+
+    const [wishlistToast, setWishlistToast] = useState(null);
+
+    useEffect(() => {
+        if (wishlistToast) {
+            const timer = setTimeout(() => {
+                setWishlistToast(null);
+            }, 2500);
+            return () => clearTimeout(timer);
+        }
+    }, [wishlistToast]);
+
+    const handleWishlistClick = (product) => {
+        const isRemoving = wishlist?.some(w => (w.id && product.id ? w.id === product.id : w.title === product.title));
+        if (onAddToWishlist) {
+            onAddToWishlist(product);
+        }
+        setWishlistToast({
+            action: isRemoving ? 'removed' : 'added'
+        });
+    };
+
 
     // Filter products (exclude banners)
     const products = gridItems.filter(item => item.type === 'product');
@@ -148,20 +171,28 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
     // Get top 3 for display
     const displayProducts = filteredProducts.slice(currentIndex, currentIndex + 3);
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const handlePrev = () => {
         setCurrentIndex(prev => Math.max(0, prev - 1));
     };
 
     const handleNext = () => {
-        setCurrentIndex(prev => Math.min(Math.max(0, filteredProducts.length - 3), prev + 1));
+        setCurrentIndex(prev => Math.min(Math.max(0, filteredProducts.length - (isMobile ? 1 : 3)), prev + 1));
     };
 
     const [flashSaleIndex, setFlashSaleIndex] = useState(0);
     const handleFlashPrev = () => setFlashSaleIndex(prev => Math.max(0, prev - 1));
-    const handleFlashNext = () => setFlashSaleIndex(prev => Math.min(Math.max(0, products.length - 3), prev + 1));
+    const handleFlashNext = () => setFlashSaleIndex(prev => Math.min(Math.max(0, products.length - (isMobile ? 1 : 3)), prev + 1));
     const displayFlashProducts = products.slice(flashSaleIndex, flashSaleIndex + 3);
 
     const [trendingCategory, setTrendingCategory] = useState('All Items');
+    const [trendingIndex, setTrendingIndex] = useState(0);
     const trendingProducts = trendingCategory === 'All Items'
         ? products
         : products.filter(item => item.category === trendingCategory);
@@ -170,37 +201,239 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
     const [testimonialPage, setTestimonialPage] = useState(0);
     const displayTestimonials = testimonialsData.slice(testimonialPage * 3, testimonialPage * 3 + 3);
 
+    const [touchStart, setTouchStart] = useState(null);
+    const [touchEnd, setTouchEnd] = useState(null);
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = (onSwipeLeft, onSwipeRight) => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        if (distance > minSwipeDistance && onSwipeLeft) {
+            onSwipeLeft();
+        }
+        if (distance < -minSwipeDistance && onSwipeRight) {
+            onSwipeRight();
+        }
+    };
+
+    // Hero Search state (mobile)
+    const [heroSearchQuery, setHeroSearchQuery] = useState('');
+    const [isHeroSearchFocused, setIsHeroSearchFocused] = useState(false);
+    const heroSearchRef = useRef(null);
+
+    const shopProducts = (gridItems || []).filter(item => item.type === 'product');
+    const heroSearchResults = (!heroSearchQuery || !heroSearchQuery.trim())
+        ? []
+        : shopProducts.filter(p =>
+            (p.title && p.title.toLowerCase().includes(heroSearchQuery.toLowerCase().trim())) ||
+            (p.code && p.code.toLowerCase().includes(heroSearchQuery.toLowerCase().trim())) ||
+            (p.category && p.category.toLowerCase().includes(heroSearchQuery.toLowerCase().trim())) ||
+            (p.productType && p.productType.toLowerCase().includes(heroSearchQuery.toLowerCase().trim()))
+        );
+
+    const handleSelectHeroSearchResult = (prod) => {
+        try {
+            localStorage.setItem('pkb_selected_product', JSON.stringify(prod));
+        } catch (e) {
+            console.error(e);
+        }
+        window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: prod }));
+        window.history.pushState({}, '', '/product');
+        window.dispatchEvent(new Event('popstate'));
+        setHeroSearchQuery('');
+        setIsHeroSearchFocused(false);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (heroSearchRef.current && !heroSearchRef.current.contains(e.target)) {
+                setIsHeroSearchFocused(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     return (
         <div className="w-full font-['Nunito'] overflow-x-hidden flex flex-col bg-white">
             <div
-                className="w-full h-[100dvh] relative overflow-hidden flex flex-col"
+                className="w-full min-h-[100dvh] lg:h-[100dvh] relative overflow-hidden flex flex-col"
                 style={{ backgroundColor: '#C3EFFF' }}
             >
-                {/* Top Left Cloud Background for Logo Area */}
+                {/* Top Left Cloud Background for Logo Area (Desktop only) */}
                 <img
                     src={cloud}
                     alt="Cloud"
-                    className="absolute top-0 left-0 w-[250px] md:w-[400px] object-contain opacity-70 pointer-events-none -translate-y-4 -translate-x-4 z-10"
+                    className="hidden lg:block absolute top-0 left-0 w-[400px] object-contain opacity-70 pointer-events-none -translate-y-4 -translate-x-4 z-10"
                 />
 
-                <img src={wave} alt='wave' className='absolute  bottom-0 left-0 w-[100%] h-auto object-contain z-50 ' />
-
+                {/* Bottom Wave Border */}
+                <img src={wave} alt='wave' className='absolute bottom-0 left-0 w-[100%] h-auto object-contain z-50 pointer-events-none' />
 
                 {/* Header */}
                 <div className="relative z-50">
-                    <Header cartItems={cartItems} wishlistCount={wishlistCount} customLogo={logo} />
+                    <Header cartItems={cartItems} wishlistCount={wishlistCount} customLogo={logo} showMobileSearch={false} />
                 </div>
 
-                {/* Main Hero Content */}
-                <div className="flex-1 w-full max-w-[1920px] mx-auto px-6 md:px-20 lg:px-32 flex flex-col lg:flex-row items-center justify-between relative z-20">
+                {/* Mobile Responsive Hero Content (Matching mobile design exactly) */}
+                <div className="flex lg:hidden flex-1 w-full flex-col relative z-20 justify-between pb-4">
+                    {/* Top: Mobile Search Bar */}
+                    <div ref={heroSearchRef} className="w-full px-5 pt-3 pb-2 relative z-40">
+                        <div className="relative w-full max-w-[380px] mx-auto h-[48px] bg-white rounded-full border-[1.5px] border-[#1e293b] flex items-center overflow-hidden shadow-xs">
+                            <input
+                                type="text"
+                                placeholder="Search Everything"
+                                value={heroSearchQuery}
+                                onChange={(e) => {
+                                    setHeroSearchQuery(e.target.value);
+                                    setIsHeroSearchFocused(true);
+                                }}
+                                onFocus={() => setIsHeroSearchFocused(true)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && heroSearchResults.length > 0) {
+                                        handleSelectHeroSearchResult(heroSearchResults[0]);
+                                    }
+                                }}
+                                className="flex-1 pl-6 pr-3 h-full outline-none text-[15px] font-bold text-gray-700 font-['Baloo_2'] placeholder-gray-400 bg-white"
+                            />
+                            <button
+                                onClick={() => {
+                                    if (heroSearchResults.length > 0) {
+                                        handleSelectHeroSearchResult(heroSearchResults[0]);
+                                    }
+                                }}
+                                className="w-[64px] h-full bg-[#F96E8F] flex items-center justify-center cursor-pointer hover:bg-[#E44971] transition-colors flex-shrink-0"
+                                aria-label="Search"
+                            >
+                                <svg className="w-5 h-5 text-white stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                        </div>
 
-                    {/* Left Column (Text & Button) */}
-                    <div className="w-full lg:w-[45%] flex flex-col justify-center items-start -mt-8 lg:-mt-[150px] relative z-30">
-                        <h1 className="text-[#333333] font-['Baloo_2'] font-extrabold text-[40px] sm:text-[50px] md:text-[65px] lg:text-[72px] leading-[1.1] mb-6">
+                        {/* Search Results Dropdown */}
+                        {isHeroSearchFocused && heroSearchQuery.trim() && (
+                            <div className="absolute top-[56px] left-5 right-5 max-w-[380px] mx-auto bg-white rounded-2xl shadow-2xl border border-pink-200/80 p-2 z-50 max-h-[300px] overflow-y-auto font-['Nunito']">
+                                {heroSearchResults.length > 0 ? (
+                                    <div className="flex flex-col gap-1">
+                                        <div className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider px-2 py-1">
+                                            Found {heroSearchResults.length} {heroSearchResults.length === 1 ? 'Product' : 'Products'}
+                                        </div>
+                                        {heroSearchResults.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                onClick={() => handleSelectHeroSearchResult(item)}
+                                                className="flex items-center gap-3 p-2 rounded-xl hover:bg-pink-50/80 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-0"
+                                            >
+                                                <div className="w-11 h-11 rounded-lg bg-[#F9E2E8]/40 flex-shrink-0 overflow-hidden border border-pink-100 flex items-center justify-center p-0.5">
+                                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover rounded-md" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between gap-1">
+                                                        <h4 className="font-bold text-gray-800 text-[13px] truncate">
+                                                            {item.title}
+                                                        </h4>
+                                                        <span className="font-black text-[#F96E8F] text-[13px]">
+                                                            ₹{item.price}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                        <span className="text-[10px] text-gray-500 font-bold">
+                                                            {item.code || `64A288${item.id}`}
+                                                        </span>
+                                                        <span className="text-[9px] bg-pink-100 text-[#F96E8F] font-extrabold px-1.5 py-0.5 rounded">
+                                                            {item.category || item.productType}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-4 text-center text-gray-400 font-bold text-[12px]">
+                                        No products found matching "{heroSearchQuery}"
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Heading & Subtitle */}
+                    <div className="w-full px-6 pt-5 pb-1 flex flex-col items-start z-30">
+                        <h1 className="text-[#1e293b] font-['Baloo_2'] font-black text-[38px] sm:text-[44px] leading-[1.1] mb-2 tracking-tight">
                             Best Kids Store <br />
                             & <span className="text-[#F96E8F]">Online Shop</span>
                         </h1>
-                        <p className="text-gray-800 font-['Baloo_2'] font-bold text-[18px] md:text-[24px] mb-10">
+                        <p className="text-[#1e293b] font-['Baloo_2'] font-extrabold text-[16px] sm:text-[18px] mb-5">
+                            Give The Gift Of Your Children Everyday
+                        </p>
+                    </div>
+
+                    {/* Visual Area: Button, Jewelry, Car, Airplane, Clouds */}
+                    <div className="flex-1 w-full relative px-6 z-20 min-h-[420px] pb-6">
+                        {/* Shop This Now Button */}
+                        <div className="relative z-30 inline-block">
+                            <button
+                                onClick={() => {
+                                    window.history.pushState({}, '', '/shop');
+                                    window.dispatchEvent(new Event('popstate'));
+                                }}
+                                className="bg-[#F96E8F] text-white px-8 py-3.5 rounded-full font-bold font-['Baloo_2'] text-[18px] shadow-md hover:bg-[#E44971] transition-transform active:scale-95 cursor-pointer"
+                            >
+                                Shop This Now
+                            </button>
+                        </div>
+
+                        {/* Car Decoration Sticker (Upper Right of Jewelry) */}
+                        <img
+                            src={car}
+                            alt="Toy Car"
+                            className="absolute right-12 sm:right-16 top-[-4px] w-[80px] sm:w-[92px] object-contain drop-shadow-sm z-30"
+                        />
+
+                        {/* Jewelry Ornaments */}
+                        <div className="absolute left-1/2 -translate-x-[47%] top-2 w-[320px] sm:w-[360px] max-w-[88%] z-20">
+                            <img
+                                src={ornaments}
+                                alt="Jewelry Ornaments"
+                                className="w-full h-auto object-contain drop-shadow-xl"
+                            />
+                        </div>
+
+                        {/* Flying Airplane Sticker */}
+                        <img
+                            src={flying}
+                            alt="Airplane"
+                            className="absolute bottom-6 right-5 w-[115px] sm:w-[130px] object-contain z-30 pointer-events-none"
+                        />
+
+                        {/* Bottom Cloud */}
+                        <img
+                            src={cloudDwn}
+                            alt="Cloud"
+                            className="absolute -bottom-4 right-0 w-[280px] sm:w-[340px] object-contain opacity-95 z-20 pointer-events-none"
+                        />
+                    </div>
+                </div>
+
+                {/* Desktop Main Hero Content (Preserved 100% untouched) */}
+                <div className="hidden lg:flex flex-1 w-full max-w-[1920px] mx-auto px-6 md:px-20 lg:px-32 flex-row items-center justify-between relative z-20">
+                    {/* Left Column (Text & Button) */}
+                    <div className="w-[45%] flex flex-col justify-center items-start -mt-[150px] relative z-30">
+                        <h1 className="text-[#333333] font-['Baloo_2'] font-extrabold text-[72px] leading-[1.1] mb-6">
+                            Best Kids Store <br />
+                            & <span className="text-[#F96E8F]">Online Shop</span>
+                        </h1>
+                        <p className="text-gray-800 font-['Baloo_2'] font-bold text-[24px] mb-10">
                             Give The Gift Of Your Children Everyday
                         </p>
                         <button
@@ -217,33 +450,32 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                         <img
                             src={car}
                             alt="Car"
-                            className="w-[90px] md:w-[120px] mt-16 md:mt-16 ml-0 md:ml-4 object-contain "
-
+                            className="w-[120px] mt-16 ml-4 object-contain"
                         />
                     </div>
 
                     {/* Right Column (Jewelry Ornaments) */}
-                    <div className="w-full lg:w-[65%] flex justify-center lg:justify-end items-center relative mr-36 mt-16 lg:mt-0 z-120">
+                    <div className="w-[65%] flex justify-end items-center relative mr-36 mt-0 z-120">
                         <img
                             src={ornaments}
                             alt="Jewelry"
-                            className="w-full max-w-[600px] lg:max-w-[600px] rotate-[-10.24deg] object-contain drop-shadow-2xl "
+                            className="w-full max-w-[600px] rotate-[-10.24deg] object-contain drop-shadow-2xl"
                         />
                     </div>
                 </div>
 
-                {/* Flying Airplane Decoration (Bottom Right) */}
+                {/* Desktop Flying Airplane Decoration (Bottom Right) */}
                 <img
                     src={flying}
                     alt="Airplane"
-                    className="absolute bottom-16 md:-bottom-30 right-4 md:right-16 w-[150px] md:w-[250px] object-contain z-50 pointer-events-none"
+                    className="hidden lg:block absolute -bottom-30 right-16 w-[250px] object-contain z-50 pointer-events-none"
                 />
 
-                {/* Bottom Cloud Border */}
+                {/* Desktop Bottom Cloud Border */}
                 <img
                     src={cloudDwn}
                     alt="Cloud Border"
-                    className="absolute -bottom-4 right-0 h-auto w-full md:w-[150px] lg:w-[470px] object-cover md:object-fill z-40 pointer-events-none"
+                    className="hidden lg:block absolute -bottom-4 right-0 h-auto w-[470px] object-fill z-40 pointer-events-none"
                 />
 
                 {/* Global style for slow bounce animation */}
@@ -261,17 +493,17 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
 
             {/* Top Selling Products Section */}
             <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 py-16 lg:py-24 relative bg-white">
-                <img src={butterfly} alt="Butterfly" className="absolute top-10 right-10 w-[60px] md:w-[100px] object-contain rotate-12 z-10 pointer-events-none" />
+                <img src={butterfly} alt="Butterfly" className="hidden md:block absolute top-10 right-10 w-[60px] md:w-[100px] object-contain rotate-12 z-10 pointer-events-none" />
 
                 <div className="flex flex-col xl:flex-row gap-8 lg:gap-12 relative z-20 items-stretch">
 
                     {/* Featured Card */}
-                    <div className="ml-[50px] w-full xl:w-[25%] xl:h-[500px] rounded-[30px] overflow-hidden relative min-h-[480px] xl:min-h-0 ">
+                    <div className="lg:ml-[50px] mx-auto xl:mx-0 w-full xl:w-[25%] xl:h-[500px] rounded-[30px] overflow-hidden relative min-h-[480px] xl:min-h-0 ">
                         <img src={featuredBanner} alt="Kids Collection" className="absolute inset-0 w-full h-full object-cover" />
 
                         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center -mt-[200px] p-6">
                             <span className="text-white text-[12px] font-['Baloo_2'] font-black tracking-[0.2em] mb-4 uppercase shadow-sm">Featured</span>
-                            <h2 className="text-white text-[24px] font-['Baloo_2'] md:text-[32px] font-extrabold leading-tight mb-8 font-['Nunito'] drop-shadow-md">
+                            <h2 className="text-white text-[29px] font-['Baloo_2'] md:text-[32px] font-extrabold leading-tight mb-8 font-['Nunito'] drop-shadow-md">
                                 Kids Collection <br /> For Summer
                             </h2>
                             <button
@@ -279,7 +511,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                                     window.history.pushState({}, '', '/shop');
                                     window.dispatchEvent(new Event('popstate'));
                                 }}
-                                className="bg-white text-[#F96E8F] px-8 py-2.5 rounded-full font-['Baloo_2'] text-[16px] font-bold border-2 border-dashed border-[#F76188] shadow-md hover:bg-gray-50 transition-colors cursor-pointer"
+                                className="bg-white text-[#F96E8F] px-8 py-2.5 rounded-full font-['Baloo_2'] text-[14px] lg:text-[16px] font-bold border-2 border-dashed border-[#F76188] shadow-md hover:bg-gray-50 transition-colors cursor-pointer"
                             >
                                 View Shop
                             </button>
@@ -291,10 +523,11 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
 
                         {/* Header & Arrows */}
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center  mb-6 gap-4">
-                            <h2 className="text-3xl md:text-[42px] font-extrabold text-gray-900 font-['Baloo_2'] tracking-tight">
-                                Top Selling <span className="text-[#F96E8F]">products</span>
+                            <h2 className="flex items-center gap-2 text-3xl md:text-[42px] font-extrabold text-gray-900 font-['Baloo_2'] tracking-tight">
+                                <div>Top Selling <span className="text-[#F96E8F]">products</span></div>
+                                <img src={butterfly} alt="Butterfly" className="md:hidden w-[40px] object-contain rotate-12" />
                             </h2>
-                            <div className="flex items-center gap-2 mr-[100px]">
+                            <div className="hidden md:flex items-center gap-2 mr-[100px]">
                                 <button
                                     onClick={handlePrev}
                                     disabled={currentIndex === 0}
@@ -311,7 +544,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                         </div>
 
                         {/* Category Pills */}
-                        <div className="flex flex-wrap items-center gap-3 mb-8">
+                        <div className="flex flex-nowrap md:flex-wrap items-center gap-3 mb-8 overflow-x-auto no-scrollbar pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                             {categories.map(cat => (
                                 <button
                                     key={cat}
@@ -319,9 +552,9 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                                         setActiveCategory(cat);
                                         setCurrentIndex(0);
                                     }}
-                                    className={`px-6 py-2.5 rounded-full font-['Baloo_2'] font-bold text-[16px] transition-all border-[1.5px] cursor-pointer shadow-xs ${activeCategory === cat
-                                            ? 'bg-[#F96E8F] text-white border-[#F96E8F]'
-                                            : 'bg-white text-gray-500 border-gray-200 hover:border-[#F96E8F] hover:text-[#F96E8F]'
+                                    className={`px-6 py-2.5 rounded-full font-['Baloo_2'] font-bold text-[16px] transition-all border-[1.5px] cursor-pointer shadow-xs whitespace-nowrap flex-shrink-0 ${activeCategory === cat
+                                        ? 'bg-[#F96E8F] text-white border-[#F96E8F]'
+                                        : 'bg-white text-gray-500 border-gray-200 hover:border-[#F96E8F] hover:text-[#F96E8F]'
                                         }`}
                                 >
                                     {cat}
@@ -330,25 +563,48 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                         </div>
 
                         {/* Product Cards Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 xl:gap-8 max-w-[1000px]">
-                            {displayProducts.map(product => (
-                                <ProductCard
-                                    key={product.id}
-                                    item={product}
-                                    image={product.image}
-                                    title={product.title}
-                                    price={product.price}
-                                    oldPrice={product.oldPrice}
-                                    theme={product.theme}
-                                    category={product.category}
-                                    onAddToCart={() => addToCart && addToCart(product)}
-                                    onClick={() => {
-                                        window.history.pushState({}, '', '/product');
-                                        window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
-                                    }}
-                                />
+                        <div 
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 xl:gap-8 max-w-[1000px] mx-auto md:mx-0 w-full"
+                            onTouchStart={onTouchStart}
+                            onTouchMove={onTouchMove}
+                            onTouchEnd={() => onTouchEnd(handleNext, handlePrev)}
+                        >
+                            {(isMobile ? displayProducts.slice(0, 1) : displayProducts).map(product => (
+                                <div key={product.id} className="animate-fade-in">
+                                    <ProductCard
+                                        isHomepage={true}
+                                        item={product}
+                                        heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
+                                        image={product.image}
+                                        title={product.title}
+                                        price={product.price}
+                                        oldPrice={product.oldPrice}
+                                        theme={product.theme}
+                                        category={product.category}
+                                        onAddToCart={() => addToCart && addToCart(product)}
+                                        onAddToWishlist={() => handleWishlistClick(product)}
+                                        isWishlisted={wishlist?.some(w => w.id === product.id || w.title === product.title)}
+                                        onClick={() => {
+                                            window.history.pushState({}, '', '/product');
+                                            window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
+                                        }}
+                                    />
+                                </div>
                             ))}
                         </div>
+
+                        {/* Mobile Pagination Dots */}
+                        {isMobile && filteredProducts.length > 1 && (
+                            <div className="md:hidden flex justify-center items-center gap-2 mt-6">
+                                {Array.from({ length: filteredProducts.length }).map((_, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setCurrentIndex(idx)}
+                                        className={`w-2.5 h-2.5 rounded-full transition-colors cursor-pointer ${currentIndex === idx ? 'bg-[#F96E8F]' : 'bg-gray-300'}`}
+                                    />
+                                ))}
+                            </div>
+                        )}
 
                     </div>
                 </div>
@@ -378,10 +634,10 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                     </div>
 
                     {/* Logos */}
-                    <div className="w-full flex flex-wrap justify-center items-center gap-10 md:gap-30 md:pr-[150px]">
+                    <div className="w-full flex flex-wrap justify-center items-center gap-10 md:gap-30 md:pr-[20px]">
                         <img src={section3Tested} alt="Dermatologically Tested" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Glp} alt="GLP" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
-                        <img src={section3Butterfly} alt="Sensitive Skin" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
+                        <img src={section3Butterfly} alt="Sensitive Skin" className="h-28 md:h-[160px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Iso} alt="ISO" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Baby} alt="Minor Skin Safe" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                     </div>
@@ -403,7 +659,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                                     Flash <span className="text-[#F96E8F]">Sale</span>
                                 </h2>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="hidden md:flex items-center gap-3">
                                 <button
                                     onClick={handleFlashPrev}
                                     disabled={flashSaleIndex === 0}
@@ -420,11 +676,18 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                         </div>
 
                         {/* Products Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
-                            {displayFlashProducts.map(product => (
-                                <ProductCard
-                                    key={product.id + 'flash'}
-                                    item={product}
+                        <div 
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1"
+                            onTouchStart={onTouchStart}
+                            onTouchMove={onTouchMove}
+                            onTouchEnd={() => onTouchEnd(handleFlashNext, handleFlashPrev)}
+                        >
+                            {(isMobile ? products.slice(flashSaleIndex, flashSaleIndex + 1) : displayFlashProducts).map(product => (
+                                <div key={product.id + 'flash'} className="animate-fade-in">
+                                    <ProductCard
+                                        isHomepage={true}
+                                        item={product}
+                                    heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
                                     image={product.image}
                                     title={product.title}
                                     price={product.price}
@@ -432,13 +695,29 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                                     theme={product.theme}
                                     category={product.category}
                                     onAddToCart={() => addToCart && addToCart(product)}
+                                    onAddToWishlist={() => handleWishlistClick(product)}
+                                    isWishlisted={wishlist?.some(w => w.id === product.id || w.title === product.title)}
                                     onClick={() => {
                                         window.history.pushState({}, '', '/product');
                                         window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
                                     }}
                                 />
+                                </div>
                             ))}
                         </div>
+
+                        {/* Mobile Pagination Dots */}
+                        {isMobile && products.length > 1 && (
+                            <div className="md:hidden flex justify-center items-center gap-2 mt-6 mb-2">
+                                {Array.from({ length: products.length }).map((_, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setFlashSaleIndex(idx)}
+                                        className={`w-2.5 h-2.5 rounded-full transition-colors cursor-pointer ${flashSaleIndex === idx ? 'bg-[#F96E8F]' : 'bg-gray-300'}`}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Banners */}
@@ -491,28 +770,31 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
             </div>
 
             {/* Trending Products Section */}
-            <div className="w-full relative pt-10 pb-32 lg:pt-16 lg:pb-56 xl:pt-20 xl:pb-64 flex flex-col items-center bg-[#E6F8FB]"
+            <div className="w-full relative pt-6 pb-[190px] md:pt-10 md:pb-[200px] lg:pt-16 lg:pb-56 xl:pt-20 xl:pb-64 flex flex-col items-center bg-[#E6F8FB]"
                 style={{
                     backgroundImage: `url(${shopbg})`,
                     backgroundSize: 'cover',
-                    backgroundPosition: 'bottom center',
+                    backgroundPosition: isMobile ? '65% bottom' : 'bottom center',
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <img src={requestButterflyRight} alt="Butterfly" className="absolute top-10 right-10 w-[60px] md:w-[140px] object-contain rotate-12 z-10 pointer-events-none" />
+                <img src={requestButterflyRight} alt="Butterfly" className="absolute lg:top-10 right-10 w-[60px] md:w-[140px] object-contain rotate-12 z-10 pointer-events-none" />
 
-                <h2 className="text-3xl md:text-[43px] font-black text-gray-900 font-['Baloo_2'] tracking-tight mb-8 relative z-20">
+                <h2 className="text-3xl md:text-[43px] font-black text-gray-900 font-['Baloo_2'] tracking-tight mb-4 md:mb-8 relative z-20 self-start px-6 md:px-0 md:self-auto mt-4 md:mt-0">
                     Trending <span className="text-[#F96E8F]">products</span>
                 </h2>
 
-                <div className="flex flex-wrap justify-center items-center gap-3 mb-12 relative z-20">
+                <div className="flex flex-nowrap md:flex-wrap justify-start md:justify-center items-center gap-3 mb-6 md:mb-12 relative z-20 overflow-x-auto no-scrollbar w-full px-6 md:px-0 pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                     {categories.map(cat => (
                         <button
                             key={cat + 'trending'}
-                            onClick={() => setTrendingCategory(cat)}
-                            className={`px-6 py-2.5 rounded-full font-bold text-[16px] font-['Baloo_2'] transition-all cursor-pointer shadow-sm ${trendingCategory === cat
-                                    ? 'bg-[#F96E8F] text-white'
-                                    : 'bg-white text-gray-700 hover:text-[#F96E8F]'
+                            onClick={() => {
+                                setTrendingCategory(cat);
+                                setTrendingIndex(0);
+                            }}
+                            className={`px-6 py-2.5 rounded-full font-bold text-[16px] font-['Baloo_2'] transition-all cursor-pointer shadow-sm whitespace-nowrap flex-shrink-0 ${trendingCategory === cat
+                                ? 'bg-[#F96E8F] text-white'
+                                : 'bg-white text-gray-700 hover:text-[#F96E8F]'
                                 }`}
                         >
                             {cat}
@@ -521,11 +803,21 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                 </div>
 
                 <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 relative z-20">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5">
-                        {displayTrendingProducts.map(product => (
-                            <ProductCard
-                                key={product.id + 'trending'}
-                                item={product}
+                    <div 
+                        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5"
+                        onTouchStart={onTouchStart}
+                        onTouchMove={onTouchMove}
+                        onTouchEnd={() => onTouchEnd(
+                            () => setTrendingIndex(prev => Math.min(Math.max(0, trendingProducts.length - (isMobile ? 1 : 5)), prev + 1)),
+                            () => setTrendingIndex(prev => Math.max(0, prev - 1))
+                        )}
+                    >
+                        {(isMobile ? trendingProducts.slice(trendingIndex, trendingIndex + 1) : displayTrendingProducts).map(product => (
+                            <div key={product.id + 'trending'} className="animate-fade-in">
+                                <ProductCard
+                                    isHomepage={true}
+                                    item={product}
+                                heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
                                 image={product.image}
                                 title={product.title}
                                 price={product.price}
@@ -533,13 +825,29 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                                 theme={product.theme}
                                 category={product.category}
                                 onAddToCart={() => addToCart && addToCart(product)}
+                                onAddToWishlist={() => handleWishlistClick(product)}
+                                isWishlisted={wishlist?.some(w => w.id === product.id || w.title === product.title)}
                                 onClick={() => {
                                     window.history.pushState({}, '', '/product');
                                     window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: product }));
                                 }}
                             />
-                        ))}
+                        </div>
+                    ))}
                     </div>
+
+                    {/* Mobile Pagination Dots */}
+                    {isMobile && trendingProducts.length > 1 && (
+                        <div className="md:hidden flex justify-center items-center gap-2 mt-8">
+                            {Array.from({ length: trendingProducts.length }).map((_, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => setTrendingIndex(idx)}
+                                    className={`w-2.5 h-2.5 rounded-full transition-colors cursor-pointer ${trendingIndex === idx ? 'bg-[#F96E8F]' : 'bg-gray-100'}`}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -597,7 +905,15 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                 </div>
 
                 {/* Cards */}
-                <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 relative z-20">
+                <div 
+                    className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 relative z-20"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={() => onTouchEnd(
+                        () => setTestimonialPage(prev => Math.min(prev + 1, 2)),
+                        () => setTestimonialPage(prev => Math.max(prev - 1, 0))
+                    )}
+                >
                     {displayTestimonials.map((testimonial, idx) => (
                         <div key={idx} className="flex flex-col items-center relative animate-fade-in">
                             <div className="w-full rounded-[24px] p-8 md:p-10 relative mb-12 shadow-sm" style={{ backgroundColor: testimonial.color }}>
@@ -633,8 +949,8 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                             key={pageIndex}
                             onClick={() => setTestimonialPage(pageIndex)}
                             className={`w-3 h-3 rounded-full cursor-pointer transition-colors ${testimonialPage === pageIndex
-                                    ? 'bg-[#F96E8F]'
-                                    : 'bg-transparent border-[1.5px] border-[#F96E8F] hover:bg-[#F96E8F]/30'
+                                ? 'bg-[#F96E8F]'
+                                : 'bg-transparent border-[1.5px] border-[#F96E8F] hover:bg-[#F96E8F]/30'
                                 }`}
                             aria-label={`Go to testimonial page ${pageIndex + 1}`}
                         ></button>
@@ -691,7 +1007,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                 <img src={bunny} alt="Bunny Left" className="absolute bottom-0 left-[2%] lg:left-[5%] w-[120px] md:w-[220px] object-contain z-20 pointer-events-none" />
 
                 <img src={cloudDwn1} alt='cloud' className='absolute bottom-[10%] lg:-bottom-[3%] right-[10%] lg:-right-[76px] w-[60px] md:w-[600px] object-contain  z-10 animate-bounce-slow' />
-                
+
                 {/* Right Bunny */}
                 <img src={requestRightBunny} alt="Bunny Right" className="absolute bottom-0 right-[2%] lg:right-[5%] w-[150px] md:w-[280px] object-contain z-20 pointer-events-none" />
 
@@ -701,20 +1017,46 @@ const Homepage = ({ cartItems, wishlistCount, addToCart }) => {
                     <div className="w-[190px] h-[190px] mb-6 flex justify-center items-center  overflow-hidden">
                         <img src={bunnyLogo} alt="Logo Mark" className="w-[180px] h-[180px] object-contain" />
                     </div>
-                    
+
                     <h2 className="text-[35px] md:text-[50px] font-black text-[#333333] font-['Baloo_2'] mb-4">
                         Last-minute <span className="text-[#F96E8F]">Requests</span>
                     </h2>
-                    
+
                     <p className="text-gray-500 font-semibold text-[14px] md:text-[19px] font-['Nunito'] leading-relaxed mb-8 max-w-[700px]">
                         Cum sociis Theme natoque penatibus et magnis dis montes, semper libero nibh velit auctor parturient nascetur ridiculus mus.
                     </p>
-                    
+
                     <button className="bg-[#F96E8F] text-white px-10 py-3.5 rounded-[15px] font-bold text-[16px] shadow-md hover:bg-[#E44971] transition-transform hover:scale-105 cursor-pointer">
                         Contact Us
                     </button>
                 </div>
             </div>
+
+            {/* Wishlist Added / Removed Popup Notification */}
+            {wishlistToast && (
+                <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] sm:bottom-6 sm:right-6 sm:left-auto sm:translate-x-0 sm:w-auto z-[9999] bg-white border-[2px] ${wishlistToast.action === 'removed' ? 'border-gray-300 shadow-lg' : 'border-[#F96E8F] shadow-lg'} text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 max-w-[360px] animate-toast-up`}>
+                    <div className={`w-10 h-10 rounded-[12px] ${wishlistToast.action === 'removed' ? 'bg-gray-100 text-gray-500' : 'bg-[#F96E8F]/15 text-[#F96E8F]'} flex items-center justify-center flex-shrink-0`}>
+                        {wishlistToast.action === 'removed' ? (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        ) : (
+                            <img src={wlist} alt="wishlist" className="h-5" />
+                        )}
+                    </div>
+                    <div className="flex-1 pr-2">
+                        <h4 className={`font-black ${wishlistToast.action === 'removed' ? 'text-gray-700' : 'text-[#F96E8F]'} text-[15px] font-['Nunito'] leading-tight`}>
+                            {wishlistToast.action === 'removed' ? 'Removed from Wishlist' : 'Added to Wishlist'}
+                        </h4>
+                    </div>
+                    <button
+                        onClick={() => setWishlistToast(null)}
+                        className="w-7 h-7 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center font-bold text-sm cursor-pointer transition-colors"
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
 
             <Footer />
         </div>

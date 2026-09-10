@@ -270,18 +270,18 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
 
             {/* Hero Section */}
             <div
-                className="w-full pt-[196px] sm:pt-[206px] lg:pt-[130px] pb-24 md:pb-36 -mt-[155px] lg:-mt-[142px] relative flex justify-center items-center z-10 bg-top bg-no-repeat shop-hero-bg"
+                className="w-full pt-[196px] sm:pt-[206px] lg:pt-[130px] pb-40 md:pb-36 -mt-[155px] lg:-mt-[142px] relative flex justify-center items-center z-10 bg-top bg-no-repeat shop-hero-bg"
                 style={{
                     '--shop-bg-mob': `url(${shopMobBg})`,
                     '--shop-bg-desk': `url(${shopbg})`
                 }}
             >
                 <div className="text-center mt-6 lg:mt-6">
-                    <h1 className="text-[32px] sm:text-[40px] md:text-[50px] font-black text-gray-900 leading-tight tracking-wide">
+                    <h1 className="text-[36px] sm:text-[40px] md:text-[50px] font-black text-gray-900 leading-tight tracking-wide">
                         {headingParts.first} <span className="text-[#F96E8F]">{headingParts.second}</span>
                     </h1>
-                    <p className="text-[12px] sm:text-[14px] text-gray-800 font-extrabold mt-0 tracking-wide">
-                        <span 
+                    <p className="text-[20px] sm:text-[14px] text-gray-800 font-extrabold mt-0 tracking-wide">
+                        <span
                             className="cursor-pointer hover:text-[#F96E8F] transition-colors"
                             onClick={() => {
                                 window.history.pushState({}, '', '/');
@@ -292,9 +292,9 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 </div>
                 <img src={cloud} alt="cloud" className="absolute top-[-115px] sm:top-[-110px] lg:top-[-25px] left-[54%] -translate-x-1/2 lg:left-0 lg:translate-x-0 w-full md:w-[340px] lg:w-[330px] xl:w-[360px] h-auto object-contain pointer-events-none z-30 lg:z-auto" />
                 {/* Left Decoration (Car) */}
-                <img src={headerCar} alt="Car" className="block absolute top-[148px] sm:top-[160px] lg:top-[200px] lg:bottom-[15%] left-1 sm:left-3 lg:left-[2%] xl:left-[4%] w-[65px] sm:w-[80px] lg:w-[90px] xl:w-[100px] object-contain pointer-events-none z-20" />
+                <img src={headerCar} alt="Car" className="block absolute top-[175px] sm:top-[185px] lg:top-[200px] lg:bottom-[15%] left-1 sm:left-3 lg:left-[2%] xl:left-[4%] w-[65px] sm:w-[80px] lg:w-[90px] xl:w-[100px] object-contain pointer-events-none z-20" />
                 {/* Right Decoration (Bunny) */}
-                <img src={pink} alt="Bunny" className="block absolute bottom-[16px] sm:bottom-[30px] md:bottom-[46px] right-[2%] sm:right-[3%] xl:right-[5%] w-[60px] sm:w-[68px] md:w-[100px] lg:w-[120px] xl:w-[100px] object-contain pointer-events-none z-30" />
+                <img src={pink} alt="Bunny" className="block absolute bottom-[34px] sm:bottom-[30px] md:bottom-[46px] right-[2%] sm:right-[3%] xl:right-[5%] w-[60px] sm:w-[68px] md:w-[100px] lg:w-[120px] xl:w-[100px] object-contain pointer-events-none z-30" />
             </div>
 
             <div className="bg-white relative z-20">
@@ -355,7 +355,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             <div className="flex flex-col gap-4">
                                 <div className="bg-[#F96E8F] text-white px-5 py-4 rounded-[8px] font-black flex justify-between items-center shadow-sm">
                                     <span className="text-[18px] font-[Nunito] tracking-wide">Filters</span>
-                                    <span 
+                                    <span
                                         onClick={applyFilters}
                                         className="text-[11px] font-[Nunito] font-extrabold uppercase tracking-wider bg-white/20 hover:bg-white/30 px-3 py-1 rounded-[6px] cursor-pointer transition-colors"
                                     >
@@ -501,12 +501,12 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                         const borderClass = item.bannerTheme === 'pink' ? 'border-[#F6C0CD]' : 'border-[#B7E6FA]';
                                         const bgClass = item.bannerTheme === 'pink' ? 'bg-[#FDE5EB]' : 'bg-[#DEF4FD]';
                                         return (
-                                            <div key={index} className={`col-span-2 md:col-span-2 rounded-[12px] md:rounded-[20px] overflow-hidden relative shadow-sm border-[2px] md:border-[3px] ${borderClass} ${bgClass} group cursor-pointer h-[120px] md:h-auto`}>
+                                            <div key={index} className={`col-span-2 md:col-span-2 rounded-[12px] md:rounded-[20px] overflow-hidden relative shadow-sm border-[2px] md:border-[3px] ${borderClass} ${bgClass} group cursor-pointer h-[220px] sm:h-[280px] md:h-auto`}>
                                                 <img src={item.bannerImage} alt={item.title} className="w-[45%] h-full object-cover absolute right-0 inset-y-0" />
-                                                <div className="relative z-10 px-4 pt-5 md:px-8 py-2 md:py-8 h-full flex flex-col justify-center max-w-[55%]">
-                                                    <h3 className="text-[20px] md:text-[52.5px] whitespace-nowrap w-full font-black text-gray-900 leading-none mb-1 font-['Lobster_Two'] tracking-tight">{item.title}</h3>
-                                                    <p className="text-gray-900 font-['Nunito'] font-bold text-[10px] md:text-[22.5px] mb-2 md:mb-6">{item.subtitle}</p>
-                                                    <button className="bg-white text-[#F96E8F] border-[2px] border-dashed border-[#F96E8F] px-4 md:px-8 py-1 md:py-2.5 rounded-full font-black w-fit shadow-sm hover:shadow-md transition-shadow uppercase tracking-wide text-[9px] md:text-[13px]">View Shop</button>
+                                                <div className="relative z-10 px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8 h-full flex flex-col justify-center max-w-[55%]">
+                                                    <h3 className="text-[24px] sm:text-[34px] md:text-[52.5px] whitespace-nowrap w-full font-black text-gray-900 leading-tight md:leading-none mb-1 font-['Lobster_Two'] tracking-tight">{item.title}</h3>
+                                                    <p className="text-gray-900 font-['Nunito'] font-bold text-[12px] sm:text-[16px] md:text-[22.5px] mb-3 md:mb-6">{item.subtitle}</p>
+                                                    <button className="bg-white text-[#F96E8F] border-[2px] border-dashed border-[#F96E8F] px-4 md:px-8 py-1.5 md:py-2.5 rounded-full font-black w-fit shadow-sm hover:shadow-md transition-shadow uppercase tracking-wide text-[10px] md:text-[13px]">View Shop</button>
                                                 </div>
                                             </div>
                                         );
@@ -606,7 +606,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             {cartToast.message}
                         </span>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setCartToast(null)}
                         className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
                     >
@@ -633,7 +633,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             Your product list has been updated
                         </span>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setFilterToast(false)}
                         className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
                     >
@@ -660,7 +660,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             Please select at least one filter
                         </span>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setEmptyFilterToast(false)}
                         className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
                     >
@@ -687,7 +687,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             All filters have been cleared
                         </span>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setResetToast(false)}
                         className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
                     >

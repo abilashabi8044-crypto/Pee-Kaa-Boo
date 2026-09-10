@@ -144,7 +144,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                         </svg>
                     </button>
 
-                    <div className="cursor-pointer flex items-center absolute left-1/2 top-[72%] lg:top-auto -translate-x-1/2 -translate-y-1/2 lg:translate-x-0 lg:translate-y-0 lg:static lg:flex-shrink-0 z-50">
+                    <div className="cursor-pointer flex items-center absolute left-1/2 top-1/2 lg:top-auto -translate-x-1/2 -translate-y-1/2 lg:translate-x-0 lg:translate-y-0 lg:static lg:flex-shrink-0 z-50">
                         <a href="/" className="block">
                             <img src={customLogo || logo} alt="PEE KAA BOO" className="w-[60px] sm:w-[80px] -ml-1.5 lg:ml-24 object-contain" />
                         </a>
@@ -188,7 +188,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
 
                 {/* Mobile Search Bar: Only shown for Shop and Cart at mobile responsive */}
                 {shouldShowMobileSearch && (
-                    <div ref={mobileSearchRef} className="relative flex lg:hidden flex-col items-center w-[250px] sm:w-[300px] mt-4 sm:mt-2.5 translate-y-[28px] lg:translate-y-0 lg:mt-0 z-40">
+                    <div ref={mobileSearchRef} className="relative flex lg:hidden flex-col items-center w-[90%] sm:w-[400px] mt-4 sm:mt-2.5 translate-y-[28px] lg:translate-y-0 lg:mt-0 z-40">
                         <div
                             className="flex items-center w-full h-[40px] transition-colors bg-no-repeat bg-center bg-transparent"
                             style={{ backgroundImage: `url(${searchbarBg})`, backgroundSize: '100% 100%' }}

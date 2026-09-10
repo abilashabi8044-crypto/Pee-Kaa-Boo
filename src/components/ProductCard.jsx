@@ -18,7 +18,9 @@ const ProductCard = ({
     isWishlisted,
     viewMode = 'grid',
     cartQuantity = 0,
-    onUpdateQuantity
+    onUpdateQuantity,
+    heightClass = "h-[220px] sm:h-[280px] md:h-[360px]",
+    isHomepage = false
 }) => {
     const [isAdded, setIsAdded] = useState(false);
     const isGrid = viewMode === 'grid';
@@ -38,7 +40,7 @@ const ProductCard = ({
         return (
             <div
                 onClick={onClick}
-                className={`rounded-[24px] border-[3px] ${borderColor} ${bg} overflow-hidden relative group cursor-pointer transition-all duration-300 h-[220px] sm:h-[280px] md:h-[360px] flex flex-col justify-between shadow-sm`}
+                className={`rounded-[16px] border-[3px] ${borderColor} ${bg} overflow-hidden relative group cursor-pointer transition-all duration-300 ${heightClass} flex flex-col justify-between shadow-sm`}
             >
                 {/* Full-Cover Background Product Image */}
                 <div className="absolute inset-0 w-full h-full z-0">
@@ -70,15 +72,15 @@ const ProductCard = ({
 
                 {/* Overlaid details content area */}
                 <div className="absolute bottom-0 inset-x-0 bg-white m-[6px] md:m-[10px] rounded-[10px] p-2 md:p-3 text-center z-10 transition-all duration-300 shadow-sm">
-                    <div className="text-gray-400 text-[9px] md:text-[11px] font-medium mb-1">
+                    <div className={`text-gray-400 font-medium mb-1 ${isHomepage ? 'text-[13px]' : 'text-[13px]'} md:text-[11px]`}>
                         {category || "Category"}
                     </div>
 
-                    <h4 className="text-[#333] font-['Nunito'] font-bold text-[12px] md:text-[18px] leading-tight mb-1 md:mb-1.5 tracking-wide md:group-hover:text-[16px] md:group-hover:mb-2 transition-all duration-300">{title}</h4>
+                    <h4 className={`text-[#333] font-['Nunito'] font-bold leading-tight mb-1 md:mb-1.5 tracking-wide md:group-hover:text-[16px] md:group-hover:mb-2 transition-all duration-300 ${isHomepage ? 'text-[24px]' : 'text-[10px]'} md:text-[18px]`}>{title}</h4>
 
                     <div className="flex justify-center items-center gap-1 md:gap-2 mb-0 md:group-hover:mb-3 transition-all duration-300">
-                        <span className="text-gray-400 font-['Nunito'] font-medium text-[11px] md:text-[14px] line-through">₹ {oldPrice}</span>
-                        <span className="text-[#F76188] font-['Nunito'] font-bold text-[15px] md:text-[22px] md:group-hover:text-[20px] transition-all">₹ {price}</span>
+                        <span className={`text-gray-400 font-['Nunito'] font-medium line-through ${isHomepage ? 'text-[19px]' : 'text-[9px]'} md:text-[14px]`}>₹ {oldPrice}</span>
+                        <span className={`text-[#F76188] font-['Nunito'] font-bold md:group-hover:text-[20px] transition-all ${isHomepage ? 'text-[32px]' : 'text-[13px]'} md:text-[22px]`}>₹ {price}</span>
                     </div>
 
                     <div className="h-0 opacity-0 group-hover:h-[36px] group-hover:opacity-100 transition-all duration-300 overflow-hidden w-full">

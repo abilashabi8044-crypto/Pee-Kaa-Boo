@@ -17,7 +17,10 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const shopProducts = gridItems.filter(item => item.type === 'product');
+    let shopProducts = gridItems.filter(item => item.type === 'product');
+    if (isMobile) {
+        shopProducts = shopProducts.slice(0, 4);
+    }
     const itemsPerPage = isMobile ? 1 : 4;
     const maxCarouselIndex = Math.max(0, shopProducts.length - itemsPerPage);
 
@@ -62,7 +65,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                     You May <span className="text-[#F96E8F]">Also Like</span>
                 </h2>
 
-                <div className={`grid ${isMobile ? 'grid-cols-1 max-w-xs mx-auto' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-6`}>
+                <div className={`grid ${isMobile ? 'grid-cols-1 max-w-[360px] mx-auto' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-6`}>
                     {shopProducts.slice(carouselIndex, carouselIndex + itemsPerPage).map((item, index) => {
                         const itemWishlisted = Boolean(wishlistItems?.some(w => w.id && item.id ? w.id === item.id : w.title === item.title));
                         const themeBg = item.theme === 'yellow' ? 'bg-[#FFF8E7]' : item.theme === 'blue' ? 'bg-[#EBF7FF]' : 'bg-[#FFE5EC]';
@@ -71,7 +74,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                             <div
                                 key={item.id || index}
                                 onClick={() => navigateToProduct(item)}
-                                className={`rounded-[24px] overflow-hidden relative group transition-all duration-300 cursor-pointer border border-pink-100/40 ${themeBg} shadow-sm hover:shadow-xl h-[290px] sm:h-[280px] md:h-[360px] flex flex-col justify-between max-w-[280px] mx-auto sm:max-w-none w-full`}
+                                className={`rounded-[24px] overflow-hidden relative group transition-all duration-300 cursor-pointer border border-pink-100/40 ${themeBg} shadow-sm hover:shadow-xl h-[360px] sm:h-[340px] md:h-[320px] flex flex-col justify-between max-w-[360px] mx-auto sm:max-w-none w-full`}
                             >
                                 {/* Full-Cover Background Product Image */}
                                 <div className="absolute inset-0 w-full h-full z-0">
@@ -119,7 +122,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                                 </div>
 
                                 {/* Overlaid details content area */}
-                                <div className="absolute bottom-0 inset-x-0 bg-white m-[4px] md:m-[6px] rounded-[10px] p-2 sm:p-4 text-center z-10 transition-all duration-300 shadow-xs">
+                                <div className="absolute bottom-2 inset-x-0 mx-[3%] sm:mx-[4%] bg-white rounded-[10px] py-1.5 px-2 sm:py-2.5 sm:px-4 text-center z-10 transition-all duration-300 shadow-xs">
                                     <span className="text-gray-400 text-[11px] font-[Nunito] uppercase mb-1">
                                         {item.category || 'Category'}
                                     </span>
@@ -170,34 +173,47 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                 </div>
 
                 {/* Slider Controls */}
-                <div className="w-full flex items-center justify-between mt-4 sm:mt-6 gap-4">
-                    {/* Progress Line */}
-                    <div className="flex-1 min-w-0 h-[3px] bg-gray-200 rounded-full relative overflow-hidden">
-                        <div
-                            className="absolute left-0 top-0 h-full bg-[#F96E8F] rounded-full transition-all duration-300"
-                            style={{ width: `${progressWidth}%` }}
-                        ></div>
+                {isMobile ? (
+                    <div className="flex items-center justify-center gap-2 mt-6">
+                        {shopProducts.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCarouselIndex(idx)}
+                                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${carouselIndex === idx ? 'bg-[#F96E8F] w-6' : 'bg-gray-300 w-2.5'}`}
+                                aria-label={`Go to slide ${idx + 1}`}
+                            />
+                        ))}
                     </div>
-                    {/* Arrows */}
-                    <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                        <button
-                            onClick={handlePrevCarousel}
-                            disabled={carouselIndex === 0}
-                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
-                            title="Previous"
-                        >
-                            <img src={arrowLeft} alt="Previous" className="w-3.5 h-3.5 object-contain" />
-                        </button>
-                        <button
-                            onClick={handleNextCarousel}
-                            disabled={carouselIndex >= maxCarouselIndex}
-                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
-                            title="Next"
-                        >
-                            <img src={arrowRight} alt="Next" className="w-3.5 h-3.5 object-contain" />
-                        </button>
+                ) : (
+                    <div className="w-full flex items-center justify-between mt-4 sm:mt-6 gap-4">
+                        {/* Progress Line */}
+                        <div className="flex-1 min-w-0 h-[3px] bg-gray-200 rounded-full relative overflow-hidden">
+                            <div
+                                className="absolute left-0 top-0 h-full bg-[#F96E8F] rounded-full transition-all duration-300"
+                                style={{ width: `${progressWidth}%` }}
+                            ></div>
+                        </div>
+                        {/* Arrows */}
+                        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                            <button
+                                onClick={handlePrevCarousel}
+                                disabled={carouselIndex === 0}
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
+                                title="Previous"
+                            >
+                                <img src={arrowLeft} alt="Previous" className="w-3.5 h-3.5 object-contain" />
+                            </button>
+                            <button
+                                onClick={handleNextCarousel}
+                                disabled={carouselIndex >= maxCarouselIndex}
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
+                                title="Next"
+                            >
+                                <img src={arrowRight} alt="Next" className="w-3.5 h-3.5 object-contain" />
+                            </button>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </section>
     );

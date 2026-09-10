@@ -178,7 +178,7 @@ function App() {
       ) : isProductPage ? (
         <Product product={selectedProduct} addToCart={addToCart} cartItems={cartItems} wishlist={wishlist} onAddToWishlist={addToWishlist} />
       ) : isHomePage ? (
-        <Homepage cartItems={cartItems} wishlistCount={wishlist.length} addToCart={addToCart} />
+        <Homepage cartItems={cartItems} wishlistCount={wishlist.length} addToCart={addToCart} wishlist={wishlist} onAddToWishlist={addToWishlist} />
       ) : (
         <>
           <Header cartItems={cartItems} wishlistCount={wishlist.length} />
@@ -187,7 +187,7 @@ function App() {
               setSelectedProduct(prod);
               try {
                 localStorage.setItem('pkb_selected_product', JSON.stringify(prod));
-              } catch (err) {}
+              } catch (err) { }
               window.history.pushState({}, '', '/product');
               setCurrentPath('/product');
             }}
@@ -210,7 +210,7 @@ function App() {
 function CartToast({ toast, onClose }) {
   const { product, quantity, size, color } = toast;
   const image = product.image || (product.images && product.images[0]) || '';
-  
+
   return (
     <div className="fixed bottom-6 right-6 z-[9999] w-[calc(100%-3rem)] sm:w-[360px] animate-toast-up bg-white rounded-[20px] shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-[#F96E8F]/20 p-4 font-['Nunito'] flex flex-col gap-3">
       {/* Header Row */}
@@ -223,7 +223,7 @@ function CartToast({ toast, onClose }) {
           </span>
           <span className="text-[#F96E8F] text-[13px] font-black uppercase tracking-wider font-['Baloo_2']">Added to Cart!</span>
         </div>
-        <button 
+        <button
           onClick={onClose}
           className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-50 cursor-pointer"
         >
@@ -236,9 +236,9 @@ function CartToast({ toast, onClose }) {
       {/* Content Row */}
       <div className="flex gap-3 items-center">
         {image && (
-          <img 
-            src={image} 
-            alt={product.title} 
+          <img
+            src={image}
+            alt={product.title}
             className="w-14 h-14 object-cover rounded-xl border border-gray-100 shadow-xs flex-shrink-0"
           />
         )}
