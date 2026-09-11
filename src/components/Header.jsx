@@ -145,7 +145,11 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                     </button>
 
                     <div className="cursor-pointer flex items-center absolute left-1/2 top-1/2 lg:top-auto -translate-x-1/2 -translate-y-1/2 lg:translate-x-0 lg:translate-y-0 lg:static lg:flex-shrink-0 z-50 mt-4 lg:mt-0">
-                        <a href="/" className="block">
+                        <a href="/" onClick={(e) => {
+                            e.preventDefault();
+                            window.history.pushState({}, '', '/');
+                            window.dispatchEvent(new Event('popstate'));
+                        }} className="block">
                             <img src={customLogo || logo} alt="PEE KAA BOO" className="w-[60px] sm:w-[80px] -ml-1.5 lg:ml-24 object-contain" />
                         </a>
                     </div>
@@ -416,7 +420,14 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
             {mobileMenuOpen && (
                 <div className="lg:hidden absolute top-0 left-0 w-full bg-white shadow-2xl z-50 border-b border-pink-100 px-6 py-4 flex flex-col gap-3 animate-fade-in">
                     <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-                        <img src={logo} alt="PEE KAA BOO" className="w-[60px] h-auto object-contain" />
+                        <a href="/" onClick={(e) => {
+                            e.preventDefault();
+                            setMobileMenuOpen(false);
+                            window.history.pushState({}, '', '/');
+                            window.dispatchEvent(new Event('popstate'));
+                        }} className="block cursor-pointer">
+                            <img src={customLogo || logo} alt="PEE KAA BOO" className="w-[60px] h-auto object-contain" />
+                        </a>
                         <button
                             onClick={() => setMobileMenuOpen(false)}
                             className="p-1.5 rounded-full text-gray-500 hover:text-[#F96E8F] hover:bg-pink-50 transition-colors cursor-pointer"

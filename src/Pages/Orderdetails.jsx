@@ -320,10 +320,11 @@ Thank you for shopping with PEE KAA BOO!
                 </h3>
 
                 {/* Steps Tracker */}
-                <div className="relative flex items-center justify-between px-2 sm:px-6">
+                <div className="overflow-x-auto pb-4 hide-scrollbar">
+                  <div className="relative flex items-center justify-between px-2 sm:px-6 min-w-[550px] sm:min-w-full">
                   
                   {/* Connecting Horizontal Line */}
-                  <div className="absolute top-6 left-8 right-8 sm:left-12 sm:right-12 h-[2px] bg-gray-300 z-0"></div>
+                  <div className="absolute top-6 left-12 right-12 sm:left-12 sm:right-12 h-[2px] bg-gray-300 z-0"></div>
 
                   {/* Step 1 */}
                   <div className="flex flex-col items-center text-center relative z-10">
@@ -379,6 +380,7 @@ Thank you for shopping with PEE KAA BOO!
                     </span>
                   </div>
 
+                </div>
                 </div>
               </div>
 

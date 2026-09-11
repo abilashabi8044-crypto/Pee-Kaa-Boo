@@ -9,6 +9,7 @@ import cloudDwn1 from '../assets/Homepage/Cloud-dwn1.png';
 import cloud from '../assets/Homepage/cloud.png';
 import flying from '../assets/Homepage/flying.png';
 import wave from '../assets/Homepage/wave.png';
+import wave1 from '../assets/Homepage/wave1.png';
 import logo from '../assets/Homepage/logo.png';
 import bunnyLogo from '../assets/Homepage/logobunny.png';
 import butterfly from '../assets/Homepage/bflyleft.png';
@@ -126,7 +127,6 @@ const testimonialsData = [
 // Section 3 Assets
 import section3Bg from '../assets/Homepage/Section3/footer-bg.png';
 import section3Rabbit from '../assets/Homepage/Section3/PEEKAABOO (2) 1.png';
-import section3Plane from '../assets/Homepage/Section3/flying.png';
 import section3Baby from '../assets/Homepage/Section3/baby.png';
 import section3Butterfly from '../assets/Homepage/Section3/butterfly-skin.png';
 import section3Glp from '../assets/Homepage/Section3/glp.png';
@@ -172,11 +172,13 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
     const displayProducts = filteredProducts.slice(currentIndex, currentIndex + 3);
 
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-    const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1280);
+    const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1024);
+    const [isLargeTablet, setIsLargeTablet] = useState(window.innerWidth >= 1024 && window.innerWidth < 1280);
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768);
-            setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1280);
+            setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+            setIsLargeTablet(window.innerWidth >= 1024 && window.innerWidth < 1280);
         };
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
@@ -187,12 +189,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
     };
 
     const handleNext = () => {
-        setCurrentIndex(prev => Math.min(Math.max(0, filteredProducts.length - (isMobile ? 1 : 3)), prev + 1));
+        setCurrentIndex(prev => Math.min(Math.max(0, filteredProducts.length - (isMobile ? 1 : isTablet ? 2 : 3)), prev + 1));
     };
 
     const [flashSaleIndex, setFlashSaleIndex] = useState(0);
     const handleFlashPrev = () => setFlashSaleIndex(prev => Math.max(0, prev - 1));
-    const handleFlashNext = () => setFlashSaleIndex(prev => Math.min(Math.max(0, products.length - (isMobile ? 1 : 3)), prev + 1));
+    const handleFlashNext = () => setFlashSaleIndex(prev => Math.min(Math.max(0, products.length - (isMobile ? 1 : isTablet ? 2 : 3)), prev + 1));
     const displayFlashProducts = products.slice(flashSaleIndex, flashSaleIndex + 3);
 
     const [trendingCategory, setTrendingCategory] = useState('All Items');
@@ -205,7 +207,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
     const [testimonialPage, setTestimonialPage] = useState(0);
     const displayTestimonials = isMobile
         ? testimonialsData.slice(testimonialPage, testimonialPage + 1)
-        : isTablet
+        : isTablet || isLargeTablet
             ? testimonialsData.slice(testimonialPage, testimonialPage + 2)
             : testimonialsData.slice(testimonialPage * 3, testimonialPage * 3 + 3);
 
@@ -249,7 +251,8 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 />
 
                 {/* Bottom Wave Border */}
-                <img src={wave} alt='wave' className='absolute bottom-0 left-0 w-[100%] lg:w-[100%] h-auto object-contain z-50 pointer-events-none' />
+                <img src={wave} alt='wave' className='hidden lg:block absolute bottom-0 left-0 w-[100%] h-auto object-contain z-50 pointer-events-none' />
+                <img src={wave1} alt='wave' className='block lg:hidden absolute bottom-0 left-0 w-[100%] h-auto object-contain z-50 pointer-events-none' />
 
                 {/* Mobile Top Center Cloud Background */}
                 <img
@@ -298,11 +301,11 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                         <img
                             src={car}
                             alt="Toy Car"
-                            className="absolute right-12 sm:right-16 top-[-4px] w-[80px] sm:w-[92px] object-contain drop-shadow-sm z-30"
+                            className="absolute right-12 sm:right-16 top-[-4px] md:top-[-80px] w-[80px] sm:w-[92px] object-contain drop-shadow-sm z-30"
                         />
 
                         {/* Jewelry Ornaments */}
-                        <div className="absolute left-1/2 -translate-x-[47%] top-16 lg:top-2 w-[380px] sm:w-[360px]  max-w-[88%] z-20">
+                        <div className="absolute left-1/2 -translate-x-[47%] top-16 md:top-[-40px] lg:top-2 w-[380px] sm:w-[360px] md:w-[500px] max-w-[88%] z-20">
                             <img
                                 src={ornaments}
                                 alt="Jewelry Ornaments"
@@ -330,11 +333,11 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 <div className="hidden lg:flex flex-1 w-full max-w-[1920px] mx-auto px-6 md:px-20 lg:px-32 flex-row items-center justify-between relative z-20">
                     {/* Left Column (Text & Button) */}
                     <div className="w-[45%] flex flex-col justify-center items-start -mt-[150px] relative z-30">
-                        <h1 className="text-[#333333] font-['Baloo_2'] font-extrabold text-[45px] xl:text-[72px] leading-[1.1] mb-6">
+                        <h1 className="text-[#333333] font-['Baloo_2'] font-extrabold text-[45px] xl:text-[55px] min-[1366px]:text-[72px] leading-[1.1] mb-6">
                             Best Kids Store <br />
                             & <span className="text-[#F96E8F]">Online Shop</span>
                         </h1>
-                        <p className="text-gray-800 font-['Baloo_2'] font-bold text-[18px] xl:text-[24px] mb-10">
+                        <p className="text-gray-800 font-['Baloo_2'] font-bold text-[18px] xl:text-[20px] min-[1366px]:text-[24px] mb-10">
                             Give The Gift Of Your Children Everyday
                         </p>
                         <button
@@ -437,8 +440,8 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                                 </button>
                                 <button
                                     onClick={handleNext}
-                                    disabled={currentIndex >= filteredProducts.length - 3}
-                                    className={`w-10 h-10 rounded-full border-[1.5px] border-gray-300 flex items-center justify-center text-gray-400 transition-colors shadow-sm ${currentIndex >= filteredProducts.length - 3 ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-800 hover:border-gray-800 cursor-pointer'}`}>
+                                    disabled={currentIndex >= filteredProducts.length - (isMobile ? 1 : isTablet ? 2 : 3)}
+                                    className={`w-10 h-10 rounded-full border-[1.5px] border-gray-300 flex items-center justify-center text-gray-400 transition-colors shadow-sm ${currentIndex >= filteredProducts.length - (isMobile ? 1 : isTablet ? 2 : 3) ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-800 hover:border-gray-800 cursor-pointer'}`}>
                                     <img src={rightarrow} alt="rightarrow" />
                                 </button>
                             </div>
@@ -470,12 +473,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                             onTouchMove={onTouchMove}
                             onTouchEnd={() => onTouchEnd(handleNext, handlePrev)}
                         >
-                            {(isMobile ? displayProducts.slice(0, 1) : displayProducts).map(product => (
+                            {(isMobile ? displayProducts.slice(0, 1) : isTablet ? displayProducts.slice(0, 2) : displayProducts).map(product => (
                                 <div key={product.id} className="animate-fade-in">
                                     <ProductCard
                                         isHomepage={true}
                                         item={product}
-                                        heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
+                                        heightClass="h-[420px] sm:h-[420px] md:h-[360px] xl:h-[320px] min-[1366px]:h-[360px]"
                                         image={product.image}
                                         title={product.title}
                                         price={product.price}
@@ -569,8 +572,8 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                                 </button>
                                 <button
                                     onClick={handleFlashNext}
-                                    disabled={flashSaleIndex >= products.length - 3}
-                                    className={`w-11 h-11 rounded-full border-[2px] border-gray-300 flex items-center justify-center text-gray-400 transition-all shadow-sm ${flashSaleIndex >= products.length - 3 ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-800 hover:border-gray-800 cursor-pointer hover:shadow-md'}`}>
+                                    disabled={flashSaleIndex >= products.length - (isMobile ? 1 : isTablet ? 2 : 3)}
+                                    className={`w-11 h-11 rounded-full border-[2px] border-gray-300 flex items-center justify-center text-gray-400 transition-all shadow-sm ${flashSaleIndex >= products.length - (isMobile ? 1 : isTablet ? 2 : 3) ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-800 hover:border-gray-800 cursor-pointer hover:shadow-md'}`}>
                                     <img src={rightarrow} alt="rightarrow" />
                                 </button>
                             </div>
@@ -583,12 +586,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                             onTouchMove={onTouchMove}
                             onTouchEnd={() => onTouchEnd(handleFlashNext, handleFlashPrev)}
                         >
-                            {(isMobile ? products.slice(flashSaleIndex, flashSaleIndex + 1) : displayFlashProducts).map(product => (
+                            {(isMobile ? products.slice(flashSaleIndex, flashSaleIndex + 1) : isTablet ? products.slice(flashSaleIndex, flashSaleIndex + 2) : displayFlashProducts).map(product => (
                                 <div key={product.id + 'flash'} className="animate-fade-in">
                                     <ProductCard
                                         isHomepage={true}
                                         item={product}
-                                        heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
+                                        heightClass="h-[420px] sm:h-[420px] md:h-[360px] xl:h-[320px] min-[1366px]:h-[360px]"
                                         image={product.image}
                                         title={product.title}
                                         price={product.price}
@@ -679,7 +682,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <img src={requestButterflyRight} alt="Butterfly" className="absolute lg:top-10 right-10 w-[60px] md:w-[140px] object-contain rotate-12 z-10 pointer-events-none" />
+                <img src={requestButterflyRight} alt="Butterfly" className="absolute md:-top-0 lg:top-10 right-10 w-[60px] md:w-[90px] lg:w-[140px] object-contain rotate-12 z-10 pointer-events-none" />
 
                 <h2 className="text-3xl md:text-[43px] font-black text-gray-900 font-['Baloo_2'] tracking-tight mb-4 md:mb-8 relative z-20 self-start px-6 md:px-0 md:self-auto mt-4 md:mt-0">
                     Trending <span className="text-[#F96E8F]">products</span>
@@ -703,22 +706,22 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     ))}
                 </div>
 
-                <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 relative z-20">
+                <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 relative z-20 md:-mt-8 xl:mt-0">
                     <div
-                        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5"
+                        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5 md:max-w-[680px] lg:max-w-[850px] xl:max-w-none mx-auto"
                         onTouchStart={onTouchStart}
                         onTouchMove={onTouchMove}
                         onTouchEnd={() => onTouchEnd(
-                            () => setTrendingIndex(prev => Math.min(Math.max(0, trendingProducts.length - (isMobile ? 1 : isTablet ? 3 : 5)), prev + 1)),
+                            () => setTrendingIndex(prev => Math.min(Math.max(0, trendingProducts.length - (isMobile ? 1 : isTablet || isLargeTablet ? 2 : 5)), prev + 1)),
                             () => setTrendingIndex(prev => Math.max(0, prev - 1))
                         )}
                     >
-                        {(isMobile ? trendingProducts.slice(trendingIndex, trendingIndex + 1) : isTablet ? trendingProducts.slice(trendingIndex, trendingIndex + 3) : displayTrendingProducts).map(product => (
+                        {(isMobile ? trendingProducts.slice(trendingIndex, trendingIndex + 1) : isTablet || isLargeTablet ? trendingProducts.slice(trendingIndex, trendingIndex + 2) : displayTrendingProducts).map(product => (
                             <div key={product.id + 'trending'} className="animate-fade-in">
                                 <ProductCard
                                     isHomepage={true}
                                     item={product}
-                                    heightClass="h-[420px] sm:h-[420px] md:h-[360px]"
+                                    heightClass="h-[420px] sm:h-[420px] md:h-[360px] xl:h-[320px] min-[1366px]:h-[360px]"
                                     image={product.image}
                                     title={product.title}
                                     price={product.price}
@@ -738,9 +741,9 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     </div>
 
                     {/* Mobile and Tablet Pagination Dots */}
-                    {(isMobile || isTablet) && trendingProducts.length > (isTablet ? 3 : 1) && (
+                    {(isMobile || isTablet || isLargeTablet) && trendingProducts.length > (isMobile ? 1 : isTablet || isLargeTablet ? 2 : 1) && (
                         <div className="xl:hidden flex justify-center items-center gap-2 mt-8">
-                            {Array.from({ length: trendingProducts.length - (isTablet ? 2 : 0) }).map((_, idx) => (
+                            {Array.from({ length: trendingProducts.length - (isMobile ? 0 : isTablet || isLargeTablet ? 1 : 0) }).map((_, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setTrendingIndex(idx)}
@@ -811,7 +814,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     onTouchStart={onTouchStart}
                     onTouchMove={onTouchMove}
                     onTouchEnd={() => onTouchEnd(
-                        () => setTestimonialPage(prev => Math.min(prev + 1, isMobile ? testimonialsData.length - 1 : isTablet ? testimonialsData.length - 2 : 2)),
+                        () => setTestimonialPage(prev => Math.min(prev + 1, isMobile ? testimonialsData.length - 1 : isTablet || isLargeTablet ? testimonialsData.length - 2 : 2)),
                         () => setTestimonialPage(prev => Math.max(prev - 1, 0))
                     )}
                 >
@@ -845,7 +848,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
 
                 {/* Pagination */}
                 <div className="flex gap-2 mt-16 relative z-20 flex-wrap justify-center px-4">
-                    {Array.from({ length: isMobile ? testimonialsData.length : isTablet ? testimonialsData.length - 1 : 3 }).map((_, pageIndex) => (
+                    {Array.from({ length: isMobile ? testimonialsData.length : isTablet || isLargeTablet ? testimonialsData.length - 1 : 3 }).map((_, pageIndex) => (
                         <button
                             key={pageIndex}
                             onClick={() => setTestimonialPage(pageIndex)}
