@@ -47,17 +47,6 @@ const INITIAL_ADDRESS_FORM = {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// ==========================================
-// Icon Components
-// ==========================================
-
-const UserIcon = () => <img src={userIcon} alt="User Icon" className="w-[24px] h-[24px] object-contain" />;
-const OrdersIcon = () => <img src={ordersIcon} alt="Orders Icon" className="w-[24px] h-[24px] object-contain" />;
-const LocationIcon = () => <img src={locationIcon} alt="Location Icon" className="w-[24px] h-[24px] object-contain" />;
-const UPIIcon = () => <img src={upiIcon} alt="UPI Icon" className="w-[24px] h-[24px] object-contain" />;
-const CardIcon = () => <img src={cardIcon} alt="Card Icon" className="w-[24px] h-[24px] object-contain" />;
-const HeartIcon = () => <img src={heartIcon} alt="Heart Icon" className="w-[24px] h-[24px] object-contain" />;
-const LogoutIcon = () => <img src={logoutIcon} alt="Logout Icon" className="w-[24px] h-[24px] object-contain" />;
 
 // ==========================================
 // Helper Subcomponents
@@ -750,13 +739,13 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
   // Sidebar Navigation Config
   // ----------------------------------------
   const menuItems = [
-    { name: 'My Profile', icon: <UserIcon /> },
-    { name: 'My Orders', icon: <OrdersIcon /> },
-    { name: 'Manage Addresses', icon: <LocationIcon /> },
-    { name: 'Saved UPI', icon: <UPIIcon /> },
-    { name: 'Saved Cards', icon: <CardIcon /> },
-    { name: 'My Wishlists', icon: <HeartIcon /> },
-    { name: 'Logout', icon: <LogoutIcon /> }
+    { name: 'My Profile', icon: <img src={userIcon} alt="User Icon" className="w-[24px] h-[24px] object-contain" /> },
+    { name: 'My Orders', icon: <img src={ordersIcon} alt="Orders Icon" className="w-[24px] h-[24px] object-contain" /> },
+    { name: 'Manage Addresses', icon: <img src={locationIcon} alt="Location Icon" className="w-[24px] h-[24px] object-contain" /> },
+    { name: 'Saved UPI', icon: <img src={upiIcon} alt="UPI Icon" className="w-[24px] h-[24px] object-contain" /> },
+    { name: 'Saved Cards', icon: <img src={cardIcon} alt="Card Icon" className="w-[24px] h-[24px] object-contain" /> },
+    { name: 'My Wishlists', icon: <img src={heartIcon} alt="Heart Icon" className="w-[24px] h-[24px] object-contain" /> },
+    { name: 'Logout', icon: <img src={logoutIcon} alt="Logout Icon" className="w-[24px] h-[24px] object-contain" /> }
   ];
 
   return (
