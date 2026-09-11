@@ -7,6 +7,7 @@ import Header from './components/Header';
 import Login from './Pages/login';
 import Signup from './Pages/Signup';
 import Forgotpassword from './Pages/Forgotpassword';
+import Footer from './components/Footer';
 import Shop from './Pages/Shop';
 import Product from './Pages/Product';
 import Cart from './Pages/Cart';
