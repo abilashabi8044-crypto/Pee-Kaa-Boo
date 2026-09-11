@@ -278,15 +278,23 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                 <div className="hidden lg:flex items-center gap-4 lg:gap-14">
                     {/* Desktop Navigation Links */}
                     <nav className="flex items-center gap-8 text-gray-800 font-extrabold text-[16px] tracking-wide">
-                        {navData.map((item, index) => (
-                            <a
-                                key={index}
-                                href={`/${item.toLowerCase().replace(' ', '-')}`}
-                                className="hover:text-[#F96E8F] transition-colors uppercase"
-                            >
-                                {item}
-                            </a>
-                        ))}
+                        {navData.map((item, index) => {
+                            const path = `/${item.toLowerCase().replace(' ', '-')}`;
+                            return (
+                                <a
+                                    key={index}
+                                    href={path}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.history.pushState({}, '', path);
+                                        window.dispatchEvent(new Event('popstate'));
+                                    }}
+                                    className="hover:text-[#F96E8F] transition-colors uppercase cursor-pointer"
+                                >
+                                    {item}
+                                </a>
+                            );
+                        })}
                     </nav>
 
                     {/* Desktop Right Actions (Search Bar + Profile/Heart/Cart) */}
@@ -439,16 +447,24 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                         </button>
                     </div>
                     <nav className="flex flex-col gap-1 font-extrabold text-[16px] text-gray-800 py-1">
-                        {navData.map((item, index) => (
-                            <a
-                                key={index}
-                                href={`/${item.toLowerCase().replace(' ', '-')}`}
-                                className="hover:text-[#F96E8F] hover:bg-pink-50 px-3 py-2.5 rounded-xl transition-colors uppercase font-bold"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                {item}
-                            </a>
-                        ))}
+                        {navData.map((item, index) => {
+                            const path = `/${item.toLowerCase().replace(' ', '-')}`;
+                            return (
+                                <a
+                                    key={index}
+                                    href={path}
+                                    className="hover:text-[#F96E8F] hover:bg-pink-50 px-3 py-2.5 rounded-xl transition-colors uppercase font-bold cursor-pointer"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setMobileMenuOpen(false);
+                                        window.history.pushState({}, '', path);
+                                        window.dispatchEvent(new Event('popstate'));
+                                    }}
+                                >
+                                    {item}
+                                </a>
+                            );
+                        })}
                     </nav>
                 </div>
             )}

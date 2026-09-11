@@ -205,6 +205,7 @@ function App() {
         <>
           <Header cartItems={cartItems} wishlistCount={wishlist.length} />
           <Shop
+            key={currentPath}
             onSelectProduct={(prod) => {
               setSelectedProduct(prod);
               try {

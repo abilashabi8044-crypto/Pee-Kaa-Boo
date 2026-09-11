@@ -138,13 +138,23 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
         }, 2500);
     };
 
-    const [selectedCategory, setSelectedCategory] = useState(() => {
+    const getCategoryFromPath = () => {
         const path = window.location.pathname;
         if (path.includes('boys')) return "Boys Collections";
         if (path.includes('girls')) return "Girls Collections";
         if (path.includes('just-born')) return "Just Born Collections";
         return "All items";
-    });
+    };
+
+    const [selectedCategory, setSelectedCategory] = useState(getCategoryFromPath);
+
+    useEffect(() => {
+        const handleLocationChange = () => {
+            setSelectedCategory(getCategoryFromPath());
+        };
+        window.addEventListener('popstate', handleLocationChange);
+        return () => window.removeEventListener('popstate', handleLocationChange);
+    }, []);
 
     const [selectedAge, setSelectedAge] = useState(null);
     const [sortBy, setSortBy] = useState('default');
