@@ -12,7 +12,6 @@ import cardIcon from '../assets/account/card.png';
 import heartIcon from '../assets/account/saved.png';
 import logoutIcon from '../assets/account/log-out.png';
 import date from '../assets/account/date.png';
-import product1Img from '../assets/shop/product1.jpg';
 
 // Icons
 const UserIcon = () => <img src={userIcon} alt="User Icon" className="w-[24px] h-[24px] object-contain" />;
