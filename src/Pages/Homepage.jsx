@@ -251,7 +251,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 />
 
                 {/* Bottom Wave Border */}
-                <img src={wave} alt='wave' className='hidden lg:block absolute bottom-0 left-0 w-[100%] h-auto object-contain z-50 pointer-events-none' />
+                <img src={wave} alt='wave' className='hidden lg:block absolute bottom-0 left-0 w-[100%] h-auto object-contain z-100 pointer-events-none' />
                 <img src={wave1} alt='wave' className='block lg:hidden absolute bottom-0 left-0 w-[100%] h-auto object-contain z-50 pointer-events-none' />
 
                 {/* Mobile Top Center Cloud Background */}

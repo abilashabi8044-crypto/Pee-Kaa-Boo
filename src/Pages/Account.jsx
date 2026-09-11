@@ -4,14 +4,14 @@ import { selectOrders, cancelOrder as cancelOrderAction } from '../redux/ordersS
 import { addToCart as addToCartAction } from '../redux/cartSlice';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import userIcon from '../assets/account/profile.png';
-import ordersIcon from '../assets/account/order.png';
-import locationIcon from '../assets/account/location.png';
-import upiIcon from '../assets/account/upi1.png';
-import cardIcon from '../assets/account/card.png';
-import heartIcon from '../assets/account/saved.png';
-import logoutIcon from '../assets/account/log-out.png';
-import date from '../assets/account/date.png';
+import userIcon from '../assets/Account/profile.png';
+import ordersIcon from '../assets/Account/order.png';
+import locationIcon from '../assets/Account/location.png';
+import upiIcon from '../assets/Account/upi1.png';
+import cardIcon from '../assets/Account/card.png';
+import heartIcon from '../assets/Account/saved.png';
+import logoutIcon from '../assets/Account/log-out.png';
+import date from '../assets/Account/date.png';
 
 // Icons
 const UserIcon = () => <img src={userIcon} alt="User Icon" className="w-[24px] h-[24px] object-contain" />;
@@ -642,11 +642,11 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!formData.fullName.trim() || formData.fullName.length < 2) {
+    if (!formData.fullName || !formData.fullName.trim() || formData.fullName.length < 2) {
       newErrors.fullName = 'Full Name is required';
     }
-    const cleanPhone = formData.mobileNumber.replace(/\D/g, '');
-    if (!formData.mobileNumber.trim() || cleanPhone.length < 10) {
+    const cleanPhone = (formData.mobileNumber || '').replace(/\D/g, '');
+    if (!formData.mobileNumber || !formData.mobileNumber.trim() || cleanPhone.length < 10) {
       newErrors.mobileNumber = 'Valid 10-digit mobile number is required';
     }
     if (formData.altMobileNumber && formData.altMobileNumber.trim()) {
@@ -655,11 +655,17 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
         newErrors.altMobileNumber = 'Alternate mobile must be 10 digits';
       }
     }
-    if (formData.emailId && formData.emailId.trim() && !emailRegex.test(formData.emailId.trim())) {
+    if (!formData.emailId || !formData.emailId.trim() || !emailRegex.test(formData.emailId.trim())) {
       newErrors.emailId = 'Valid email is required';
     }
     if (formData.altEmailId && formData.altEmailId.trim() && !emailRegex.test(formData.altEmailId.trim())) {
       newErrors.altEmailId = 'Valid alternate email is required';
+    }
+    if (!formData.gender) {
+      newErrors.gender = 'Gender is required';
+    }
+    if (!formData.dob) {
+      newErrors.dob = 'Date of birth is required';
     }
 
     setErrors(newErrors);
