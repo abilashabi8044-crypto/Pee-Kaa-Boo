@@ -201,7 +201,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                                 className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
                                 title="Previous"
                             >
-                                <img src={arrowLeft} alt="Previous" className="w-3.5 h-3.5 object-contain" />
+                                <img src={arrowLeft} alt="Previous" className="w-8.5 h-8.5 object-contain" />
                             </button>
                             <button
                                 onClick={handleNextCarousel}
@@ -209,7 +209,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                                 className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-400 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors bg-transparent disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
                                 title="Next"
                             >
-                                <img src={arrowRight} alt="Next" className="w-3.5 h-3.5 object-contain" />
+                                <img src={arrowRight} alt="Next" className="w-8.5 h-8.5 object-contain" />
                             </button>
                         </div>
                     </div>
