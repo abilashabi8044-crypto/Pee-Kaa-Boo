@@ -908,12 +908,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 <img src={requestButterflyRight} alt="Butterfly" className="absolute bottom-[28%] md:bottom-auto md:top-[15%] lg:top-[20%] right-[8%] md:right-[10%] lg:right-[15%] w-[45px] md:w-[80px] object-contain -rotate-12 z-10 animate-bounce-slow" />
 
                 {/* Left Bunny (Top Left on mobile) */}
-                <img src={bunny} alt="Bunny Left" className="absolute top-[12%] md:top-auto bottom-auto md:bottom-0 left-[5%] md:left-[2%] lg:left-[5%] w-[140px] md:w-[220px] object-contain z-20 pointer-events-none" />
+                <img src={bunny} alt="Bunny Left" className="last-minute-bunny-left absolute top-[12%] md:top-auto bottom-auto md:bottom-0 left-[5%] md:left-[2%] lg:left-[5%] w-[140px] md:w-[220px] object-contain z-20 pointer-events-none" />
 
                 <img src={cloudDwn1} alt='cloud' className='absolute -bottom-[0%] lg:-bottom-[3%] -right-[15%] lg:-right-[76px] w-[360px] md:w-[600px] object-contain z-10 animate-bounce-slow' />
 
                 {/* Right Bunny */}
-                <img src={requestRightBunny} alt="Bunny Right" className="absolute bottom-3 md:top-auto md:bottom-0 right-1/4 translate-x-[38%] md:translate-x-0 md:right-[2%] lg:right-[5%] w-[230px] md:w-[280px] object-contain z-20 pointer-events-none" />
+                <img src={requestRightBunny} alt="Bunny Right" className="last-minute-bunny-right absolute bottom-3 md:top-auto md:bottom-0 right-1/4 translate-x-[38%] md:translate-x-0 md:right-[2%] lg:right-[5%] w-[230px] md:w-[280px] object-contain z-20 pointer-events-none" />
 
                 {/* Content */}
                 <div className="relative z-30 flex flex-col items-center text-center max-w-[800px] px-6 mt-10 md:mt-0">

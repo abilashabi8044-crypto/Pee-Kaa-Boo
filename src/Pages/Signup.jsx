@@ -130,7 +130,7 @@ export default function Signup() {
             <img src={logo} alt="Logo" className="absolute bottom-4 left-4 md:bottom-0 md:left-8 w-[25vw] md:w-[180px] z-30 object-contain pointer-events-none" />
             <img src={logo2} alt="logo" className="absolute bottom-4 right-4 md:bottom-0 md:right-6 w-[43vw] md:w-[260px] z-30 object-contain pointer-events-none" />
             <img src={img1} alt="Decoration" className="hidden lg:block absolute top-100 left-83 w-[130px] object-contain" />
-            <img src={img2} alt="Decoration" className="hidden xl:block absolute top-12 right-240 w-[224.4px] object-contain" />
+            <img src={img2} alt="Decoration" className="login-img2-nesthub hidden xl:block absolute top-12 right-240 w-[224.4px] object-contain" />
             <img src={img3} alt="Decoration" className="hidden lg:block absolute top-[15%] left-[85%] w-[140px] object-contain" />
             <img src={img4} alt="Decoration" className="hidden lg:block absolute top-[50%] right-[10%] w-[120px] object-contain" />
             <img src={img5} alt="Decoration" className="hidden md:block absolute bottom-0 right-0 w-[380px] lg:w-[560px] object-contain" />

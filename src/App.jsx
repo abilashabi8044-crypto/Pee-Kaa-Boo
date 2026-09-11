@@ -36,6 +36,10 @@ function App() {
     }
   });
 
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem('isLoggedIn') === 'true';
+  });
+
   const cartItems = useSelector(selectCartItems);
   const wishlist = useSelector(selectWishlistItems);
   const orders = useSelector(selectOrders);
@@ -87,7 +91,12 @@ function App() {
   useEffect(() => {
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
+      setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleStorageChange = () => {
+      setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true');
     };
 
     const handleProductSelectEvent = (e) => {
@@ -102,6 +111,7 @@ function App() {
     };
 
     window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('storage', handleStorageChange);
     window.addEventListener('pkb_select_product', handleProductSelectEvent);
 
     // Intercept pushState
@@ -113,6 +123,7 @@ function App() {
 
     return () => {
       window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('pkb_select_product', handleProductSelectEvent);
       window.history.pushState = originalPushState;
     };
@@ -136,6 +147,17 @@ function App() {
   const isOffersPage = currentPath.includes('/offers');
   const isShopPage = currentPath.includes('/shop');
   const isHomePage = currentPath === '/' || currentPath === '';
+
+  // Show login page first for all new / unauthenticated users
+  if (!isLoggedIn) {
+    if (isSignupPage) {
+      return <Signup />;
+    }
+    if (isForgotPasswordPage) {
+      return <Forgotpassword />;
+    }
+    return <Login />;
+  }
 
   return (
     <section>

@@ -148,3 +148,35 @@ body {
 .animate-popup-scale-out {
   animation: popupScaleOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Specific responsive size reduction for Last-minute section bunnies at 960x1440 */
+@media (min-width: 900px) and (max-width: 1020px) {
+  .last-minute-bunny-left {
+    width: 130px !important;
+  }
+  .last-minute-bunny-right {
+    width: 165px !important;
+  }
+}
+
+@media (width: 960px) and (height: 1440px) {
+  .last-minute-bunny-left {
+    width: 130px !important;
+  }
+  .last-minute-bunny-right {
+    width: 165px !important;
+  }
+}
+
+/* Nest Hub Max (1280x800) responsive adjustment for login img2 */
+@media (min-width: 1200px) and (max-width: 1366px) {
+  .login-img2-nesthub {
+    right: 700px !important;
+  }
+}
+
+@media (width: 1280px) and (height: 800px) {
+  .login-img2-nesthub {
+    right: 700px !important;
+  }
+}
