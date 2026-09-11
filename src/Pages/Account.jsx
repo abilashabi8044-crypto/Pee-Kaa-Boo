@@ -4,6 +4,8 @@ import { selectOrders, cancelOrder as cancelOrderAction } from '../redux/ordersS
 import { addToCart as addToCartAction } from '../redux/cartSlice';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+
+// Icons
 import userIcon from '../assets/Account/profile.png';
 import ordersIcon from '../assets/Account/order.png';
 import locationIcon from '../assets/Account/location.png';
@@ -11,9 +13,44 @@ import upiIcon from '../assets/Account/upi1.png';
 import cardIcon from '../assets/Account/card.png';
 import heartIcon from '../assets/Account/saved.png';
 import logoutIcon from '../assets/Account/log-out.png';
-import date from '../assets/Account/date.png';
+import dateIcon from '../assets/Account/date.png';
 
-// Icons
+// ==========================================
+// Constants & Initial Configurations
+// ==========================================
+
+const MONTHS_LIST = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+const DAYS_OF_WEEK = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+const INITIAL_PROFILE = {
+  fullName: 'Your name',
+  mobileNumber: '',
+  altMobileNumber: '',
+  emailId: '',
+  altEmailId: '',
+  gender: '',
+  dob: ''
+};
+
+const INITIAL_ADDRESS_FORM = {
+  name: 'Home',
+  username: '',
+  line1: '',
+  line2: '',
+  phone: '',
+  type: 'HOME'
+};
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// ==========================================
+// Icon Components
+// ==========================================
+
 const UserIcon = () => <img src={userIcon} alt="User Icon" className="w-[24px] h-[24px] object-contain" />;
 const OrdersIcon = () => <img src={ordersIcon} alt="Orders Icon" className="w-[24px] h-[24px] object-contain" />;
 const LocationIcon = () => <img src={locationIcon} alt="Location Icon" className="w-[24px] h-[24px] object-contain" />;
@@ -22,13 +59,13 @@ const CardIcon = () => <img src={cardIcon} alt="Card Icon" className="w-[24px] h
 const HeartIcon = () => <img src={heartIcon} alt="Heart Icon" className="w-[24px] h-[24px] object-contain" />;
 const LogoutIcon = () => <img src={logoutIcon} alt="Logout Icon" className="w-[24px] h-[24px] object-contain" />;
 
-const monthsList = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
-];
-const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+// ==========================================
+// Helper Subcomponents
+// ==========================================
 
-// Custom Super Calendar Component
+/**
+ * Custom DatePicker Component with Days, Months, and Years view modes
+ */
 const CustomDatePicker = ({ value, onChange, onClose }) => {
   const parsedDate = value ? new Date(value) : new Date();
   const validDate = isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
@@ -122,10 +159,11 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
           <button
             type="button"
             onClick={() => setViewMode(viewMode === 'months' ? 'days' : 'months')}
-            className={`px-3 py-1 rounded-xl font-black text-[15px] transition-all cursor-pointer ${viewMode === 'months' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
-              }`}
+            className={`px-3 py-1 rounded-xl font-black text-[15px] transition-all cursor-pointer ${
+              viewMode === 'months' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
+            }`}
           >
-            {monthsList[currentMonth]}
+            {MONTHS_LIST[currentMonth]}
           </button>
           <button
             type="button"
@@ -133,8 +171,9 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
               setYearPage(Math.floor(currentYear / 12) * 12);
               setViewMode(viewMode === 'years' ? 'days' : 'years');
             }}
-            className={`px-3 py-1 rounded-xl font-black text-[15px] transition-all cursor-pointer ${viewMode === 'years' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
-              }`}
+            className={`px-3 py-1 rounded-xl font-black text-[15px] transition-all cursor-pointer ${
+              viewMode === 'years' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
+            }`}
           >
             {currentYear}
           </button>
@@ -154,16 +193,17 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
       {/* Days Grid View */}
       {viewMode === 'days' && (
         <>
-          {/* Weekday headers */}
           <div className="grid grid-cols-7 gap-1 text-center mb-2">
-            {daysOfWeek.map((day, idx) => (
-              <span key={idx} className={`text-[12px] font-black ${idx === 0 || idx === 6 ? 'text-[#F96E8F]' : 'text-gray-400'}`}>
+            {DAYS_OF_WEEK.map((day, idx) => (
+              <span
+                key={idx}
+                className={`text-[12px] font-black ${idx === 0 || idx === 6 ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+              >
                 {day}
               </span>
             ))}
           </div>
 
-          {/* Days Grid */}
           <div className="grid grid-cols-7 gap-1">
             {Array.from({ length: startDay }).map((_, i) => {
               const dayNum = prevMonthDays - startDay + i + 1;
@@ -184,12 +224,13 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   key={day}
                   type="button"
                   onClick={() => handleSelectDay(day)}
-                  className={`h-9 w-9 mx-auto rounded-full flex items-center justify-center text-[13.5px] font-bold transition-all cursor-pointer ${isSelected
-                    ? 'bg-gradient-to-tr from-[#F96E8F] to-[#FF8EAA] text-white shadow-md shadow-pink-300 scale-105 font-black'
-                    : isToday
-                      ? 'border-2 border-[#F96E8F] text-[#F96E8F] font-black hover:bg-pink-50'
-                      : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
-                    }`}
+                  className={`h-9 w-9 mx-auto rounded-full flex items-center justify-center text-[13.5px] font-bold transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-gradient-to-tr from-[#F96E8F] to-[#FF8EAA] text-white shadow-md shadow-pink-300 scale-105 font-black'
+                      : isToday
+                        ? 'border-2 border-[#F96E8F] text-[#F96E8F] font-black hover:bg-pink-50'
+                        : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                  }`}
                 >
                   {day}
                 </button>
@@ -202,7 +243,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
       {/* Months Grid View */}
       {viewMode === 'months' && (
         <div className="grid grid-cols-3 gap-2 py-1">
-          {monthsList.map((m, idx) => {
+          {MONTHS_LIST.map((m, idx) => {
             const isSelected = currentMonth === idx;
             return (
               <button
@@ -212,10 +253,11 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   setCurrentMonth(idx);
                   setViewMode('days');
                 }}
-                className={`py-3 rounded-2xl font-bold text-[14px] transition-all cursor-pointer ${isSelected
-                  ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
-                  : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
-                  }`}
+                className={`py-3 rounded-2xl font-bold text-[14px] transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
+                    : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                }`}
               >
                 {m.substring(0, 3)}
               </button>
@@ -237,10 +279,11 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   setCurrentYear(y);
                   setViewMode('months');
                 }}
-                className={`py-3 rounded-2xl font-bold text-[14px] transition-all cursor-pointer ${isSelected
-                  ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
-                  : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
-                  }`}
+                className={`py-3 rounded-2xl font-bold text-[14px] transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
+                    : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                }`}
               >
                 {y}
               </button>
@@ -282,7 +325,9 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
   );
 };
 
-
+/**
+ * Wishlist Item Card Component
+ */
 const WishlistItemCard = ({ item, addToCart, onRemove }) => {
   const [isAdded, setIsAdded] = useState(false);
 
@@ -297,17 +342,20 @@ const WishlistItemCard = ({ item, addToCart, onRemove }) => {
   return (
     <div className="border border-gray-200 rounded-[18px] p-4 bg-white shadow-sm flex flex-col items-center relative group hover:shadow-md transition-shadow">
       <img src={item.image} alt={item.title} className="w-full h-[180px] object-cover rounded-[14px] mb-3" />
-      <h4 className="font-bold text-[16px] text-gray-800 text-center mb-1 font-['Nunito'] line-clamp-1">{item.title}</h4>
+      <h4 className="font-bold text-[16px] text-gray-800 text-center mb-1 font-['Nunito'] line-clamp-1">
+        {item.title}
+      </h4>
       <div className="flex items-center gap-2 mb-3">
         <span className="text-gray-400 font-semibold line-through text-sm">₹{item.oldPrice}</span>
         <span className="text-[#F96E8F] font-black text-lg">₹{item.price}</span>
       </div>
       <button
         onClick={handleAdd}
-        className={`w-full py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-sm mb-2 font-['Nunito'] flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${isAdded
-          ? 'bg-[#fc148c] text-white scale-95'
-          : 'bg-[#F96E8F] text-white hover:bg-[#E44971]'
-          }`}
+        className={`w-full py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-sm mb-2 font-['Nunito'] flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${
+          isAdded
+            ? 'bg-[#fc148c] text-white scale-95'
+            : 'bg-[#F96E8F] text-white hover:bg-[#E44971]'
+        }`}
       >
         {isAdded ? (
           <span className="flex items-center gap-1.5 transform transition-transform duration-300">
@@ -330,8 +378,16 @@ const WishlistItemCard = ({ item, addToCart, onRemove }) => {
   );
 };
 
+// ==========================================
+// Main Account Component
+// ==========================================
+
 const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishlist }) => {
   const dispatch = useDispatch();
+
+  // ----------------------------------------
+  // Redux & Local Storage Orders Setup
+  // ----------------------------------------
   const reduxOrders = useSelector(selectOrders) || [];
   const [localOrders, setLocalOrders] = useState(() => {
     try {
@@ -342,7 +398,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
         localStorage.setItem('pkb_orders', JSON.stringify(cleaned));
       }
       return cleaned;
-    } catch (e) {
+    } catch {
       return [];
     }
   });
@@ -352,6 +408,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
   const [orderToast, setOrderToast] = useState(null);
   const [wishlistToast, setWishlistToast] = useState(null);
 
+  // Filter and flatten orders
   const combinedOrders = (reduxOrders.length > 0 ? reduxOrders : localOrders.length > 0 ? localOrders : orders)
     .filter(order => order.orderId !== '973675159' && order.id !== '973675159');
 
@@ -420,48 +477,9 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
     );
   });
 
-  const handleCancelOrder = (orderId) => {
-    dispatch(cancelOrderAction(orderId));
-    setLocalOrders(prev => prev.map(o => (o.orderId === orderId || o.id === orderId) ? { ...o, status: 'cancelled' } : o));
-    setOrderToast('Order cancelled successfully.');
-    setTimeout(() => setOrderToast(null), 3000);
-  };
-
-  const handleTrackOrder = (order) => {
-    window.history.pushState({ orderId: order.orderId || order.id, order: order.fullOrder || order }, '', '/order-details');
-    window.dispatchEvent(new Event('popstate'));
-  };
-
-  const handleReturnOrder = (orderId) => {
-    setOrderToast('Return request initiated successfully.');
-    setTimeout(() => setOrderToast(null), 3000);
-  };
-
-  const handleReorder = (order) => {
-    if (addToCart) {
-      addToCart(order, order.qty || 1);
-    } else {
-      dispatch(addToCartAction({ product: order, quantity: order.qty || 1 }));
-    }
-    setOrderToast('Item added to cart! Redirecting to cart...');
-    setTimeout(() => {
-      setOrderToast(null);
-      window.history.pushState({}, '', '/cart');
-      window.dispatchEvent(new Event('popstate'));
-    }, 1200);
-  };
-
-  const handleRemoveWishlist = (item) => {
-    if (addToWishlist) addToWishlist(item);
-    setWishlistToast({
-      ...item,
-      action: 'removed'
-    });
-    setTimeout(() => {
-      setWishlistToast(null);
-    }, 2500);
-  };
-
+  // ----------------------------------------
+  // Navigation & Tab State
+  // ----------------------------------------
   const getInitialTab = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const tabParam = searchParams.get('tab');
@@ -497,22 +515,17 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
     return () => window.removeEventListener('popstate', handleTabChange);
   }, []);
 
+  // ----------------------------------------
+  // Profile State & Handlers
+  // ----------------------------------------
   const getSavedProfile = () => {
     try {
       const saved = localStorage.getItem('userProfile');
       if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
     }
-    return {
-      fullName: 'Your name',
-      mobileNumber: '',
-      altMobileNumber: '',
-      emailId: '',
-      altEmailId: '',
-      gender: '',
-      dob: ''
-    };
+    return { ...INITIAL_PROFILE };
   };
 
   const [profile, setProfile] = useState(getSavedProfile);
@@ -521,99 +534,6 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarRef = useRef(null);
-
-  // Address Management State
-  const [addresses, setAddresses] = useState(() => {
-    try {
-      const saved = localStorage.getItem('userAddresses');
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('userAddresses', JSON.stringify(addresses));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [addresses]);
-
-  const [showAddressModal, setShowAddressModal] = useState(false);
-  const [editingAddressId, setEditingAddressId] = useState(null);
-  const [addressFormData, setAddressFormData] = useState({
-    name: 'Home',
-    username: '',
-    line1: '',
-    line2: '',
-    phone: '',
-    type: 'HOME'
-  });
-  const [addressErrors, setAddressErrors] = useState({});
-  const [addressSuccessToast, setAddressSuccessToast] = useState(null);
-
-  const validateAddressForm = () => {
-    const errors = {};
-    if (!addressFormData.name) {
-      errors.name = 'Please select an Address Label';
-    }
-    if (!addressFormData.username || !addressFormData.username.trim()) {
-      errors.username = 'Full Name is required';
-    }
-    if (!addressFormData.line1 || !addressFormData.line1.trim()) {
-      errors.line1 = 'Address Line 1 is required';
-    }
-    if (!addressFormData.line2 || !addressFormData.line2.trim()) {
-      errors.line2 = 'City, State & Pincode is required';
-    }
-    const cleanPhone = (addressFormData.phone || '').replace(/\D/g, '');
-    if (!cleanPhone || cleanPhone.length < 10) {
-      errors.phone = 'Valid 10-digit mobile number is required';
-    }
-
-    setAddressErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSaveAddress = (e) => {
-    e.preventDefault();
-    if (!validateAddressForm()) return;
-
-    if (editingAddressId) {
-      setAddresses(prev => prev.map(addr => addr.id === editingAddressId ? { ...addressFormData, id: editingAddressId } : addr));
-      setAddressSuccessToast('Address updated successfully!');
-    } else {
-      const newId = `addr${Date.now()}`;
-      setAddresses(prev => [...prev, { ...addressFormData, id: newId }]);
-      setAddressSuccessToast('New address added successfully!');
-    }
-
-    closeAddressModal();
-    setTimeout(() => setAddressSuccessToast(null), 3000);
-  };
-
-  const handleEditAddress = (addr) => {
-    setAddressFormData(addr);
-    setEditingAddressId(addr.id);
-    setAddressErrors({});
-    setShowAddressModal(true);
-  };
-
-  const handleDeleteAddress = (id) => {
-    if (window.confirm('Are you sure you want to delete this address?')) {
-      setAddresses(prev => prev.filter(addr => addr.id !== id));
-      setAddressSuccessToast('Address deleted successfully.');
-      setTimeout(() => setAddressSuccessToast(null), 3000);
-    }
-  };
-
-  const closeAddressModal = () => {
-    setShowAddressModal(false);
-    setEditingAddressId(null);
-    setAddressFormData({ name: 'Home', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
-    setAddressErrors({});
-  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -632,7 +552,6 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -640,7 +559,6 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
 
   const validateForm = () => {
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!formData.fullName || !formData.fullName.trim() || formData.fullName.length < 2) {
       newErrors.fullName = 'Full Name is required';
@@ -655,10 +573,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
         newErrors.altMobileNumber = 'Alternate mobile must be 10 digits';
       }
     }
-    if (!formData.emailId || !formData.emailId.trim() || !emailRegex.test(formData.emailId.trim())) {
+    if (!formData.emailId || !formData.emailId.trim() || !EMAIL_REGEX.test(formData.emailId.trim())) {
       newErrors.emailId = 'Valid email is required';
     }
-    if (formData.altEmailId && formData.altEmailId.trim() && !emailRegex.test(formData.altEmailId.trim())) {
+    if (formData.altEmailId && formData.altEmailId.trim() && !EMAIL_REGEX.test(formData.altEmailId.trim())) {
       newErrors.altEmailId = 'Valid alternate email is required';
     }
     if (!formData.gender) {
@@ -687,6 +605,150 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
     }
   };
 
+  // ----------------------------------------
+  // Address Management State & Handlers
+  // ----------------------------------------
+  const [addresses, setAddresses] = useState(() => {
+    try {
+      const saved = localStorage.getItem('userAddresses');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('userAddresses', JSON.stringify(addresses));
+    } catch (err) {
+      console.error(err);
+    }
+  }, [addresses]);
+
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState(null);
+  const [addressFormData, setAddressFormData] = useState({ ...INITIAL_ADDRESS_FORM });
+  const [addressErrors, setAddressErrors] = useState({});
+  const [addressSuccessToast, setAddressSuccessToast] = useState(null);
+
+  const validateAddressForm = () => {
+    const formErrors = {};
+    if (!addressFormData.name) {
+      formErrors.name = 'Please select an Address Label';
+    }
+    if (!addressFormData.username || !addressFormData.username.trim()) {
+      formErrors.username = 'Full Name is required';
+    }
+    if (!addressFormData.line1 || !addressFormData.line1.trim()) {
+      formErrors.line1 = 'Address Line 1 is required';
+    }
+    if (!addressFormData.line2 || !addressFormData.line2.trim()) {
+      formErrors.line2 = 'City, State & Pincode is required';
+    }
+    const cleanPhone = (addressFormData.phone || '').replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      formErrors.phone = 'Valid 10-digit mobile number is required';
+    }
+
+    setAddressErrors(formErrors);
+    return Object.keys(formErrors).length === 0;
+  };
+
+  const closeAddressModal = () => {
+    setShowAddressModal(false);
+    setEditingAddressId(null);
+    setAddressFormData({ ...INITIAL_ADDRESS_FORM });
+    setAddressErrors({});
+  };
+
+  const handleSaveAddress = (e) => {
+    e.preventDefault();
+    if (!validateAddressForm()) return;
+
+    if (editingAddressId) {
+      setAddresses(prev =>
+        prev.map(addr => (addr.id === editingAddressId ? { ...addressFormData, id: editingAddressId } : addr))
+      );
+      setAddressSuccessToast('Address updated successfully!');
+    } else {
+      const newId = `addr${Date.now()}`;
+      setAddresses(prev => [...prev, { ...addressFormData, id: newId }]);
+      setAddressSuccessToast('New address added successfully!');
+    }
+
+    closeAddressModal();
+    setTimeout(() => setAddressSuccessToast(null), 3000);
+  };
+
+  const handleEditAddress = (addr) => {
+    setAddressFormData(addr);
+    setEditingAddressId(addr.id);
+    setAddressErrors({});
+    setShowAddressModal(true);
+  };
+
+  const handleDeleteAddress = (id) => {
+    if (window.confirm('Are you sure you want to delete this address?')) {
+      setAddresses(prev => prev.filter(addr => addr.id !== id));
+      setAddressSuccessToast('Address deleted successfully.');
+      setTimeout(() => setAddressSuccessToast(null), 3000);
+    }
+  };
+
+  // ----------------------------------------
+  // Order Action Handlers
+  // ----------------------------------------
+  const handleCancelOrder = (orderId) => {
+    dispatch(cancelOrderAction(orderId));
+    setLocalOrders(prev =>
+      prev.map(o => (o.orderId === orderId || o.id === orderId ? { ...o, status: 'cancelled' } : o))
+    );
+    setOrderToast('Order cancelled successfully.');
+    setTimeout(() => setOrderToast(null), 3000);
+  };
+
+  const handleTrackOrder = (order) => {
+    window.history.pushState(
+      { orderId: order.orderId || order.id, order: order.fullOrder || order },
+      '',
+      '/order-details'
+    );
+    window.dispatchEvent(new Event('popstate'));
+  };
+
+  const handleReturnOrder = (_orderId) => {
+    setOrderToast('Return request initiated successfully.');
+    setTimeout(() => setOrderToast(null), 3000);
+  };
+
+  const handleReorder = (order) => {
+    if (addToCart) {
+      addToCart(order, order.qty || 1);
+    } else {
+      dispatch(addToCartAction({ product: order, quantity: order.qty || 1 }));
+    }
+    setOrderToast('Item added to cart! Redirecting to cart...');
+    setTimeout(() => {
+      setOrderToast(null);
+      window.history.pushState({}, '', '/cart');
+      window.dispatchEvent(new Event('popstate'));
+    }, 1200);
+  };
+
+  const handleRemoveWishlist = (item) => {
+    if (addToWishlist) addToWishlist(item);
+    setWishlistToast({
+      ...item,
+      action: 'removed'
+    });
+    setTimeout(() => {
+      setWishlistToast(null);
+    }, 2500);
+  };
+
+  // ----------------------------------------
+  // Sidebar Navigation Config
+  // ----------------------------------------
   const menuItems = [
     { name: 'My Profile', icon: <UserIcon /> },
     { name: 'My Orders', icon: <OrdersIcon /> },
@@ -694,7 +756,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
     { name: 'Saved UPI', icon: <UPIIcon /> },
     { name: 'Saved Cards', icon: <CardIcon /> },
     { name: 'My Wishlists', icon: <HeartIcon /> },
-    { name: 'Logout', icon: <LogoutIcon /> },
+    { name: 'Logout', icon: <LogoutIcon /> }
   ];
 
   return (
@@ -702,7 +764,6 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
       <Header cartItems={cartItems} />
 
       <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-10 md:py-16">
-
         {/* Title */}
         <div className="text-center mb-10 md:mb-16">
           <h1 className="text-[36px] md:text-[72px] font-black tracking-wide text-gray-900 leading-tight">
@@ -712,10 +773,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
 
         {/* Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-
-          {/* Sidebar (Left Column - Single Container) */}
+          {/* Sidebar (Left Column) */}
           <div className="lg:col-span-4 flex flex-col bg-white rounded-[24px] overflow-hidden shadow-xs border border-gray-100">
-
             {/* Profile Summary Section */}
             <div className="p-6 flex items-center gap-5 relative overflow-hidden">
               <div className="w-[72px] h-[72px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0 shadow-sm z-10 border-2 border-white">
@@ -730,20 +789,25 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   {profile.fullName || 'Your name'}
                 </h3>
                 <p className="text-gray-500 font-bold text-[13px]">
-                  {profile.mobileNumber ? (profile.mobileNumber.startsWith('+91') ? profile.mobileNumber : `+91 ${profile.mobileNumber}`) : '+91 91234 56789'}
+                  {profile.mobileNumber
+                    ? profile.mobileNumber.startsWith('+91')
+                      ? profile.mobileNumber
+                      : `+91 ${profile.mobileNumber}`
+                    : '+91 91234 56789'}
                 </p>
               </div>
             </div>
 
-            {/* Underline / Divider line after profile details */}
-            <div className="border-b border-gray-100 mx-6"></div>
+            {/* Divider Line */}
+            <div className="border-b border-gray-100 mx-6" />
 
-            {/* Navigation Menu */}
+            {/* Navigation Menu List */}
             <div className="py-3">
               <ul className="flex flex-col">
                 {menuItems.map((item, idx) => {
                   const isLogout = item.name === 'Logout';
                   const isActive = activeMenu === item.name;
+
                   return (
                     <li key={idx}>
                       <button
@@ -756,76 +820,143 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                             setActiveMenu(item.name);
                           }
                         }}
-                        className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${isLogout
-                          ? 'text-red-500 hover:bg-red-50 hover:text-red-600 border-l-[3px] border-l-transparent'
-                          : isActive
-                            ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
-                            : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                          }`}
+                        className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                          isLogout
+                            ? 'text-red-500 hover:bg-red-50 hover:text-red-600 border-l-[3px] border-l-transparent'
+                            : isActive
+                              ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                              : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                        }`}
                       >
                         <div className="flex items-center gap-4">
-                          <span className={`${isLogout ? 'text-red-500' : isActive ? 'text-[#F96E8F]' : 'text-gray-400'}`}>
+                          <span className={isLogout ? 'text-red-500' : isActive ? 'text-[#F96E8F]' : 'text-gray-400'}>
                             {item.icon}
                           </span>
                           <span className="tracking-wide font-['Baloo_2']">{item.name}</span>
                         </div>
-                        <svg className={`w-4 h-4 ${isLogout ? 'text-red-400' : isActive ? 'text-[#F96E8F]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg
+                          className={`w-4 h-4 ${isLogout ? 'text-red-400' : isActive ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                        </svg>
                       </button>
                     </li>
                   );
                 })}
               </ul>
             </div>
-
           </div>
 
           {/* Content Area (Right Column) */}
           <div className="lg:col-span-8 bg-[#F4FCFF] rounded-3xl p-6 sm:p-10 shadow-xs min-h-[500px]">
-
+            {/* Tab 1: My Profile */}
             {activeMenu === 'My Profile' && (
               <form onSubmit={handleProfileSubmit}>
                 <h2 className="text-[24px] font-black text-gray-900 mb-8 tracking-wide">My Profile</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
-
-                  {/* Field */}
+                  {/* Full Name */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">Full Name</label>
-                    <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} className={`w-full bg-white border ${errors.fullName ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`} />
+                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      className={`w-full bg-white border ${
+                        errors.fullName ? 'border-red-500' : 'border-gray-200'
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                    />
                     {errors.fullName && <span className="text-red-500 text-sm font-bold">{errors.fullName}</span>}
                   </div>
 
+                  {/* Mobile Number */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">Mobile Number</label>
-                    <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} className={`w-full bg-white border ${errors.mobileNumber ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`} />
+                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                      Mobile Number
+                    </label>
+                    <input
+                      type="text"
+                      name="mobileNumber"
+                      value={formData.mobileNumber}
+                      onChange={handleInputChange}
+                      className={`w-full bg-white border ${
+                        errors.mobileNumber ? 'border-red-500' : 'border-gray-200'
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                    />
                     {errors.mobileNumber && <span className="text-red-500 text-sm font-bold">{errors.mobileNumber}</span>}
                   </div>
 
+                  {/* Alternate Mobile Number */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">Alternate Mobile Number</label>
-                    <input type="text" name="altMobileNumber" value={formData.altMobileNumber} onChange={handleInputChange} className={`w-full bg-white border ${errors.altMobileNumber ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`} />
-                    {errors.altMobileNumber && <span className="text-red-500 text-sm font-bold">{errors.altMobileNumber}</span>}
+                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                      Alternate Mobile Number
+                    </label>
+                    <input
+                      type="text"
+                      name="altMobileNumber"
+                      value={formData.altMobileNumber}
+                      onChange={handleInputChange}
+                      className={`w-full bg-white border ${
+                        errors.altMobileNumber ? 'border-red-500' : 'border-gray-200'
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                    />
+                    {errors.altMobileNumber && (
+                      <span className="text-red-500 text-sm font-bold">{errors.altMobileNumber}</span>
+                    )}
                   </div>
 
+                  {/* Email Id */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">Email Id</label>
-                    <input type="email" name="emailId" value={formData.emailId} onChange={handleInputChange} className={`w-full bg-white border ${errors.emailId ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`} />
+                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                      Email Id
+                    </label>
+                    <input
+                      type="email"
+                      name="emailId"
+                      value={formData.emailId}
+                      onChange={handleInputChange}
+                      className={`w-full bg-white border ${
+                        errors.emailId ? 'border-red-500' : 'border-gray-200'
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                    />
                     {errors.emailId && <span className="text-red-500 text-sm font-bold">{errors.emailId}</span>}
                   </div>
 
+                  {/* Alternate Email Id */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">Alternate Email Id</label>
-                    <input type="email" name="altEmailId" value={formData.altEmailId} onChange={handleInputChange} className={`w-full bg-white border ${errors.altEmailId ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`} />
+                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                      Alternate Email Id
+                    </label>
+                    <input
+                      type="email"
+                      name="altEmailId"
+                      value={formData.altEmailId}
+                      onChange={handleInputChange}
+                      className={`w-full bg-white border ${
+                        errors.altEmailId ? 'border-red-500' : 'border-gray-200'
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                    />
                     {errors.altEmailId && <span className="text-red-500 text-sm font-bold">{errors.altEmailId}</span>}
                   </div>
 
+                  {/* Gender Select */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">Gender</label>
+                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                      Gender
+                    </label>
                     <select
                       name="gender"
                       value={formData.gender}
                       onChange={handleInputChange}
-                      className={`w-full bg-white border ${errors.gender ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                      className={`w-full bg-white border ${
+                        errors.gender ? 'border-red-500' : 'border-gray-200'
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
                     >
                       <option value="" disabled>Select Gender</option>
                       <option value="Male">Male</option>
@@ -835,17 +966,22 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     {errors.gender && <span className="text-red-500 text-sm font-bold">{errors.gender}</span>}
                   </div>
 
+                  {/* Date of Birth Picker */}
                   <div className="flex flex-col gap-2 relative" ref={calendarRef}>
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">Date of Birth</label>
+                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                      Date of Birth
+                    </label>
                     <div
                       onClick={() => setShowCalendar(!showCalendar)}
-                      className={`w-full bg-white border ${errors.dob ? 'border-red-500' : 'border-gray-200'} rounded-[12px] h-[52px] px-4 pr-12 flex items-center justify-between cursor-pointer hover:border-[#F96E8F] transition-colors shadow-sm`}
+                      className={`w-full bg-white border ${
+                        errors.dob ? 'border-red-500' : 'border-gray-200'
+                      } rounded-[12px] h-[52px] px-4 pr-12 flex items-center justify-between cursor-pointer hover:border-[#F96E8F] transition-colors shadow-sm`}
                     >
                       <span className={`font-bold text-[15px] ${formData.dob ? 'text-gray-800' : 'text-gray-400'}`}>
                         {formData.dob ? formData.dob : 'Select Date of Birth'}
                       </span>
                       <img
-                        src={date}
+                        src={dateIcon}
                         alt="Date Icon"
                         className="w-[24px] h-[24px] object-contain hover:scale-110 transition-transform"
                       />
@@ -864,7 +1000,6 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       />
                     )}
                   </div>
-
                 </div>
 
                 {/* Submit Button */}
@@ -874,26 +1009,34 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       ✓ Profile updated successfully!
                     </span>
                   )}
-                  <button type="submit" className="bg-[#F96E8F] hover:bg-[#E44971] text-white py-3 px-12 rounded-[12px] font-bold text-[20px] font-['Baloo_2'] shadow-sm transition-colors cursor-pointer tracking-wider">
+                  <button
+                    type="submit"
+                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white py-3 px-12 rounded-[12px] font-bold text-[20px] font-['Baloo_2'] shadow-sm transition-colors cursor-pointer tracking-wider"
+                  >
                     Save Changes
                   </button>
                 </div>
               </form>
             )}
 
+            {/* Tab 2: My Orders */}
             {activeMenu === 'My Orders' && (
               <div className="flex flex-col w-full font-['Baloo_2'] min-h-[500px]">
-                <h2 className="text-[24px] font-black text-gray-900 mb-6 tracking-wide w-full text-left">My Orders</h2>
+                <h2 className="text-[24px] font-black text-gray-900 mb-6 tracking-wide w-full text-left">
+                  My Orders
+                </h2>
 
                 {/* Toast Notification */}
                 {orderToast && (
                   <div className="bg-[#F96E8F] text-white font-extrabold px-5 py-3 rounded-[14px] shadow-md mb-6 flex items-center justify-between text-[14px] animate-fade-in">
                     <span>✓ {orderToast}</span>
-                    <button onClick={() => setOrderToast(null)} className="ml-4 font-black cursor-pointer">✕</button>
+                    <button onClick={() => setOrderToast(null)} className="ml-4 font-black cursor-pointer">
+                      ✕
+                    </button>
                   </div>
                 )}
 
-                {/* Toolbar */}
+                {/* Orders Toolbar */}
                 <div className="flex flex-wrap justify-between items-center mb-8 gap-4">
                   <div className="flex items-center w-full max-w-md bg-white border border-gray-200 rounded-[8px] overflow-hidden shadow-xs">
                     <input
@@ -930,7 +1073,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   </div>
                 </div>
 
-                {/* Orders List - 2 products visible, scroll to see more */}
+                {/* Orders List Container */}
                 <div className="max-h-[480px] sm:max-h-[510px] overflow-y-auto pr-2 custom-scrollbar flex flex-col gap-5 transition-all">
                   {filteredOrders.length > 0 ? (
                     filteredOrders.map((order, idx) => (
@@ -938,7 +1081,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                         key={order.id || idx}
                         className="bg-white border border-gray-100/90 rounded-[20px] p-5 sm:p-6 shadow-xs relative flex flex-col gap-4 hover:shadow-md transition-shadow shrink-0"
                       >
-                        {/* Order ID Top Header */}
+                        {/* Order Header */}
                         <div className="flex items-center justify-between">
                           <p className="font-extrabold text-[16px] sm:text-[17px] text-gray-900 font-['Baloo_2']">
                             Order ID: <span className="text-[#F96E8F] font-black">{order.orderId}</span>
@@ -950,9 +1093,9 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                           )}
                         </div>
 
-                        {/* Order Content Row */}
+                        {/* Order Content */}
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-5 sm:gap-6">
-                          {/* Image Box */}
+                          {/* Image */}
                           <div className="w-[110px] h-[110px] sm:w-[130px] sm:h-[130px] rounded-[16px] overflow-hidden bg-[#FBE8EC] shrink-0 flex items-center justify-center p-1.5">
                             <img
                               src={order.image}
@@ -961,7 +1104,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                             />
                           </div>
 
-                          {/* Middle Info */}
+                          {/* Info */}
                           <div className="flex-1 flex flex-col justify-center text-center sm:text-left min-w-0">
                             <h3 className="font-bold text-[18px] sm:text-[20px] text-gray-900 font-['Nunito'] mb-1 truncate" title={order.title}>
                               {order.title}
@@ -977,7 +1120,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                             </p>
                           </div>
 
-                          {/* Action Buttons */}
+                          {/* Order Action Buttons */}
                           <div className="flex flex-row items-center gap-3 self-center sm:self-end mt-2 sm:mt-0">
                             {order.status === 'active' ? (
                               <>
@@ -1045,16 +1188,21 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
               </div>
             )}
 
+            {/* Tab 3: Manage Addresses */}
             {(activeMenu === 'Manage Addresses' || activeMenu === 'Saved Locations') && (
               <div className="flex flex-col w-full min-h-[500px]">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                   <div>
-                    <h2 className="text-[24px] font-black text-gray-900 tracking-wide">Manage Addresses ({addresses.length})</h2>
-                    <p className="text-gray-500 font-bold text-[13px] mt-0.5">Add, edit, or delete your delivery and billing addresses</p>
+                    <h2 className="text-[24px] font-black text-gray-900 tracking-wide">
+                      Manage Addresses ({addresses.length})
+                    </h2>
+                    <p className="text-gray-500 font-bold text-[13px] mt-0.5">
+                      Add, edit, or delete your delivery and billing addresses
+                    </p>
                   </div>
                   <button
                     onClick={() => {
-                      setAddressFormData({ name: 'Home', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
+                      setAddressFormData({ ...INITIAL_ADDRESS_FORM });
                       setEditingAddressId(null);
                       setAddressErrors({});
                       setShowAddressModal(true);
@@ -1069,7 +1217,9 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 {addressSuccessToast && (
                   <div className="bg-green-500 text-white font-extrabold px-5 py-3 rounded-[14px] shadow-md mb-6 flex items-center justify-between text-[14px] animate-fade-in">
                     <span>✓ {addressSuccessToast}</span>
-                    <button onClick={() => setAddressSuccessToast(null)} className="ml-4 font-black">✕</button>
+                    <button onClick={() => setAddressSuccessToast(null)} className="ml-4 font-black">
+                      ✕
+                    </button>
                   </div>
                 )}
 
@@ -1082,10 +1232,12 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       </svg>
                     </div>
                     <h3 className="font-extrabold text-[18px] text-gray-800 mb-1">No Saved Addresses Found</h3>
-                    <p className="text-gray-500 font-bold text-[14px] max-w-md mb-6">You haven't saved any addresses yet. Add an address now to make checkout faster and easier.</p>
+                    <p className="text-gray-500 font-bold text-[14px] max-w-md mb-6">
+                      You haven't saved any addresses yet. Add an address now to make checkout faster and easier.
+                    </p>
                     <button
                       onClick={() => {
-                        setAddressFormData({ name: 'Home', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
+                        setAddressFormData({ ...INITIAL_ADDRESS_FORM });
                         setEditingAddressId(null);
                         setAddressErrors({});
                         setShowAddressModal(true);
@@ -1132,7 +1284,9 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                           <h4 className="font-extrabold text-[17px] text-gray-900 mb-1">{addr.username}</h4>
                           <p className="text-gray-600 font-bold text-[14px] leading-snug">{addr.line1}</p>
                           <p className="text-gray-600 font-bold text-[14px] leading-snug">{addr.line2}</p>
-                          <p className="text-gray-500 font-extrabold text-[13px] mt-3">Mobile: <span className="text-gray-800">{addr.phone}</span></p>
+                          <p className="text-gray-500 font-extrabold text-[13px] mt-3">
+                            Mobile: <span className="text-gray-800">{addr.phone}</span>
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -1141,27 +1295,36 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
               </div>
             )}
 
+            {/* Tab 4: Saved UPI */}
             {activeMenu === 'Saved UPI' && (
               <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-                <h2 className="text-[24px] font-black text-gray-900 mb-4 tracking-wide w-full text-left">Saved UPI</h2>
+                <h2 className="text-[24px] font-black text-gray-900 mb-4 tracking-wide w-full text-left">
+                  Saved UPI
+                </h2>
                 <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
                   <p className="font-bold text-lg">No UPI IDs saved.</p>
                 </div>
               </div>
             )}
 
+            {/* Tab 5: Saved Cards */}
             {activeMenu === 'Saved Cards' && (
               <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-                <h2 className="text-[24px] font-black text-gray-900 mb-4 tracking-wide w-full text-left">Saved Cards</h2>
+                <h2 className="text-[24px] font-black text-gray-900 mb-4 tracking-wide w-full text-left">
+                  Saved Cards
+                </h2>
                 <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
                   <p className="font-bold text-lg">No cards saved.</p>
                 </div>
               </div>
             )}
 
+            {/* Tab 6: My Wishlists */}
             {activeMenu === 'My Wishlists' && (
               <div className="flex flex-col w-full">
-                <h2 className="text-[24px] font-black text-gray-900 mb-6 tracking-wide w-full text-left">My Wishlists ({wishlist.length})</h2>
+                <h2 className="text-[24px] font-black text-gray-900 mb-6 tracking-wide w-full text-left">
+                  My Wishlists ({wishlist.length})
+                </h2>
                 {wishlist.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center min-h-[300px] text-gray-500">
                     <p className="font-bold text-lg">Your wishlist is empty.</p>
@@ -1182,10 +1345,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 )}
               </div>
             )}
-
           </div>
         </div>
-
       </main>
 
       {/* Address Form Modal */}
@@ -1193,7 +1354,9 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[100] flex items-center justify-center p-4">
           <div className="bg-white rounded-[24px] p-6 sm:p-7 w-full max-w-md shadow-2xl font-['Baloo_2'] border border-gray-100">
             <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
-              <h3 className="text-[20px] font-black text-gray-900">{editingAddressId ? 'Edit Address' : 'Add New Address'}</h3>
+              <h3 className="text-[20px] font-black text-gray-900">
+                {editingAddressId ? 'Edit Address' : 'Add New Address'}
+              </h3>
               <button
                 onClick={closeAddressModal}
                 className="w-8 h-8 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center font-bold text-base cursor-pointer transition-colors"
@@ -1203,9 +1366,11 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             </div>
 
             <form onSubmit={handleSaveAddress} className="flex flex-col gap-4" noValidate>
-              {/* Address Label Styled Select */}
+              {/* Address Label Select */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">Address Label <span className="text-[#F96E8F]">*</span></label>
+                <label className="text-[14px] font-black text-gray-800">
+                  Address Label <span className="text-[#F96E8F]">*</span>
+                </label>
                 <div className="relative">
                   <select
                     value={addressFormData.name}
@@ -1214,7 +1379,11 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       setAddressFormData({ ...addressFormData, name: val, type: val.toUpperCase() });
                       if (addressErrors.name) setAddressErrors(prev => ({ ...prev, name: '' }));
                     }}
-                    className={`w-full appearance-none bg-white border ${addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-[14px] ${addressFormData.name ? 'text-gray-900' : 'text-gray-400'} outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
+                    className={`w-full appearance-none bg-white border ${
+                      addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                    } rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-[14px] ${
+                      addressFormData.name ? 'text-gray-900' : 'text-gray-400'
+                    } outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
                   >
                     <option value="" disabled className="text-gray-400">Select Address Label</option>
                     <option value="Home" className="text-gray-800 font-bold py-2">🏠 Home (Residence)</option>
@@ -1227,12 +1396,16 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     </svg>
                   </div>
                 </div>
-                {addressErrors.name && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.name}</span>}
+                {addressErrors.name && (
+                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.name}</span>
+                )}
               </div>
 
               {/* Full Name */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">Full Name <span className="text-[#F96E8F]">*</span></label>
+                <label className="text-[14px] font-black text-gray-800">
+                  Full Name <span className="text-[#F96E8F]">*</span>
+                </label>
                 <input
                   type="text"
                   placeholder="Enter recipient's full name"
@@ -1241,14 +1414,20 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     setAddressFormData({ ...addressFormData, username: e.target.value });
                     if (addressErrors.username) setAddressErrors(prev => ({ ...prev, username: '' }));
                   }}
-                  className={`w-full border ${addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  className={`w-full border ${
+                    addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
                 />
-                {addressErrors.username && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.username}</span>}
+                {addressErrors.username && (
+                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.username}</span>
+                )}
               </div>
 
               {/* Address Line 1 */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">Address Line 1 <span className="text-[#F96E8F]">*</span></label>
+                <label className="text-[14px] font-black text-gray-800">
+                  Address Line 1 <span className="text-[#F96E8F]">*</span>
+                </label>
                 <input
                   type="text"
                   placeholder="House/Flat No., Building Name, Street"
@@ -1257,14 +1436,20 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     setAddressFormData({ ...addressFormData, line1: e.target.value });
                     if (addressErrors.line1) setAddressErrors(prev => ({ ...prev, line1: '' }));
                   }}
-                  className={`w-full border ${addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  className={`w-full border ${
+                    addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
                 />
-                {addressErrors.line1 && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line1}</span>}
+                {addressErrors.line1 && (
+                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line1}</span>
+                )}
               </div>
 
               {/* City, State, Pincode */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">City, State & Pincode <span className="text-[#F96E8F]">*</span></label>
+                <label className="text-[14px] font-black text-gray-800">
+                  City, State & Pincode <span className="text-[#F96E8F]">*</span>
+                </label>
                 <input
                   type="text"
                   placeholder="e.g. Chennai, Tamil Nadu - 600001"
@@ -1273,14 +1458,20 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     setAddressFormData({ ...addressFormData, line2: e.target.value });
                     if (addressErrors.line2) setAddressErrors(prev => ({ ...prev, line2: '' }));
                   }}
-                  className={`w-full border ${addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  className={`w-full border ${
+                    addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
                 />
-                {addressErrors.line2 && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line2}</span>}
+                {addressErrors.line2 && (
+                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line2}</span>
+                )}
               </div>
 
               {/* Phone Number */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">Mobile Number <span className="text-[#F96E8F]">*</span></label>
+                <label className="text-[14px] font-black text-gray-800">
+                  Mobile Number <span className="text-[#F96E8F]">*</span>
+                </label>
                 <input
                   type="text"
                   placeholder="10-digit mobile number"
@@ -1289,9 +1480,13 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     setAddressFormData({ ...addressFormData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) });
                     if (addressErrors.phone) setAddressErrors(prev => ({ ...prev, phone: '' }));
                   }}
-                  className={`w-full border ${addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  className={`w-full border ${
+                    addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
                 />
-                {addressErrors.phone && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.phone}</span>}
+                {addressErrors.phone && (
+                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.phone}</span>
+                )}
               </div>
 
               <div className="flex gap-4 mt-3">
@@ -1327,7 +1522,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
               Wishlist removed
             </h4>
             <p className="text-gray-500 text-[12px] font-bold font-['Nunito'] line-clamp-1 mt-0.5">
-              {wishlistToast.title || "Product"}
+              {wishlistToast.title || 'Product'}
             </p>
           </div>
           <button
