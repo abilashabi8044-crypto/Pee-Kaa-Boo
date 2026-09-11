@@ -735,18 +735,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
     }, 2500);
   };
 
-  // ----------------------------------------
-  // Sidebar Navigation Config
-  // ----------------------------------------
-  const menuItems = [
-    { name: 'My Profile', icon: <img src={userIcon} alt="User Icon" className="w-[24px] h-[24px] object-contain" /> },
-    { name: 'My Orders', icon: <img src={ordersIcon} alt="Orders Icon" className="w-[24px] h-[24px] object-contain" /> },
-    { name: 'Manage Addresses', icon: <img src={locationIcon} alt="Location Icon" className="w-[24px] h-[24px] object-contain" /> },
-    { name: 'Saved UPI', icon: <img src={upiIcon} alt="UPI Icon" className="w-[24px] h-[24px] object-contain" /> },
-    { name: 'Saved Cards', icon: <img src={cardIcon} alt="Card Icon" className="w-[24px] h-[24px] object-contain" /> },
-    { name: 'My Wishlists', icon: <img src={heartIcon} alt="Heart Icon" className="w-[24px] h-[24px] object-contain" /> },
-    { name: 'Logout', icon: <img src={logoutIcon} alt="Logout Icon" className="w-[24px] h-[24px] object-contain" /> }
-  ];
+
 
   return (
     <div className="w-full min-h-screen bg-[#fafafa] font-['Baloo_2'] flex flex-col">
@@ -793,48 +782,194 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             {/* Navigation Menu List */}
             <div className="py-3">
               <ul className="flex flex-col">
-                {menuItems.map((item, idx) => {
-                  const isLogout = item.name === 'Logout';
-                  const isActive = activeMenu === item.name;
+                {/* My Profile */}
+                <li>
+                  <button
+                    onClick={() => setActiveMenu('My Profile')}
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                      activeMenu === 'My Profile'
+                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={activeMenu === 'My Profile' ? 'text-[#F96E8F]' : 'text-gray-400'}>
+                        <img src={userIcon} alt="User Icon" className="w-[24px] h-[24px] object-contain" />
+                      </span>
+                      <span className="tracking-wide font-['Baloo_2']">My Profile</span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 ${activeMenu === 'My Profile' ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </li>
 
-                  return (
-                    <li key={idx}>
-                      <button
-                        onClick={() => {
-                          if (isLogout) {
-                            localStorage.removeItem('isLoggedIn');
-                            window.history.pushState({}, '', '/login');
-                            window.dispatchEvent(new Event('popstate'));
-                          } else {
-                            setActiveMenu(item.name);
-                          }
-                        }}
-                        className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
-                          isLogout
-                            ? 'text-red-500 hover:bg-red-50 hover:text-red-600 border-l-[3px] border-l-transparent'
-                            : isActive
-                              ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
-                              : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                        }`}
-                      >
-                        <div className="flex items-center gap-4">
-                          <span className={isLogout ? 'text-red-500' : isActive ? 'text-[#F96E8F]' : 'text-gray-400'}>
-                            {item.icon}
-                          </span>
-                          <span className="tracking-wide font-['Baloo_2']">{item.name}</span>
-                        </div>
-                        <svg
-                          className={`w-4 h-4 ${isLogout ? 'text-red-400' : isActive ? 'text-[#F96E8F]' : 'text-gray-400'}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </li>
-                  );
-                })}
+                {/* My Orders */}
+                <li>
+                  <button
+                    onClick={() => setActiveMenu('My Orders')}
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                      activeMenu === 'My Orders'
+                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={activeMenu === 'My Orders' ? 'text-[#F96E8F]' : 'text-gray-400'}>
+                        <img src={ordersIcon} alt="Orders Icon" className="w-[24px] h-[24px] object-contain" />
+                      </span>
+                      <span className="tracking-wide font-['Baloo_2']">My Orders</span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 ${activeMenu === 'My Orders' ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </li>
+
+                {/* Manage Addresses */}
+                <li>
+                  <button
+                    onClick={() => setActiveMenu('Manage Addresses')}
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                      activeMenu === 'Manage Addresses'
+                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={activeMenu === 'Manage Addresses' ? 'text-[#F96E8F]' : 'text-gray-400'}>
+                        <img src={locationIcon} alt="Location Icon" className="w-[24px] h-[24px] object-contain" />
+                      </span>
+                      <span className="tracking-wide font-['Baloo_2']">Manage Addresses</span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 ${activeMenu === 'Manage Addresses' ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </li>
+
+                {/* Saved UPI */}
+                <li>
+                  <button
+                    onClick={() => setActiveMenu('Saved UPI')}
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                      activeMenu === 'Saved UPI'
+                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={activeMenu === 'Saved UPI' ? 'text-[#F96E8F]' : 'text-gray-400'}>
+                        <img src={upiIcon} alt="UPI Icon" className="w-[24px] h-[24px] object-contain" />
+                      </span>
+                      <span className="tracking-wide font-['Baloo_2']">Saved UPI</span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 ${activeMenu === 'Saved UPI' ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </li>
+
+                {/* Saved Cards */}
+                <li>
+                  <button
+                    onClick={() => setActiveMenu('Saved Cards')}
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                      activeMenu === 'Saved Cards'
+                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={activeMenu === 'Saved Cards' ? 'text-[#F96E8F]' : 'text-gray-400'}>
+                        <img src={cardIcon} alt="Card Icon" className="w-[24px] h-[24px] object-contain" />
+                      </span>
+                      <span className="tracking-wide font-['Baloo_2']">Saved Cards</span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 ${activeMenu === 'Saved Cards' ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </li>
+
+                {/* My Wishlists */}
+                <li>
+                  <button
+                    onClick={() => setActiveMenu('My Wishlists')}
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                      activeMenu === 'My Wishlists'
+                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={activeMenu === 'My Wishlists' ? 'text-[#F96E8F]' : 'text-gray-400'}>
+                        <img src={heartIcon} alt="Heart Icon" className="w-[24px] h-[24px] object-contain" />
+                      </span>
+                      <span className="tracking-wide font-['Baloo_2']">My Wishlists</span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 ${activeMenu === 'My Wishlists' ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </li>
+
+                {/* Logout */}
+                <li>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('isLoggedIn');
+                      window.history.pushState({}, '', '/login');
+                      window.dispatchEvent(new Event('popstate'));
+                    }}
+                    className="w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer text-red-500 hover:bg-red-50 hover:text-red-600 border-l-[3px] border-l-transparent"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="text-red-500">
+                        <img src={logoutIcon} alt="Logout Icon" className="w-[24px] h-[24px] object-contain" />
+                      </span>
+                      <span className="tracking-wide font-['Baloo_2']">Logout</span>
+                    </div>
+                    <svg
+                      className="w-4 h-4 text-red-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </li>
               </ul>
             </div>
           </div>
