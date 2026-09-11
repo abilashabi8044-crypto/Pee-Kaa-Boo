@@ -35,7 +35,7 @@ export default function Footer() {
                              className="w-[100px] sm:w-[150px] lg:w-[185px] 2xl:-ml-[128px] h-auto mt-[40px] object-contain mb-5 lg:mb-6"
                          />
  
-                         <h4 className="text-gray-900 font-['Baloo_2'] font-black text-[24px] lg:text-[26px] 2xl:-ml-[128px] mb-3 uppercase tracking-wider">
+                         <h4 className="text-gray-900 font-['Baloo_2'] font-black text-2xl lg:text-2xl 2xl:-ml-[128px] mb-3 uppercase tracking-wider">
                              Follow Us
                          </h4>
                          <div className="flex items-center gap-3 2xl:-ml-[128px]">
@@ -59,14 +59,14 @@ export default function Footer() {
 
                     {/* Column 2: About Us */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-[24px] sm:text-[18px] lg:text-[26px] mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             About Us
                         </h4>
-                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px]">
+                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-xl">
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/about-us')}
-                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] font-['Baloo_2']"
+                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']"
                                 >
                                     About our company
                                 </button>
@@ -74,7 +74,7 @@ export default function Footer() {
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/terms-and-conditions')}
-                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] font-['Baloo_2']"
+                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']"
                                 >
                                     Terms and Conditions
                                 </button>
@@ -82,7 +82,7 @@ export default function Footer() {
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/faq')}
-                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] font-['Baloo_2']"
+                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']"
                                 >
                                     FAQ
                                 </button>
@@ -91,7 +91,7 @@ export default function Footer() {
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/offers')}
-                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] font-['Baloo_2']"
+                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']"
                                 >
                                     Offers
                                 </button>
@@ -101,14 +101,14 @@ export default function Footer() {
 
                     {/* Column 3: Why Us */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-[24px] sm:text-[18px] lg:text-[26px] mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             Why Us ?
                         </h4>
-                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px]">
+                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-xl">
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/return-policy')}
-                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] font-['Baloo_2']"
+                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']"
                                 >
                                     Return Policy
                                 </button>
@@ -116,7 +116,7 @@ export default function Footer() {
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/privacy-policy')}
-                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] font-['Baloo_2']"
+                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']"
                                 >
                                     Privacy Policy
                                 </button>
@@ -125,7 +125,7 @@ export default function Footer() {
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/certified-jewellery')}
-                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] font-['Baloo_2']"
+                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']"
                                 >
                                     Certified Jewellery
                                 </button>
@@ -133,7 +133,7 @@ export default function Footer() {
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/dgrp')}
-                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] font-['Baloo_2']"
+                                    className="hover:text-[#F96E8F] transition-colors whitespace-nowrap cursor-pointer text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']"
                                 >
                                     DGRP
                                 </button>
@@ -143,10 +143,10 @@ export default function Footer() {
 
                     {/* Column 4: Jewellery Guides + Bunny Illustration */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 relative min-h-[220px] xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-[24px] sm:text-[18px] lg:text-[26px] mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             Jewellery Guides
                         </h4>
-                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-[18px] sm:text-[18px] lg:text-[20px] xl:text-[22px] mb-4 md:mb-0">
+                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-xl mb-4 md:mb-0">
                             <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap">Lorem Ipsum</a></li>
                             <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap">Lorem Ipsum</a></li>
                             <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap">Lorem Ipsum</a></li>
@@ -170,13 +170,13 @@ export default function Footer() {
                 {/* Bottom Bar: Copyright on Left, We Accept on Right */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 2xl:-ml-[128px] 2xl:-mr-[128px] relative z-10 pb-2">
                     {/* Copyright (Left on desktop, bottom on mobile) */}
-                    <p className="text-gray-900 text-[20px] sm:text-[15px] font-extrabold text-center md:text-left order-2 md:order-1">
+                    <p className="text-gray-900 text-xl sm:text-sm font-extrabold text-center md:text-left order-2 md:order-1">
                         © 2026 PEE KAA BOO All Rights Reserved.
                     </p>
 
                     {/* We Accept (Right on desktop, top on mobile) */}
                     <div className="flex items-center justify-between md:justify-end gap-3 sm:gap-5 w-full md:w-auto order-1 md:order-2">
-                        <span className="text-gray-900 font-black text-[20px] sm:text-[17px] uppercase tracking-wider whitespace-nowrap">
+                        <span className="text-gray-900 font-black text-xl sm:text-base uppercase tracking-wider whitespace-nowrap">
                             We Accept
                         </span>
                         <div className="flex items-center gap-3 sm:gap-4">

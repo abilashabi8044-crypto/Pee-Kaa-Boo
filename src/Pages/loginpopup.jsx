@@ -47,8 +47,8 @@ const LoginPopup = ({ onClose }) => {
                         </svg>
                     </div>
                     <div>
-                        <h4 className="text-gray-900 font-bold text-[15px] leading-tight">Subscribed Successfully</h4>
-                        <p className="text-gray-500 text-[13px] font-semibold mt-0.5">Your 20% discount code is on the way!</p>
+                        <h4 className="text-gray-900 font-bold text-sm leading-tight">Subscribed Successfully</h4>
+                        <p className="text-gray-500 text-xs font-semibold mt-0.5">Your 20% discount code is on the way!</p>
                     </div>
                 </div>
             )}
@@ -70,16 +70,16 @@ const LoginPopup = ({ onClose }) => {
 
                     {/* Content */}
                     <div className="relative z-10 w-full max-w-[650px] flex flex-col items-center mt-4">
-                        <h3 className="text-[#A881DB] font-extrabold tracking-widest text-[16px] md:text-[18px] mb-1">
+                        <h3 className="text-[#A881DB] font-extrabold tracking-widest text-base md:text-lg mb-1">
                             SIGN UP FOR EMAILS
                         </h3>
                         <img src={vector1} alt="Wavy underline" className="w-[70px] mb-8 pointer-events-none object-contain" />
 
-                        <h2 className="text-[#222222] font-bold text-[36px] md:text-[48px] leading-[1.1] mb-6">
+                        <h2 className="text-[#222222] font-bold text-4xl md:text-5xl leading-[1.1] mb-6">
                             Get 20% discount shipped <br className="hidden md:block" /> to your inbox
                         </h2>
                         
-                        <p className="text-gray-700 font-bold text-[15px] md:text-[17px] mb-12">
+                        <p className="text-gray-700 font-bold text-sm md:text-base mb-12">
                             Subscribe to our newsletter and we will ship 20% discount code today
                         </p>
 
@@ -93,16 +93,16 @@ const LoginPopup = ({ onClose }) => {
                                         setEmail(e.target.value);
                                         if (error) setError('');
                                     }}
-                                    className="flex-1 h-[50px] sm:h-full px-5 outline-none text-[15px] text-gray-700 bg-white placeholder-gray-500 font-semibold"
+                                    className="flex-1 h-[50px] sm:h-full px-5 outline-none text-sm text-gray-700 bg-white placeholder-gray-500 font-semibold"
                                 />
-                                <button type="submit" className="w-full sm:w-[150px] h-[50px] sm:h-full bg-[#A881DB] text-white font-bold text-[14px] tracking-wider hover:bg-[#976FCB] transition-colors cursor-pointer">
+                                <button type="submit" className="w-full sm:w-[150px] h-[50px] sm:h-full bg-[#A881DB] text-white font-bold text-sm tracking-wider hover:bg-[#976FCB] transition-colors cursor-pointer">
                                     SUBSCRIBE
                                 </button>
                             </div>
-                            {error && <p className="text-red-500 text-[13px] font-semibold mt-2 text-left">{error}</p>}
+                            {error && <p className="text-red-500 text-xs font-semibold mt-2 text-left">{error}</p>}
                         </form>
 
-                        <a href="#" className="text-gray-700 font-semibold text-[15px] underline hover:text-[#A881DB] transition-colors">
+                        <a href="#" className="text-gray-700 font-semibold text-sm underline hover:text-[#A881DB] transition-colors">
                             Learn more
                         </a>
                     </div>

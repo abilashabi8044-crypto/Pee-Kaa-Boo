@@ -234,7 +234,7 @@ const Product = ({ product, cartItems, addToCart }) => {
 
             {/* Breadcrumbs */}
             <div className="max-w-[1500px] mt-[28px] mx-auto px-4 pt-8 pb-2">
-                <div className="text-[14px] sm:text-[15px] md:text-[18px] text-[#888] font-medium flex items-center flex-nowrap whitespace-nowrap overflow-x-auto gap-1.5 sm:gap-2">
+                <div className="text-sm sm:text-sm md:text-lg text-[#888] font-medium flex items-center flex-nowrap whitespace-nowrap overflow-x-auto gap-1.5 sm:gap-2">
                     <button onClick={() => { window.history.pushState({}, '', '/'); window.dispatchEvent(new Event('popstate')); }} className="hover:text-[#F96E8F] transition-colors cursor-pointer flex-shrink-0">Home</button>
                     <span className="flex-shrink-0">&gt;</span>
                     <button onClick={() => { window.history.pushState({}, '', '/shop'); window.dispatchEvent(new Event('popstate')); }} className="hover:text-[#F96E8F] transition-colors cursor-pointer flex-shrink-0">shop</button>
@@ -257,7 +257,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                             <img src={selectedColorImage || productImages[currentImageIndex]} alt={product?.title || "Product"} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300" />
 
                             {/* Badges */}
-                            <div className="absolute top-6 left-6 font-['Helvetica'] bg-[#00D0CC] text-white text-[11px] font-bold px-4 py-2 rounded-lg flex items-center gap-2 shadow-md z-10">
+                            <div className="absolute top-6 left-6 font-['Helvetica'] bg-[#00D0CC] text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 shadow-md z-10">
                                 <img src={spark1} />
                                 <img src={badge} alt="Badge" className="w-5 h-5" />
                                 <img src={spark2} />
@@ -317,30 +317,30 @@ const Product = ({ product, cartItems, addToCart }) => {
 
                         {/* Header Info */}
                         <div>
-                            <div className="inline-flex items-center gap-1.5 font-['Nunito'] bg-[#00D0CC] text-white text-[11px] font-bold px-3 py-1 rounded-md mb-3 shadow-sm">
-                                {defaultProduct?.rating || 4.5} <span className="text-yellow-300 text-[13px] leading-none">★</span> | {defaultProduct?.reviews || 42} Reviews
+                            <div className="inline-flex items-center gap-1.5 font-['Nunito'] bg-[#00D0CC] text-white text-xs font-bold px-3 py-1 rounded-md mb-3 shadow-sm">
+                                {defaultProduct?.rating || 4.5} <span className="text-yellow-300 text-xs leading-none">★</span> | {defaultProduct?.reviews || 42} Reviews
                             </div>
-                            <h1 className="text-3xl md:text-[34px] font-black text-gray-900 leading-tight mb-2">
+                            <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-2">
                                 {defaultProduct?.title || "Name Of The Product"}
                             </h1>
-                            <p className="text-gray-600 font-bold text-[14px]">
+                            <p className="text-gray-600 font-bold text-sm">
                                 Product Code : {defaultProduct?.code || (defaultProduct?.id ? `64A288${defaultProduct.id}` : '64A288075')}
                             </p>
                         </div>
 
                         {/* Price Card */}
                         <div className="bg-white p-5 rounded-2xl shadow-sm">
-                            <h3 className=" text-gray-700 font-extrabold text-[16px] mb-3">Price</h3>
+                            <h3 className=" text-gray-700 font-extrabold text-base mb-3">Price</h3>
                             <div className="flex items-baseline gap-3">
                                 <span className="text-gray-400 font-bold text-lg line-through">₹ {product?.oldPrice || '2000'}</span>
-                                <span className="text-[#F96E8F] font-['Nunito'] font-bold text-[24px]">₹ {product?.price || '1710'}</span>
-                                <span className="text-red-500 font-[Helvetica] font-bold text-[11.79px]">(3% Off)</span>
+                                <span className="text-[#F96E8F] font-['Nunito'] font-bold text-2xl">₹ {product?.price || '1710'}</span>
+                                <span className="text-red-500 font-[Helvetica] font-bold text-xs">(3% Off)</span>
                             </div>
                         </div>
 
                         {/* Size Selection */}
                         <div className="bg-white p-5 rounded-2xl shadow-sm">
-                            <h3 className="text-gray-700 font-['Baloo_2'] font-extrabold text-[16px] mb-4">Choose size</h3>
+                            <h3 className="text-gray-700 font-['Baloo_2'] font-extrabold text-base mb-4">Choose size</h3>
                             <div className="grid grid-cols-4 gap-2.5 sm:gap-3 w-full">
                                 {sizes.map((size) => {
                                     const isSelected = selectedSize === size.label;
@@ -350,13 +350,13 @@ const Product = ({ product, cartItems, addToCart }) => {
                                             key={size.label}
                                             onClick={() => !isOut && setSelectedSize(size.label)}
                                             className={`
-                                                relative w-full h-13 sm:h-14 rounded-[10px] flex flex-col items-center justify-center font-black text-[14px] sm:text-[15px] transition-all overflow-hidden
+                                                relative w-full h-13 sm:h-14 rounded-[10px] flex flex-col items-center justify-center font-black text-sm sm:text-sm transition-all overflow-hidden
                                                 ${isSelected ? 'bg-[#F96E8F] text-white shadow-md' : 'bg-[#BCBCBC] font-[Nunito] text-white'}
                                                 ${isOut ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-0.5 cursor-pointer'}
                                             `}
                                         >
                                             <span className="mb-2 sm:mb-3">{size.label}</span>
-                                            <div className="absolute bottom-1 w-[88%] bg-white rounded-md text-[8px] sm:text-[9px] font-bold text-gray-800 py-0.5 text-center">
+                                            <div className="absolute bottom-1 w-[88%] bg-white rounded-md text-xs sm:text-xs font-bold text-gray-800 py-0.5 text-center">
                                                 {size.status}
                                             </div>
                                         </button>
@@ -367,7 +367,7 @@ const Product = ({ product, cartItems, addToCart }) => {
 
                         {/* Color Selection */}
                         <div className="bg-white p-5 rounded-2xl shadow-sm">
-                            <h3 className="font-['Baloo_2'] text-gray-700 font-extrabold text-[16px] mb-4">Choose Colour</h3>
+                            <h3 className="font-['Baloo_2'] text-gray-700 font-extrabold text-base mb-4">Choose Colour</h3>
                             <div className="grid grid-cols-5 gap-1.5 sm:gap-3 w-full items-center justify-items-center">
                                 {colors.map((color) => {
                                     const isSelected = selectedColor === color.name;
@@ -385,7 +385,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                                 {isSelected && (
                                                     <>
                                                         <div className="absolute inset-0 border-[2px] border-[#F96E8F] rounded-full"></div>
-                                                        <div className="absolute -top-1 -right-1 bg-[#F96E8F] text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] shadow-sm z-10">
+                                                        <div className="absolute -top-1 -right-1 bg-[#F96E8F] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs shadow-sm z-10">
                                                             ✓
                                                         </div>
                                                     </>
@@ -394,7 +394,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                                     <img src={color.img} alt={color.name} className="w-full h-full object-cover" />
                                                 </div>
                                             </div>
-                                            <span className="text-[10px] sm:text-[11px] font-extrabold text-gray-800 text-center truncate w-full">{color.name}</span>
+                                            <span className="text-xs sm:text-xs font-extrabold text-gray-800 text-center truncate w-full">{color.name}</span>
                                         </div>
                                     );
                                 })}
@@ -403,7 +403,7 @@ const Product = ({ product, cartItems, addToCart }) => {
 
                         {/* Delivery Details */}
                         <div className="bg-white p-5 rounded-2xl shadow-sm">
-                            <h3 className="text-gray-700 font-['Baloo_2'] font-extrabold text-[16px] mb-4">Delivery details</h3>
+                            <h3 className="text-gray-700 font-['Baloo_2'] font-extrabold text-base mb-4">Delivery details</h3>
                             <div className="flex items-stretch h-11 sm:h-12 mb-4">
                                 <input
                                     type="text"
@@ -415,7 +415,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                         setDeliveryStatus(null);
                                     }}
                                     maxLength="6"
-                                    className="flex-1 min-w-0 h-full px-3 sm:px-4 text-[13px] sm:text-sm outline-none border border-gray-300 border-r-0 rounded-l-md font-bold text-gray-700 placeholder-gray-400"
+                                    className="flex-1 min-w-0 h-full px-3 sm:px-4 text-xs sm:text-sm outline-none border border-gray-300 border-r-0 rounded-l-md font-bold text-gray-700 placeholder-gray-400"
                                 />
                                 <button
                                     onClick={() => {
@@ -424,7 +424,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                         }
                                     }}
                                     disabled={!pincode.trim()}
-                                    className={`h-full px-3 sm:px-6 font-['Nunito'] text-white text-[12px] sm:text-[14px] font-bold rounded-r-md transition-colors whitespace-nowrap flex-shrink-0 flex items-center justify-center ${!pincode.trim()
+                                    className={`h-full px-3 sm:px-6 font-['Nunito'] text-white text-xs sm:text-sm font-bold rounded-r-md transition-colors whitespace-nowrap flex-shrink-0 flex items-center justify-center ${!pincode.trim()
                                             ? 'bg-pink-300 cursor-not-allowed'
                                             : 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
                                         }`}
@@ -436,29 +436,29 @@ const Product = ({ product, cartItems, addToCart }) => {
 
                             {/* Delivery Status Message */}
                             {deliveryStatus === 'loading' && (
-                                <div className="text-blue-500 font-bold text-[13px] mb-4">
+                                <div className="text-blue-500 font-bold text-xs mb-4">
                                     Checking location...
                                 </div>
                             )}
                             {deliveryStatus === 'available' && locationDetails && (
-                                <div className="text-green-600 font-bold text-[13px] mb-4">
+                                <div className="text-green-600 font-bold text-xs mb-4">
                                     ✓ Delivery is available to {locationDetails.area}, {locationDetails.district}, {locationDetails.state}!
                                 </div>
                             )}
                             {deliveryStatus === 'unavailable' && locationDetails && (
-                                <div className="text-red-500 font-bold text-[13px] mb-4">
+                                <div className="text-red-500 font-bold text-xs mb-4">
                                     ✕ Delivery is not available to {locationDetails.state}. We currently only deliver to Tamil Nadu, Andhra Pradesh, Kerala, and Karnataka.
                                 </div>
                             )}
                             {deliveryStatus === 'error' && (
-                                <div className="text-red-500 font-bold text-[13px] mb-4">
+                                <div className="text-red-500 font-bold text-xs mb-4">
                                     ✕ Invalid pincode or unable to fetch location details.
                                 </div>
                             )}
 
                             <div className="flex items-center gap-3">
                                 <img src={truckLogo} alt="Delivery" className="w-6 h-6 object-contain" />
-                                <span className="font-bold font-['Nunito'] text-[18px] text-gray-800 tracking-wide">
+                                <span className="font-bold font-['Nunito'] text-lg text-gray-800 tracking-wide">
                                     Expected Delivery By {getExpectedDeliveryDate()}
                                 </span>
                             </div>
@@ -469,7 +469,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                             {/* Top Row: Qty + Add to Cart */}
                             <div className="flex gap-4 h-[50px]">
                                 {/* Quantity Selector */}
-                                <div className="flex border border-gray-300 rounded-full overflow-hidden bg-white w-[120px] text-[20.78px] font-bold border-[2px] border-dashed border-zinc-900 text-gray-700 shadow-sm">
+                                <div className="flex border border-gray-300 rounded-full overflow-hidden bg-white w-[120px] text-xl font-bold border-[2px] border-dashed border-zinc-900 text-gray-700 shadow-sm">
                                     <button
                                         className="w-10 h-full flex items-center justify-center hover:bg-gray-100 transition-colors"
                                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -484,7 +484,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 {/* Add to Cart */}
                                 <button
                                     onClick={() => addToCart && addToCart(defaultProduct, quantity, selectedSize, selectedColor)}
-                                    className="flex-1 h-full border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] rounded-full font-bold text-[20.78px] hover:bg-[#F96E8F] hover:text-white transition-colors tracking-wide bg-white shadow-sm"
+                                    className="flex-1 h-full border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] rounded-full font-bold text-xl hover:bg-[#F96E8F] hover:text-white transition-colors tracking-wide bg-white shadow-sm"
                                 >
                                     Add to Cart
                                 </button>
@@ -496,7 +496,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                     if (addToCart) addToCart(defaultProduct, quantity, selectedSize, selectedColor);
                                     window.history.pushState({}, '', '/cart');
                                 }}
-                                className="w-full h-[55px] bg-[#F96E8F] text-white rounded-full font-bold text-[20.78px] hover:bg-[#E44971] transition-colors shadow-md tracking-wide"
+                                className="w-full h-[55px] bg-[#F96E8F] text-white rounded-full font-bold text-xl hover:bg-[#E44971] transition-colors shadow-md tracking-wide"
                             >
                                 Buy Now
                             </button>
@@ -515,7 +515,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                         <div className="relative rounded-[20px] overflow-hidden shadow-sm">
                             <img src={ad} alt="Product Details" className="w-[649px] h-[461px] object-cover" />
                             {/* Ad Badge */}
-                            <div className="absolute top-4 right-4 font-['Helvetica_Now_Display'] bg-white/95 text-gray-800 text-[13px] font-extrabold px-3 py-1 rounded shadow-md uppercase tracking-wider z-10">
+                            <div className="absolute top-4 right-4 font-['Helvetica_Now_Display'] bg-white/95 text-gray-800 text-xs font-extrabold px-3 py-1 rounded shadow-md uppercase tracking-wider z-10">
                                 Ad
                             </div>
                         </div>
@@ -533,14 +533,14 @@ const Product = ({ product, cartItems, addToCart }) => {
                                         <div className="w-11 h-11 flex items-center justify-center">
                                             <img src={bunnyIcon} alt="bunny" className="w-full h-full object-contain" />
                                         </div>
-                                        <span className="font-bold font-['Baloo_2'] text-[#555] text-[24px]">{item.title}</span>
+                                        <span className="font-bold font-['Baloo_2'] text-[#555] text-2xl">{item.title}</span>
                                     </div>
                                     <svg xmlns="http://www.w3.org/2000/svg" className={`w-5 h-5 text-gray-700 transition-transform ${openAccordion === item.id ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                                 {openAccordion === item.id && (
-                                    <div className="px-5 pb-5 text-gray-600 font-bold text-[14px] whitespace-pre-line">
+                                    <div className="px-5 pb-5 text-gray-600 font-bold text-sm whitespace-pre-line">
                                         {item.content}
                                     </div>
                                 )}
@@ -566,8 +566,8 @@ const Product = ({ product, cartItems, addToCart }) => {
                         {/* Modal Header */}
                         <div className="flex items-center justify-between pb-3 border-b border-gray-100">
                             <div>
-                                <h3 className="text-[20px] font-black text-gray-900 font-['Baloo_2']">Share Product</h3>
-                                <p className="text-[12px] text-gray-500 font-bold">Share this beautiful piece with your friends & family</p>
+                                <h3 className="text-xl font-black text-gray-900 font-['Baloo_2']">Share Product</h3>
+                                <p className="text-xs text-gray-500 font-bold">Share this beautiful piece with your friends & family</p>
                             </div>
                             <button
                                 onClick={() => setShareModalOpen(false)}
@@ -585,11 +585,11 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 className="w-14 h-14 rounded-xl object-cover border border-pink-200/60 flex-shrink-0"
                             />
                             <div className="flex-1 min-w-0">
-                                <h4 className="font-extrabold text-[15px] text-gray-900 truncate">{defaultProduct?.title || 'Product'}</h4>
+                                <h4 className="font-extrabold text-sm text-gray-900 truncate">{defaultProduct?.title || 'Product'}</h4>
                                 <div className="flex items-center gap-2 mt-0.5">
-                                    <span className="text-[#F96E8F] font-black text-[15px]">₹{defaultProduct?.price}</span>
+                                    <span className="text-[#F96E8F] font-black text-sm">₹{defaultProduct?.price}</span>
                                     {defaultProduct?.oldPrice && (
-                                        <span className="text-gray-400 font-bold text-[12px] line-through">₹{defaultProduct?.oldPrice}</span>
+                                        <span className="text-gray-400 font-bold text-xs line-through">₹{defaultProduct?.oldPrice}</span>
                                     )}
                                 </div>
                             </div>
@@ -603,7 +603,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#E8F8EE] hover:bg-[#D3F3DE] text-[#25D366] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#C2ECCF]"
                             >
                                 <img src={whatsapp} alt="WhatsApp" className="w-10 h-10 object-contain" />
-                                <span className="text-[12px] font-extrabold text-gray-800">WhatsApp</span>
+                                <span className="text-xs font-extrabold text-gray-800">WhatsApp</span>
                             </button>
 
                             {/* Facebook */}
@@ -612,7 +612,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#EAF2FE] hover:bg-[#D5E5FD] text-[#1877F2] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#BED7FB]"
                             >
                                 <img src={facebook} alt="Facebook" className="w-10 h-10 object-contain" />
-                                <span className="text-[12px] font-extrabold text-gray-800">Facebook</span>
+                                <span className="text-xs font-extrabold text-gray-800">Facebook</span>
                             </button>
 
                             {/* Email */}
@@ -621,7 +621,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#FDEEED] hover:bg-[#FCDCDA] text-[#EA4335] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#F8C4C0]"
                             >
                                 <img src={mail} alt="Email" className="w-10 h-10 object-contain" />
-                                <span className="text-[12px] font-extrabold text-gray-800">Email</span>
+                                <span className="text-xs font-extrabold text-gray-800">Email</span>
                             </button>
 
                             {/* X (Twitter) */}
@@ -630,7 +630,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-gray-100 hover:bg-gray-200 text-black transition-all hover:scale-105 cursor-pointer shadow-xs border border-gray-200"
                             >
                                 <img src={x} alt="X (Twitter)" className="w-10 h-10 object-contain" />
-                                <span className="text-[12px] font-extrabold text-gray-800">X (Twitter)</span>
+                                <span className="text-xs font-extrabold text-gray-800">X (Twitter)</span>
                             </button>
 
                             {/* Pinterest */}
@@ -639,7 +639,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-[16px] bg-[#FDE6E9] hover:bg-[#FBD0D6] text-[#E60023] transition-all hover:scale-105 cursor-pointer shadow-xs border border-[#F7B0BA]"
                             >
                                 <img src={pinterest} alt="Pinterest" className="w-10 h-10 object-contain" />
-                                <span className="text-[12px] font-extrabold text-gray-800">Pinterest</span>
+                                <span className="text-xs font-extrabold text-gray-800">Pinterest</span>
                             </button>
 
                             {/* Copy Link */}
@@ -658,7 +658,7 @@ const Product = ({ product, cartItems, addToCart }) => {
                                         </svg>
                                     )}
                                 </div>
-                                <span className="text-[12px] font-extrabold text-gray-800">{copied ? 'Copied!' : 'Copy Link'}</span>
+                                <span className="text-xs font-extrabold text-gray-800">{copied ? 'Copied!' : 'Copy Link'}</span>
                             </button>
                         </div>
 
@@ -668,11 +668,11 @@ const Product = ({ product, cartItems, addToCart }) => {
                                 type="text"
                                 readOnly
                                 value={typeof window !== 'undefined' ? window.location.href : ''}
-                                className="bg-transparent text-gray-600 text-[13px] font-bold outline-none flex-1 truncate"
+                                className="bg-transparent text-gray-600 text-xs font-bold outline-none flex-1 truncate"
                             />
                             <button
                                 onClick={() => handleShareClick('copy')}
-                                className={`px-4 py-2 rounded-[10px] font-black text-[12px] transition-all cursor-pointer shadow-xs ${copied
+                                className={`px-4 py-2 rounded-[10px] font-black text-xs transition-all cursor-pointer shadow-xs ${copied
                                     ? 'bg-green-600 text-white'
                                     : 'bg-[#F96E8F] hover:bg-[#E44971] text-white'
                                     }`}
@@ -701,10 +701,10 @@ const Product = ({ product, cartItems, addToCart }) => {
                         )}
                     </div>
                     <div className="flex-1 pr-2 text-left">
-                        <h4 className={`font-black ${wishlistToast.action === 'removed' ? 'text-gray-700' : 'text-[#F96E8F]'} text-[15px] font-['Nunito'] leading-tight`}>
+                        <h4 className={`font-black ${wishlistToast.action === 'removed' ? 'text-gray-700' : 'text-[#F96E8F]'} text-sm font-['Nunito'] leading-tight`}>
                             {wishlistToast.action === 'removed' ? 'Wishlist removed' : 'Wishlist added'}
                         </h4>
-                        <p className="text-gray-500 text-[12px] font-bold font-['Nunito'] line-clamp-1 mt-0.5">
+                        <p className="text-gray-500 text-xs font-bold font-['Nunito'] line-clamp-1 mt-0.5">
                             {wishlistToast.title || "Product"}
                         </p>
                     </div>
@@ -922,7 +922,7 @@ const ReviewsSection = () => {
 
     return (
         <div className="max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-6 md:p-10 lg:p-12 mt-4 mb-12">
-            <h2 className="text-[28px] md:text-[41px] font-black text-gray-800 mb-8 font-['Nunito']">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-800 mb-8 font-['Nunito']">
                 Reviews
             </h2>
             <div className="flex flex-col lg:flex-row gap-12">
@@ -953,11 +953,11 @@ const ReviewsSection = () => {
                     </div>
 
                     {/* Write Review Button */}
-                    <button onClick={handleWriteReviewClick} className="w-48 mx-auto mt-4 py-3 bg-[#F76188] text-white text-[24px] font-['Baloo_2'] font-bold rounded-[1rem] hover:bg-[#E44971] transition-colors shadow-md">
+                    <button onClick={handleWriteReviewClick} className="w-48 mx-auto mt-4 py-3 bg-[#F76188] text-white text-2xl font-['Baloo_2'] font-bold rounded-[1rem] hover:bg-[#E44971] transition-colors shadow-md">
                         Write a Review
                     </button>
 
-                    <h3 className="text-center font-bold font-['Baloo_2'] text-gray-800 mt-4 text-[20px]">Photos & Videos</h3>
+                    <h3 className="text-center font-bold font-['Baloo_2'] text-gray-800 mt-4 text-xl">Photos & Videos</h3>
 
                     {/* Grid */}
                     {reviews.filter(r => r.media).length > 0 ? (
@@ -984,7 +984,7 @@ const ReviewsSection = () => {
                             ))}
                         </div>
                     ) : (
-                        <p className="text-gray-400 text-[13px] text-center py-6 border-2 border-dashed border-gray-200 rounded-xl">No photos or videos uploaded yet</p>
+                        <p className="text-gray-400 text-xs text-center py-6 border-2 border-dashed border-gray-200 rounded-xl">No photos or videos uploaded yet</p>
                     )}
                 </div>
 
@@ -999,7 +999,7 @@ const ReviewsSection = () => {
                             <button
                                 key={filter}
                                 onClick={() => setFilterBy(filter)}
-                                className={`px-4 sm:px-6 py-2 rounded-[0.8rem] border-[1.5px] font-['Baloo_2'] font-bold text-[15px] sm:text-[17px] transition-colors whitespace-nowrap flex-shrink-0 cursor-pointer ${filterBy === filter ? 'bg-[#F76188] text-white border-[#F76188]' : 'bg-transparent border-gray-400 text-gray-700 hover:border-gray-800'}`}
+                                className={`px-4 sm:px-6 py-2 rounded-[0.8rem] border-[1.5px] font-['Baloo_2'] font-bold text-sm sm:text-base transition-colors whitespace-nowrap flex-shrink-0 cursor-pointer ${filterBy === filter ? 'bg-[#F76188] text-white border-[#F76188]' : 'bg-transparent border-gray-400 text-gray-700 hover:border-gray-800'}`}
                             >
                                 {filter}
                             </button>
@@ -1009,7 +1009,7 @@ const ReviewsSection = () => {
                     {/* Review List */}
                     <div className="flex flex-col mt-6">
                         {sortedReviews.length === 0 ? (
-                            <p className="text-gray-400 font-bold text-center py-12 text-[15px]">No reviews yet. Be the first to review!</p>
+                            <p className="text-gray-400 font-bold text-center py-12 text-sm">No reviews yet. Be the first to review!</p>
                         ) : (
                             sortedReviews.map((review) => (
                                 <div key={review.id} className="py-6 border-b border-gray-300 last:border-0 first:pt-0">
@@ -1024,9 +1024,9 @@ const ReviewsSection = () => {
                                         <div className="w-9 h-9 bg-[#F76188] rounded-lg flex items-center justify-center text-white">
                                             <img src={user} alt="user" className='w-5 h-6 object-contain' />
                                         </div>
-                                        <span className=" font-['Nunito'] text-gray-700 text-[18px]">{review.name}</span>
+                                        <span className=" font-['Nunito'] text-gray-700 text-lg">{review.name}</span>
                                     </div>
-                                    <p className="text-gray-600 font-['Nunito'] text-[18px] leading-relaxed mb-3">
+                                    <p className="text-gray-600 font-['Nunito'] text-lg leading-relaxed mb-3">
                                         {review.text}
                                     </p>
                                     {review.media && review.mediaType !== 'video' && !(typeof review.media === 'string' && review.media.startsWith('data:video')) && (
@@ -1062,7 +1062,7 @@ const ReviewsSection = () => {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                         </svg>
                                         <span className="text-gray-700 font-bold text-sm">Upload File</span>
-                                        <span className="text-gray-400 font-medium text-[11px]">Photo or Video</span>
+                                        <span className="text-gray-400 font-medium text-xs">Photo or Video</span>
                                     </div>
 
                                     {/* Capture Option */}
@@ -1074,7 +1074,7 @@ const ReviewsSection = () => {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
                                         <span className="text-gray-700 font-bold text-sm">Camera</span>
-                                        <span className="text-gray-400 font-medium text-[11px]">Take Photo / Video</span>
+                                        <span className="text-gray-400 font-medium text-xs">Take Photo / Video</span>
                                     </div>
                                 </div>
 
@@ -1128,7 +1128,7 @@ const ReviewsSection = () => {
                                         <button
                                             type="button"
                                             onClick={stopVideoRecording}
-                                            className="w-full py-3.5 bg-red-600 text-white font-black rounded-xl hover:bg-red-700 transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer text-[15px]"
+                                            className="w-full py-3.5 bg-red-600 text-white font-black rounded-xl hover:bg-red-700 transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer text-sm"
                                         >
                                             ⏹ Stop & Save Video
                                         </button>
@@ -1219,10 +1219,10 @@ const ReviewsSection = () => {
                         </svg>
                     </div>
                     <div className="flex-1 pr-2 text-left">
-                        <h4 className="font-black text-[#F96E8F] text-[15px] font-['Nunito'] leading-tight">
+                        <h4 className="font-black text-[#F96E8F] text-sm font-['Nunito'] leading-tight">
                             Review Submitted
                         </h4>
-                        <p className="text-gray-500 text-[12px] font-bold font-['Nunito'] mt-0.5">
+                        <p className="text-gray-500 text-xs font-bold font-['Nunito'] mt-0.5">
                             Thank you for your feedback!
                         </p>
                     </div>
@@ -1251,7 +1251,7 @@ const FAQSection = () => {
     return (
         <div className="max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-6 md:p-10 lg:p-12 mt-4 mb-12">
             <div className="flex justify-between items-center mb-6 px-2">
-                <h2 className="text-[24px] md:text-[28px] font-black text-[#2B2B2B] font-['Nunito']">
+                <h2 className="text-2xl md:text-3xl font-black text-[#2B2B2B] font-['Nunito']">
                     Frequently Asked Questions
                 </h2>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[#2B2B2B] cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1266,13 +1266,13 @@ const FAQSection = () => {
                             className="p-6 flex justify-between items-center cursor-pointer"
                             onClick={() => setOpenIndex(openIndex === index ? null : index)}
                         >
-                            <span className="font-bold text-gray-700 text-[16px]">{faq.q}</span>
+                            <span className="font-bold text-gray-700 text-base">{faq.q}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 text-gray-800 transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
                             </svg>
                         </div>
                         {openIndex === index && (
-                            <div className="px-6 pb-6 text-gray-600 text-[15px] font-medium border-t border-gray-100 pt-4">
+                            <div className="px-6 pb-6 text-gray-600 text-sm font-medium border-t border-gray-100 pt-4">
                                 {faq.a}
                             </div>
                         )}

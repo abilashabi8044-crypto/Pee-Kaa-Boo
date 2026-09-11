@@ -40,7 +40,7 @@ export default function CheckoutAddress({
         className={`rounded-[12px] border cursor-pointer overflow-hidden transition-all duration-200 ${isSelected ? 'border-[#F96E8F]' : 'border-gray-200'} bg-white flex flex-col`}
       >
         <div className={`flex justify-between items-center p-3 font-['Baloo_2'] font-bold ${isSelected ? 'bg-[#F96E8F] text-white' : 'bg-white text-gray-800 border-b border-gray-100'}`}>
-          <span className="text-[14px] font-extrabold">{addr.name}</span>
+          <span className="text-sm font-extrabold">{addr.name}</span>
           <div className="flex items-center gap-2">
             <button type="button" onClick={(e) => handleEditAddress(e, addr)} className={`hover:opacity-70 cursor-pointer ${isSelected ? 'text-white' : 'text-blue-500'}`} title="Edit">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
@@ -53,12 +53,12 @@ export default function CheckoutAddress({
             </svg>
           </div>
         </div>
-        <div className={`p-4 font-['Baloo_2'] text-[13px] text-gray-600 flex-1 relative`}>
+        <div className={`p-4 font-['Baloo_2'] text-xs text-gray-600 flex-1 relative`}>
           {isSelected && (
             <div className="absolute inset-0 border-[2px] border-dashed border-[#F96E8F] pointer-events-none" style={{ borderTop: 'none', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}></div>
           )}
           <div className="relative z-10 text-left">
-            <p className="font-extrabold text-[15px] text-gray-900 mb-1">{addr.username}</p>
+            <p className="font-extrabold text-sm text-gray-900 mb-1">{addr.username}</p>
             <p>{addr.line1}</p>
             <p>{addr.line2}</p>
             <p className="mt-1">Phone Number : {addr.phone}</p>
@@ -73,7 +73,7 @@ export default function CheckoutAddress({
     <>
       {/* Billing Addresses */}
       <div>
-        <h2 className="text-[20px] font-black text-gray-900 mb-4 tracking-wide text-left">
+        <h2 className="text-xl font-black text-gray-900 mb-4 tracking-wide text-left">
           Select Billing <span className="text-[#F96E8F]">Addresses</span>
         </h2>
         {addresses.length > 0 ? (
@@ -82,13 +82,13 @@ export default function CheckoutAddress({
           </div>
         ) : (
           <div className="bg-white rounded-[16px] p-6 border-2 border-dashed border-gray-200 text-center text-gray-500 font-bold">
-            <p className="text-[16px] text-gray-700 mb-1">No address added yet</p>
-            <p className="text-[13px] text-gray-400">Please click below to add your billing & delivery address.</p>
+            <p className="text-base text-gray-700 mb-1">No address added yet</p>
+            <p className="text-xs text-gray-400">Please click below to add your billing & delivery address.</p>
           </div>
         )}
         <div className="mt-4 flex justify-center">
           <button onClick={() => setShowAddressForm(true)} className="flex items-center justify-center gap-2 border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] font-bold py-2 px-12 rounded-[12px] hover:bg-[#FFF0F4] transition-colors w-full sm:w-[50%] cursor-pointer">
-            <span className="text-[24px] leading-none mb-1">+</span> Add New Address
+            <span className="text-2xl leading-none mb-1">+</span> Add New Address
           </button>
         </div>
       </div>
@@ -102,12 +102,12 @@ export default function CheckoutAddress({
             </svg>
           )}
         </div>
-        <span className="font-black text-[15px] text-gray-800">Use Shipping Address as Billing Address</span>
+        <span className="font-black text-sm text-gray-800">Use Shipping Address as Billing Address</span>
       </div>
 
       {/* Shipping Addresses */}
       <div className={`transition-opacity duration-300 ${sameAsBilling ? 'opacity-50 pointer-events-none hidden' : 'opacity-100 block'}`}>
-        <h2 className="text-[20px] font-black text-gray-900 mb-4 tracking-wide text-left">
+        <h2 className="text-xl font-black text-gray-900 mb-4 tracking-wide text-left">
           Select shipping <span className="text-[#F96E8F]">Addresses</span>
         </h2>
         {addresses.length > 0 ? (
@@ -116,13 +116,13 @@ export default function CheckoutAddress({
           </div>
         ) : (
           <div className="bg-white rounded-[16px] p-6 border-2 border-dashed border-gray-200 text-center text-gray-500 font-bold">
-            <p className="text-[16px] text-gray-700 mb-1">No address added yet</p>
-            <p className="text-[13px] text-gray-400">Please click below to add a shipping address.</p>
+            <p className="text-base text-gray-700 mb-1">No address added yet</p>
+            <p className="text-xs text-gray-400">Please click below to add a shipping address.</p>
           </div>
         )}
         <div className="mt-4 flex justify-center">
           <button onClick={() => setShowAddressForm(true)} className="flex items-center justify-center gap-2 border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] font-bold py-2 px-12 rounded-[12px] hover:bg-[#FFF0F4] transition-colors w-full sm:w-[50%] cursor-pointer">
-            <span className="text-[24px] leading-none mb-1">+</span> Add New Address
+            <span className="text-2xl leading-none mb-1">+</span> Add New Address
           </button>
         </div>
       </div>
@@ -131,8 +131,8 @@ export default function CheckoutAddress({
       <div className="bg-white rounded-[20px] p-6 shadow-sm mt-2 border border-gray-100 text-left">
         <div className="flex justify-between items-start gap-4 mb-2">
           <div className="flex-1 min-w-0">
-            <h3 className="font-black text-[16px] text-gray-900 font-['Baloo_2']">Want to make it special</h3>
-            <p className="text-gray-500 text-[11px] font-extrabold mt-1 leading-snug">
+            <h3 className="font-black text-base text-gray-900 font-['Baloo_2']">Want to make it special</h3>
+            <p className="text-gray-500 text-xs font-extrabold mt-1 leading-snug">
               Make your order extra special with our elegant gift wrapping and a personalized message perfect for any occasion. Because thoughtful details turn a simple purchase into a memorable gift.
             </p>
           </div>
@@ -147,7 +147,7 @@ export default function CheckoutAddress({
 
         {isGift && (
           <div className="mt-6 animate-fade-in">
-            <h4 className="font-black text-[15px] text-gray-900 mb-4 font-['Baloo_2']">Choose a Gift Wrap</h4>
+            <h4 className="font-black text-sm text-gray-900 mb-4 font-['Baloo_2']">Choose a Gift Wrap</h4>
             <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-4 pb-2 sm:pb-0 snap-x" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {giftWraps.map(wrap => (
                 <div
@@ -158,7 +158,7 @@ export default function CheckoutAddress({
                   <div className="h-[200px] w-full bg-gray-100">
                     <img src={wrap.image} alt={wrap.name} className="w-full h-full object-cover" />
                   </div>
-                  <div className="bg-[#F96E8F] text-white text-center py-2 font-bold text-[14px]">
+                  <div className="bg-[#F96E8F] text-white text-center py-2 font-bold text-sm">
                     {wrap.name}
                   </div>
                 </div>
@@ -166,12 +166,12 @@ export default function CheckoutAddress({
             </div>
 
             <div className="mt-8">
-              <h4 className="font-black text-[15px] text-gray-900 mb-2 font-['Baloo_2']">Add a Gift Message (optional)</h4>
+              <h4 className="font-black text-sm text-gray-900 mb-2 font-['Baloo_2']">Add a Gift Message (optional)</h4>
               <textarea
                 value={giftMessage}
                 onChange={(e) => setGiftMessage(e.target.value)}
                 placeholder="You can add a personal note With Your Gift"
-                className="w-full border border-gray-200 rounded-[12px] p-4 text-[13px] text-gray-700 outline-none focus:border-[#F96E8F] min-h-[100px] resize-none font-bold shadow-xs"
+                className="w-full border border-gray-200 rounded-[12px] p-4 text-xs text-gray-700 outline-none focus:border-[#F96E8F] min-h-[100px] resize-none font-bold shadow-xs"
               />
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function CheckoutAddress({
               setCheckoutStep('payment');
             }
           }}
-          className={`w-full font-extrabold py-4 rounded-[12px] text-[18px] transition-all tracking-wide shadow-md ${
+          className={`w-full font-extrabold py-4 rounded-[12px] text-lg transition-all tracking-wide shadow-md ${
             addresses.length > 0 && billingAddressId
               ? 'bg-[#F96E8F] text-white hover:bg-[#E44971] cursor-pointer active:scale-[0.99]'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
@@ -195,7 +195,7 @@ export default function CheckoutAddress({
           Deliver To this Address
         </button>
         {addresses.length === 0 && (
-          <p className="text-center text-[#F96E8F] font-bold text-[13px] mt-2.5">
+          <p className="text-center text-[#F96E8F] font-bold text-xs mt-2.5">
             * Please add an address to proceed with your order
           </p>
         )}

@@ -159,54 +159,54 @@ export default function Signup() {
                     {/* Mobile-Only Card Decorators */}
                     <img src={bunnyImg} alt="" className="block md:hidden absolute -top-[10vw] right-[2vw] w-[15vw] z-30 object-contain pointer-events-none" />
 
-                    <h1 className="text-white text-[32px] md:text-[40px] font-bold text-center mb-[15px] leading-none tracking-wide">Sign Up</h1>
+                    <h1 className="text-white text-3xl md:text-4xl font-bold text-center mb-[15px] leading-none tracking-wide">Sign Up</h1>
 
                     <div className="mb-[15px]">
-                        <label className="text-white text-[14px] font-bold mb-[5px] block">Full Name</label>
+                        <label className="text-white text-sm font-bold mb-[5px] block">Full Name</label>
                         <input
                             type="text"
                             value={fullName}
                             onChange={(e) => handleNameChange(e.target.value)}
                             placeholder="John Doe"
-                            className={`w-full h-[45px] rounded-[10px] px-[15px] text-[14px] text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${nameError ? 'border-[#FF5252]' : 'border-transparent'}`}
+                            className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${nameError ? 'border-[#FF5252]' : 'border-transparent'}`}
                         />
-                        {nameError && <p className="text-[#FF5252] text-[12.5px] font-bold mt-[4px]">{nameError}</p>}
+                        {nameError && <p className="text-[#FF5252] text-xs font-bold mt-[4px]">{nameError}</p>}
                     </div>
 
                     <div className="mb-[15px]">
-                        <label className="text-white text-[14px] font-bold mb-[5px] block">Email</label>
+                        <label className="text-white text-sm font-bold mb-[5px] block">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => handleEmailChange(e.target.value)}
                             placeholder="username@gmail.com"
-                            className={`w-full h-[45px] rounded-[10px] px-[15px] text-[14px] text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${emailError ? 'border-[#FF5252]' : 'border-transparent'}`}
+                            className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${emailError ? 'border-[#FF5252]' : 'border-transparent'}`}
                         />
-                        {emailError && <p className="text-[#FF5252] text-[12.5px] font-bold mt-[4px]">{emailError}</p>}
+                        {emailError && <p className="text-[#FF5252] text-xs font-bold mt-[4px]">{emailError}</p>}
                     </div>
 
                     <div className="mb-[20px]">
-                        <label className="text-white text-[14px] font-bold mb-[5px] block">Password</label>
+                        <label className="text-white text-sm font-bold mb-[5px] block">Password</label>
                         <div className="relative">
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => handlePasswordChange(e.target.value)}
                                 placeholder="Password"
-                                className={`w-full h-[45px] rounded-[10px] px-[15px] text-[14px] text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${passwordError ? 'border-[#FF5252]' : 'border-transparent'}`}
+                                className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${passwordError ? 'border-[#FF5252]' : 'border-transparent'}`}
                             />
                         </div>
-                        {passwordError && <p className="text-[#FF5252] text-[12.5px] font-bold mt-[4px]">{passwordError}</p>}
+                        {passwordError && <p className="text-[#FF5252] text-xs font-bold mt-[4px]">{passwordError}</p>}
                     </div>
 
                     <button
                         onClick={handleSignup}
-                        className="w-full h-[45px] bg-[#04BCC6] text-white text-[18px] font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md cursor-pointer mb-2"
+                        className="w-full h-[45px] bg-[#04BCC6] text-white text-lg font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md cursor-pointer mb-2"
                     >
                         Register
                     </button>
 
-                    <p className="text-white text-[12px] text-center mt-[15px] font-bold">
+                    <p className="text-white text-xs text-center mt-[15px] font-bold">
                         Already have an account? <a href="#" onClick={navigateToLogin} className="underline hover:text-gray-200">Sign In</a>
                     </p>
                 </div>

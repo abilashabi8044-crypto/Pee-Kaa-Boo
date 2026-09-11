@@ -106,7 +106,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
     return (
         <header className="w-full font-['Baloo_2'] relative z-40 bg-transparent">
             {/* Top Bar (Hidden on mobile < md) */}
-            <div className="hidden md:flex w-full bg-[#FFCD4E] text-gray-800 text-[13px] py-2 px-4 md:px-10 flex-col sm:flex-row justify-between items-center font-bold relative z-30">
+            <div className="hidden md:flex w-full bg-[#FFCD4E] text-gray-800 text-xs py-2 px-4 md:px-10 flex-col sm:flex-row justify-between items-center font-bold relative z-30">
                 <div className="md:ml-24 mb-1 sm:mb-0 text-center sm:text-left">Free Returns and Free Shipping</div>
                 <div className="flex items-center gap-4 sm:gap-6">
                     <div className="flex items-center gap-1.5">
@@ -176,12 +176,12 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                             }} className="relative text-gray-800 hover:text-[#F96E8F] transition-colors cursor-pointer p-0.5">
                                 <img src={action.icon} alt={action.name} className="w-5 h-5 sm:w-6 sm:h-6" />
                                 {action.name === 'cart' && activeCartCount > 0 && (
-                                    <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                                    <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                                         {activeCartCount}
                                     </div>
                                 )}
                                 {action.name === 'heart' && activeWishlistCount > 0 && (
-                                    <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-pulse">
+                                    <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-pulse">
                                         {activeWishlistCount}
                                     </div>
                                 )}
@@ -211,7 +211,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                         handleSelectSearchResult(mobileResults[0]);
                                     }
                                 }}
-                                className="flex-1 pl-6 pr-3 h-full outline-none text-[13px] text-gray-700 font-extrabold bg-transparent border-none placeholder-gray-400"
+                                className="flex-1 pl-6 pr-3 h-full outline-none text-xs text-gray-700 font-extrabold bg-transparent border-none placeholder-gray-400"
                             />
                             <button
                                 onClick={() => {
@@ -231,7 +231,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                             <div className="absolute top-[44px] left-0 right-0 bg-white rounded-2xl shadow-2xl border border-pink-200/80 p-2 z-50 max-h-[300px] overflow-y-auto font-['Nunito']">
                                 {mobileResults.length > 0 ? (
                                     <div className="flex flex-col gap-1">
-                                        <div className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider px-2 py-1">
+                                        <div className="text-xs font-extrabold text-gray-400 uppercase tracking-wider px-2 py-1">
                                             Found {mobileResults.length} {mobileResults.length === 1 ? 'Product' : 'Products'}
                                         </div>
                                         {mobileResults.map((item) => (
@@ -245,18 +245,18 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center justify-between gap-1">
-                                                        <h4 className="font-bold text-gray-800 text-[13px] truncate">
+                                                        <h4 className="font-bold text-gray-800 text-xs truncate">
                                                             {item.title}
                                                         </h4>
-                                                        <span className="font-black text-[#F96E8F] text-[13px]">
+                                                        <span className="font-black text-[#F96E8F] text-xs">
                                                             ₹{item.price}
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-2 mt-0.5">
-                                                        <span className="text-[10px] text-gray-500 font-bold">
+                                                        <span className="text-xs text-gray-500 font-bold">
                                                             {item.code || `64A288${item.id}`}
                                                         </span>
-                                                        <span className="text-[9px] bg-pink-100 text-[#F96E8F] font-extrabold px-1.5 py-0.5 rounded">
+                                                        <span className="text-xs bg-pink-100 text-[#F96E8F] font-extrabold px-1.5 py-0.5 rounded">
                                                             {item.category || item.productType}
                                                         </span>
                                                     </div>
@@ -265,7 +265,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="p-4 text-center text-gray-400 font-bold text-[12px]">
+                                    <div className="p-4 text-center text-gray-400 font-bold text-xs">
                                         No products found matching "{mobileSearchQuery}"
                                     </div>
                                 )}
@@ -277,7 +277,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                 {/* Desktop Nav + Search + Actions (Preserved on Desktop lg view) */}
                 <div className="hidden lg:flex items-center gap-4 lg:gap-14">
                     {/* Desktop Navigation Links */}
-                    <nav className="flex items-center gap-8 text-gray-800 font-extrabold text-[16px] tracking-wide">
+                    <nav className="flex items-center gap-8 text-gray-800 font-extrabold text-base tracking-wide">
                         {navData.map((item, index) => {
                             const path = `/${item.toLowerCase().replace(' ', '-')}`;
                             return (
@@ -319,7 +319,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                             handleSelectSearchResult(desktopResults[0]);
                                         }
                                     }}
-                                    className="flex-1 pl-6 pr-3 h-full outline-none text-[13px] text-gray-700 font-extrabold bg-transparent border-none placeholder-gray-400"
+                                    className="flex-1 pl-6 pr-3 h-full outline-none text-xs text-gray-700 font-extrabold bg-transparent border-none placeholder-gray-400"
                                 />
                                 <button
                                     onClick={() => {
@@ -339,7 +339,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                 <div className="absolute top-[46px] left-0 w-[320px] bg-white rounded-2xl shadow-2xl border border-pink-200/80 p-2.5 z-50 max-h-[360px] overflow-y-auto font-['Nunito']">
                                     {desktopResults.length > 0 ? (
                                         <div className="flex flex-col gap-1">
-                                            <div className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider px-2 py-1">
+                                            <div className="text-xs font-extrabold text-gray-400 uppercase tracking-wider px-2 py-1">
                                                 Found {desktopResults.length} {desktopResults.length === 1 ? 'Product' : 'Products'}
                                             </div>
                                             {desktopResults.map((item) => (
@@ -353,18 +353,18 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center justify-between gap-1">
-                                                            <h4 className="font-bold text-gray-800 text-[14px] truncate group-hover:text-[#F96E8F] transition-colors">
+                                                            <h4 className="font-bold text-gray-800 text-sm truncate group-hover:text-[#F96E8F] transition-colors">
                                                                 {item.title}
                                                             </h4>
-                                                            <span className="font-black text-[#F96E8F] text-[14px]">
+                                                            <span className="font-black text-[#F96E8F] text-sm">
                                                                 ₹{item.price}
                                                             </span>
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-0.5">
-                                                            <span className="text-[11px] text-gray-500 font-bold">
+                                                            <span className="text-xs text-gray-500 font-bold">
                                                                 {item.code || `64A288${item.id}`}
                                                             </span>
-                                                            <span className="text-[10px] bg-pink-100 text-[#F96E8F] font-extrabold px-1.5 py-0.5 rounded">
+                                                            <span className="text-xs bg-pink-100 text-[#F96E8F] font-extrabold px-1.5 py-0.5 rounded">
                                                                 {item.category || item.productType}
                                                             </span>
                                                         </div>
@@ -378,7 +378,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="p-4 text-center text-gray-400 font-bold text-[13px]">
+                                        <div className="p-4 text-center text-gray-400 font-bold text-xs">
                                             No products found matching "{searchQuery}"
                                         </div>
                                     )}
@@ -408,12 +408,12 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                 }} className="relative text-gray-800 hover:text-[#F96E8F] transition-colors cursor-pointer p-0.5">
                                     <img src={action.icon} alt={action.name} className="w-5 h-5 sm:w-6 sm:h-6" />
                                     {action.name === 'cart' && activeCartCount > 0 && (
-                                        <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                                        <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                                             {activeCartCount}
                                         </div>
                                     )}
                                     {action.name === 'heart' && activeWishlistCount > 0 && (
-                                        <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-pulse">
+                                        <div className="absolute -top-2 -right-2 bg-[#F96E8F] text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-pulse">
                                             {activeWishlistCount}
                                         </div>
                                     )}
@@ -446,7 +446,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                             </svg>
                         </button>
                     </div>
-                    <nav className="flex flex-col gap-1 font-extrabold text-[16px] text-gray-800 py-1">
+                    <nav className="flex flex-col gap-1 font-extrabold text-base text-gray-800 py-1">
                         {navData.map((item, index) => {
                             const path = `/${item.toLowerCase().replace(' ', '-')}`;
                             return (

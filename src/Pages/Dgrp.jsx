@@ -13,23 +13,23 @@ export default function Dgrp({ cartItems = [] }) {
 
             <main className="flex-grow max-w-[1000px] mx-auto px-6 py-12 md:py-16">
                 <div className="bg-white rounded-[24px] p-8 md:p-12 shadow-sm border border-gray-200 font-['Baloo_2']">
-                    <h1 className="text-[32px] md:text-[42px] font-black text-gray-900 mb-2 leading-none text-center">
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2 leading-none text-center">
                         DOUBLE GOLD RATE <span className="text-[#F96E8F]">PROTECTION (DGRP)</span>
                     </h1>
-                    <p className="text-gray-400 font-extrabold text-[14px] text-center mb-10 tracking-wide font-['Nunito']">
+                    <p className="text-gray-400 font-extrabold text-sm text-center mb-10 tracking-wide font-['Nunito']">
                         Protect your gold purchase from price fluctuations. Always pay the lowest rate!
                     </p>
 
-                    <div className="text-gray-700 font-['Nunito'] text-[15px] leading-relaxed space-y-8">
+                    <div className="text-gray-700 font-['Nunito'] text-sm leading-relaxed space-y-8">
                         <div>
-                            <p className="text-[17px] font-bold text-gray-900 mb-4 text-center">
+                            <p className="text-base font-bold text-gray-900 mb-4 text-center">
                                 At Pee-kaa-boo, we believe that buying gold should be a joyous occasion, not a stressful gamble on market prices. With our Double Gold Rate Protection (DGRP) plan, you can book your favourite jewellery today and stay protected from tomorrow's price hikes.
                             </p>
                         </div>
 
                         {/* Section 1 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 What is Double Gold Rate Protection?
                             </h3>
                             <p className="mb-3">
@@ -43,7 +43,7 @@ export default function Dgrp({ cartItems = [] }) {
 
                         {/* Section 2 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 How It Works
                             </h3>
                             
@@ -67,7 +67,7 @@ export default function Dgrp({ cartItems = [] }) {
 
                         {/* Section 3 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 Key Benefits
                             </h3>
                             <ul className="list-disc pl-5 space-y-2 font-semibold text-gray-600">
@@ -80,7 +80,7 @@ export default function Dgrp({ cartItems = [] }) {
 
                         {/* Section 4 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 Terms and Conditions
                             </h3>
                             <ul className="list-disc pl-5 space-y-2 font-semibold text-gray-600">

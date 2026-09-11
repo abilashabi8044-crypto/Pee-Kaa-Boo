@@ -86,10 +86,10 @@ export default function Faq({ cartItems = [] }) {
 
             <main className="flex-grow max-w-[900px] mx-auto px-6 py-12 md:py-16 w-full">
                 <div className="bg-white rounded-[24px] p-6 md:p-12 shadow-sm border border-gray-200 font-['Baloo_2']">
-                    <h1 className="text-[32px] md:text-[42px] font-black text-gray-900 mb-2 leading-none text-center">
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2 leading-none text-center">
                         FREQUENTLY ASKED <span className="text-[#F96E8F]">QUESTIONS</span>
                     </h1>
-                    <p className="text-gray-400 font-extrabold text-[14px] text-center mb-10 tracking-wide font-['Nunito']">
+                    <p className="text-gray-400 font-extrabold text-sm text-center mb-10 tracking-wide font-['Nunito']">
                         Find answers to common questions about our products and services.
                     </p>
 
@@ -103,7 +103,7 @@ export default function Faq({ cartItems = [] }) {
                                 >
                                     <button
                                         onClick={() => toggleFaq(index)}
-                                        className="w-full flex justify-between items-center text-left p-5 font-black text-[16px] text-gray-800 transition-colors duration-200 outline-none"
+                                        className="w-full flex justify-between items-center text-left p-5 font-black text-base text-gray-800 transition-colors duration-200 outline-none"
                                     >
                                         <span>{faq.q}</span>
                                         <svg 
@@ -122,7 +122,7 @@ export default function Faq({ cartItems = [] }) {
                                             isOpen ? 'max-h-[500px] opacity-100 border-t border-gray-100/50' : 'max-h-0 opacity-0'
                                         }`}
                                     >
-                                        <p className="p-5 text-gray-650 text-[14px] leading-relaxed font-semibold bg-white">
+                                        <p className="p-5 text-gray-650 text-sm leading-relaxed font-semibold bg-white">
                                             {faq.a}
                                         </p>
                                     </div>

@@ -13,23 +13,23 @@ export default function Termsandconditions({ cartItems = [] }) {
 
             <main className="flex-grow max-w-[1000px] mx-auto px-6 py-12 md:py-16">
                 <div className="bg-white rounded-[24px] p-8 md:p-12 shadow-sm border border-gray-200">
-                    <h1 className="text-[32px] md:text-[42px] font-black text-gray-900 mb-2 leading-none text-center">
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2 leading-none text-center">
                         TERMS & <span className="text-[#F96E8F]">CONDITIONS</span>
                     </h1>
-                    <p className="text-gray-400 font-extrabold text-[14px] text-center mb-10 tracking-wide font-['Nunito']">
+                    <p className="text-gray-400 font-extrabold text-sm text-center mb-10 tracking-wide font-['Nunito']">
                         Read our terms of service and usage policies carefully.
                     </p>
 
-                    <div className="text-gray-700 font-['Nunito'] text-[15px] leading-relaxed space-y-8">
+                    <div className="text-gray-700 font-['Nunito'] text-sm leading-relaxed space-y-8">
                         <div>
-                            <h2 className="text-[20px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h2 className="text-xl font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 PEE KAA BOO – TERMS & CONDITIONS
                             </h2>
                         </div>
 
                         {/* Section 1 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 1. Introduction
                             </h3>
                             <p className="mb-3">
@@ -45,7 +45,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 2 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 2. Eligibility
                             </h3>
                             <p className="mb-3">By using this website you confirm that:</p>
@@ -61,7 +61,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 3 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 3. Product Information
                             </h3>
                             <p className="mb-3">
@@ -74,7 +74,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 4 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 4. Pricing Policy
                             </h3>
                             <ul className="list-disc pl-5 space-y-1">
@@ -87,7 +87,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 5 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 5. Order Acceptance & Cancellation
                             </h3>
                             <p className="mb-3">Pee-kaa-boo reserves the right to:</p>
@@ -100,7 +100,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 6 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 6. Payment
                             </h3>
                             <p className="mb-3">We accept secure payments through authorized payment gateways. By completing a purchase you confirm:</p>
@@ -115,7 +115,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 7 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 7. Shipping & Delivery
                             </h3>
                             <p className="mb-3">Pee-kaa-boo ships across India and selected international locations.</p>
@@ -129,7 +129,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 8 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 8. Returns & Exchanges
                             </h3>
                             <p className="mb-3">
@@ -148,7 +148,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 9 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 9. Warranty
                             </h3>
                             <p>
@@ -158,7 +158,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 10 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 10. Intellectual Property
                             </h3>
                             <p>
@@ -168,7 +168,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 11 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 11. Limitation of Liability
                             </h3>
                             <p>
@@ -178,7 +178,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 12 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 12. Fraud Prevention
                             </h3>
                             <p>
@@ -188,7 +188,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 13 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 13. Privacy
                             </h3>
                             <p>
@@ -198,7 +198,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 14 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 14. Force Majeure
                             </h3>
                             <p>
@@ -208,7 +208,7 @@ export default function Termsandconditions({ cartItems = [] }) {
 
                         {/* Section 15 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 15. Governing Law
                             </h3>
                             <p>

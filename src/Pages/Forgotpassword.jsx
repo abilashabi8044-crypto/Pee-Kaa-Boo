@@ -82,41 +82,41 @@ export default function Forgotpassword() {
             <div className={`w-full max-w-[450px] bg-white/10 backdrop-blur-md rounded-[20px] md:rounded-[30px] border ${borderColors[bgIndex]} p-[20px] md:p-[30px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] relative z-20`}>
                 {!isSubmitted ? (
                     <form onSubmit={handleSubmit}>
-                        <h1 className="text-white text-[32px] md:text-[40px] font-bold text-center mb-[15px] leading-none tracking-wide">Forgot Password</h1>
-                        <p className="text-white text-[14px] text-center mb-[20px] font-medium leading-relaxed">
+                        <h1 className="text-white text-3xl md:text-4xl font-bold text-center mb-[15px] leading-none tracking-wide">Forgot Password</h1>
+                        <p className="text-white text-sm text-center mb-[20px] font-medium leading-relaxed">
                             Enter your email address and we'll send you a link to reset your password.
                         </p>
 
                         <div className="mb-[20px]">
-                            <label className="text-white text-[14px] font-bold mb-[5px] block">Email Address</label>
+                            <label className="text-white text-sm font-bold mb-[5px] block">Email Address</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => handleEmailChange(e.target.value)}
                                 placeholder="username@gmail.com"
-                                className={`w-full h-[45px] rounded-[10px] px-[15px] text-[14px] text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${emailError ? 'border-[#FF5252]' : 'border-transparent'}`}
+                                className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${emailError ? 'border-[#FF5252]' : 'border-transparent'}`}
                             />
-                            {emailError && <p className="text-[#FF5252] text-[12.5px] font-bold mt-[4px]">{emailError}</p>}
+                            {emailError && <p className="text-[#FF5252] text-xs font-bold mt-[4px]">{emailError}</p>}
                         </div>
 
                         <button 
                             type="submit"
-                            className="w-full h-[45px] bg-[#04BCC6] text-white text-[18px] font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md cursor-pointer mb-[15px]"
+                            className="w-full h-[45px] bg-[#04BCC6] text-white text-lg font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md cursor-pointer mb-[15px]"
                         >
                             Send Reset Link
                         </button>
                     </form>
                 ) : (
                     <div className="text-center">
-                        <h1 className="text-white text-[32px] md:text-[40px] font-bold text-center mb-[15px] leading-none tracking-wide">Check Your Email</h1>
-                        <p className="text-white text-[14px] text-center mb-[25px] font-medium leading-relaxed">
+                        <h1 className="text-white text-3xl md:text-4xl font-bold text-center mb-[15px] leading-none tracking-wide">Check Your Email</h1>
+                        <p className="text-white text-sm text-center mb-[25px] font-medium leading-relaxed">
                             We have sent a password reset link to <strong className="text-yellow-200">{email}</strong>. Please check your inbox and follow the instructions.
                         </p>
                     </div>
                 )}
 
                 <div className="text-center">
-                    <a href="#" onClick={handleBackToLogin} className="text-white text-[14px] font-bold hover:underline">
+                    <a href="#" onClick={handleBackToLogin} className="text-white text-sm font-bold hover:underline">
                         Back to Login
                     </a>
                 </div>

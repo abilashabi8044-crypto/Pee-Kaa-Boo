@@ -74,8 +74,8 @@ export default function CheckoutPayment({
           )}
         </div>
         <div className="flex-1">
-          <h4 className="font-black text-[22px] text-gray-900 font-['Baloo_2']">{title}</h4>
-          <p className="font-extrabold text-[11px] text-gray-400 mt-1 leading-none">{subtitle}</p>
+          <h4 className="font-black text-xl text-gray-900 font-['Baloo_2']">{title}</h4>
+          <p className="font-extrabold text-xs text-gray-400 mt-1 leading-none">{subtitle}</p>
         </div>
         <div className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors ${isSelected ? 'border-[#F96E8F]' : 'border-gray-300'}`}>
           {isSelected && <div className="w-2.5 h-2.5 bg-[#F96E8F] rounded-full"></div>}
@@ -98,7 +98,7 @@ export default function CheckoutPayment({
 
   return (
     <div className="animate-fade-in font-['Baloo_2']">
-      <h2 className="text-[28px] font-black text-gray-900 mb-8 tracking-wide text-left">
+      <h2 className="text-3xl font-black text-gray-900 mb-8 tracking-wide text-left">
         Select <span className="text-[#F96E8F]">Payment Method</span>
       </h2>
 
@@ -113,7 +113,7 @@ export default function CheckoutPayment({
 
         <PaymentOption
           id="cod"
-          icon={<span className="text-[24px]">💰</span>}
+          icon={<span className="text-2xl">💰</span>}
           title="Cash On Delivery"
           subtitle="Payment will be made on delivery by cash"
         />
@@ -122,7 +122,7 @@ export default function CheckoutPayment({
       <div className="hidden lg:flex mt-10 justify-end">
         <button
           onClick={handlePayClick}
-          className="bg-[#F96E8F] text-white font-black py-3 px-12 rounded-[10px] text-[21px] hover:bg-[#E44971] transition-colors shadow-md cursor-pointer"
+          className="bg-[#F96E8F] text-white font-black py-3 px-12 rounded-[10px] text-xl hover:bg-[#E44971] transition-colors shadow-md cursor-pointer"
         >
           {selectedPayment === 'online' ? 'Pay Now' : 'Place Order'}
         </button>
@@ -140,7 +140,7 @@ export default function CheckoutPayment({
 
             <div className="text-center mb-8">
               <h3 className="text-2xl font-black text-gray-800">Select & Pay via your bank</h3>
-              <p className="text-gray-400 font-bold text-[14px]">Payment will be completed on your bank's website</p>
+              <p className="text-gray-400 font-bold text-sm">Payment will be completed on your bank's website</p>
             </div>
 
             <div className="flex flex-wrap justify-center gap-4 px-10">
@@ -158,7 +158,7 @@ export default function CheckoutPayment({
 
             <div className="flex items-center my-6 max-w-lg mx-auto">
               <hr className="flex-1 border-gray-400" />
-              <span className="mx-4 font-black text-gray-800 text-[16px]">Or</span>
+              <span className="mx-4 font-black text-gray-800 text-base">Or</span>
               <hr className="flex-1 border-gray-400" />
             </div>
 
@@ -226,7 +226,7 @@ export default function CheckoutPayment({
                       handleCompletePayment();
                     }
                   }}
-                  className={`w-[260px] text-white font-extrabold py-3.5 rounded-[12px] text-[18px] shadow-sm transition-colors ${selectedBankId ? 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer' : 'bg-pink-300 cursor-not-allowed'}`}
+                  className={`w-[260px] text-white font-extrabold py-3.5 rounded-[12px] text-lg shadow-sm transition-colors ${selectedBankId ? 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer' : 'bg-pink-300 cursor-not-allowed'}`}
                   disabled={!selectedBankId}
                 >
                   Submit Details
@@ -248,13 +248,13 @@ export default function CheckoutPayment({
             </button>
 
             <div className="text-center mb-6">
-              <h3 className="text-[24px] font-['Nunito'] text-gray-800">Add New Card</h3>
-              <p className="text-gray-400 font-['Nunito'] text-[14px]">Save & Pay via Cards</p>
+              <h3 className="text-2xl font-['Nunito'] text-gray-800">Add New Card</h3>
+              <p className="text-gray-400 font-['Nunito'] text-sm">Save & Pay via Cards</p>
             </div>
 
             {/* We Accept badges */}
             <div className="flex items-center gap-3 mb-6">
-              <span className="font-['Nunito'] text-gray-800 text-[18px]">We Accept :</span>
+              <span className="font-['Nunito'] text-gray-800 text-lg">We Accept :</span>
               <div className="flex items-center gap-2">
                 <img src={visa} alt="visa" className='w-[23px] h-[10px] object-contain'/>
                 <img src={mastercard} alt="mastercard" className='w-[23px] h-[10px] object-contain'/>
@@ -264,7 +264,7 @@ export default function CheckoutPayment({
 
             {/* Card Holders Name */}
             <div className="mb-5 text-left">
-              <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">Card Holders Name</label>
+              <label className="block text-gray-800 font-['Nunito'] text-sm mb-2">Card Holders Name</label>
               <input
                 type="text"
                 value={cardHolderName}
@@ -276,7 +276,7 @@ export default function CheckoutPayment({
 
             {/* Card Number */}
             <div className="mb-5 text-left">
-              <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">Card Number</label>
+              <label className="block text-gray-800 font-['Nunito'] text-sm mb-2">Card Number</label>
               <input
                 type="text"
                 value={cardNumber}
@@ -294,7 +294,7 @@ export default function CheckoutPayment({
             {/* Expiry + CVV Row */}
             <div className="flex gap-4 mb-6 text-left">
               <div className="flex-1">
-                <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">Expiry Details</label>
+                <label className="block text-gray-800 font-['Nunito'] text-sm mb-2">Expiry Details</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -315,7 +315,7 @@ export default function CheckoutPayment({
                 </div>
               </div>
               <div>
-                <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">CVV</label>
+                <label className="block text-gray-800 font-['Nunito'] text-sm mb-2">CVV</label>
                 <input
                   type="password"
                   value={cardCVV}
@@ -339,7 +339,7 @@ export default function CheckoutPayment({
                   <img src={check} alt="checkmark" className='w-[10px] h-[10px] object-contain'/>
                 )}
               </div>
-              <span className="font-['Nunito'] text-gray-700 text-[14px]">Save Card With RBI Guidelines</span>
+              <span className="font-['Nunito'] text-gray-700 text-sm">Save Card With RBI Guidelines</span>
             </div>
 
             {/* Submit Button */}
@@ -351,7 +351,7 @@ export default function CheckoutPayment({
                     handleCompletePayment();
                   }
                 }}
-                className={`w-[280px] text-white font-extrabold py-3.5 rounded-full text-[18px] shadow-md transition-colors ${
+                className={`w-[280px] text-white font-extrabold py-3.5 rounded-full text-lg shadow-md transition-colors ${
                   cardHolderName && cardNumber.replace(/\s/g, '').length >= 15 && cardExpiryMM && cardExpiryYYYY.length === 4 && cardCVV.length >= 3
                     ? 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
                     : 'bg-pink-300 cursor-not-allowed'
@@ -376,13 +376,13 @@ export default function CheckoutPayment({
             </button>
 
             <div className="text-center mb-8">
-              <h3 className="text-[24px] font-['Nunito'] text-gray-800">Select & Pay via UPI payment</h3>
-              <p className="text-gray-400 font-['Nunito'] text-[14px]">Pay via your Preffered UPI method</p>
+              <h3 className="text-2xl font-['Nunito'] text-gray-800">Select & Pay via UPI payment</h3>
+              <p className="text-gray-400 font-['Nunito'] text-sm">Pay via your Preffered UPI method</p>
             </div>
 
             {/* UPI ID Input */}
             <div className="mb-6 text-left">
-              <label className="block text-gray-800 font-['Nunito'] text-[14px] mb-2">UPI ID</label>
+              <label className="block text-gray-800 font-['Nunito'] text-sm mb-2">UPI ID</label>
               <div className="flex items-stretch h-12">
                 <input
                   type="text"
@@ -392,7 +392,7 @@ export default function CheckoutPayment({
                   className="flex-1 border border-gray-200 border-r-0 rounded-l-[10px] px-4 py-3 font-bold text-gray-700 text-sm outline-none focus:border-[#F96E8F] transition-colors"
                 />
                 <button
-                  className="px-6 border border-gray-200 border-l-0 rounded-r-[10px] text-gray-500 font-['Nunito'] font-bold text-[14px] hover:text-[#F96E8F] transition-colors cursor-pointer bg-white"
+                  className="px-6 border border-gray-200 border-l-0 rounded-r-[10px] text-gray-500 font-['Nunito'] font-bold text-sm hover:text-[#F96E8F] transition-colors cursor-pointer bg-white"
                 >
                   Verify
                 </button>
@@ -402,7 +402,7 @@ export default function CheckoutPayment({
             {/* Or Divider */}
             <div className="flex items-center my-6 max-w-lg mx-auto">
               <hr className="flex-1 border-gray-300" />
-              <span className="mx-4 font-black text-gray-800 text-[16px]">Or</span>
+              <span className="mx-4 font-black text-gray-800 text-base">Or</span>
               <hr className="flex-1 border-gray-300" />
             </div>
 
@@ -433,7 +433,7 @@ export default function CheckoutPayment({
                   }`}
                 >
                   <img src={app.logo} alt={app.name} className="h-12 w-12 object-contain mb-2" />
-                  <span className="font-bold text-gray-700 text-[12px] font-['Nunito']">{app.name}</span>
+                  <span className="font-bold text-gray-700 text-xs font-['Nunito']">{app.name}</span>
                 </div>
               ))}
             </div>
@@ -447,7 +447,7 @@ export default function CheckoutPayment({
                     handleCompletePayment();
                   }
                 }}
-                className={`w-[280px] text-white font-[Nunito] font-bold py-3.5 rounded-[18px] text-[18px] shadow-md transition-colors ${
+                className={`w-[280px] text-white font-[Nunito] font-bold py-3.5 rounded-[18px] text-lg shadow-md transition-colors ${
                   upiId || selectedUpiApp
                     ? 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
                     : 'bg-pink-300 cursor-not-allowed'

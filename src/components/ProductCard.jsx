@@ -53,7 +53,7 @@ const ProductCard = ({
                         <img src={spark1} alt="spark" className="h-3" />
                         <img src={badge} alt="badge" className="h-3" />
                         <img src={spark2} alt="spark" className="h-3" />
-                        <span className="text-[12px] font-semibold tracking-wide">Best Selling</span>
+                        <span className="text-xs font-semibold tracking-wide">Best Selling</span>
                     </div>
                 </div>
 
@@ -72,15 +72,15 @@ const ProductCard = ({
 
                 {/* Overlaid details content area */}
                 <div className="absolute bottom-0 inset-x-0 bg-white m-[6px] md:m-[10px] rounded-[10px] p-2 md:p-3 text-center z-10 transition-all duration-300 shadow-sm">
-                    <div className={`text-gray-400 font-medium mb-1 ${isHomepage ? 'text-[13px]' : 'text-[13px]'} md:text-[11px]`}>
+                    <div className={`text-gray-400 font-medium mb-1 ${isHomepage ? 'text-xs' : 'text-xs'} md:text-xs`}>
                         {category || "Category"}
                     </div>
 
-                    <h4 className={`text-[#333] font-['Nunito'] font-bold leading-tight mb-1 md:mb-1.5 tracking-wide md:group-hover:text-[16px] md:group-hover:mb-2 transition-all duration-300 ${isHomepage ? 'text-[24px]' : 'text-[10px]'} md:text-[18px]`}>{title}</h4>
+                    <h4 className={`text-[#333] font-['Nunito'] font-bold leading-tight mb-1 md:mb-1.5 tracking-wide md:group-hover:text-base md:group-hover:mb-2 transition-all duration-300 ${isHomepage ? 'text-2xl' : 'text-xs'} md:text-lg`}>{title}</h4>
 
                     <div className="flex justify-center items-center gap-1 md:gap-2 mb-0 md:group-hover:mb-3 transition-all duration-300">
-                        <span className={`text-gray-400 font-['Nunito'] font-medium line-through ${isHomepage ? 'text-[19px]' : 'text-[9px]'} md:text-[14px]`}>₹ {oldPrice}</span>
-                        <span className={`text-[#F76188] font-['Nunito'] font-bold md:group-hover:text-[20px] transition-all ${isHomepage ? 'text-[32px]' : 'text-[13px]'} md:text-[22px]`}>₹ {price}</span>
+                        <span className={`text-gray-400 font-['Nunito'] font-medium line-through ${isHomepage ? 'text-lg' : 'text-xs'} md:text-sm`}>₹ {oldPrice}</span>
+                        <span className={`text-[#F76188] font-['Nunito'] font-bold md:group-hover:text-xl transition-all ${isHomepage ? 'text-3xl' : 'text-xs'} md:text-xl`}>₹ {price}</span>
                     </div>
 
                     <div className="h-0 opacity-0 group-hover:h-[36px] group-hover:opacity-100 transition-all duration-300 overflow-hidden w-full">
@@ -91,7 +91,7 @@ const ProductCard = ({
                                 setIsAdded(true);
                                 setTimeout(() => setIsAdded(false), 2000);
                             }}
-                            className={`w-full h-[36px] border-[2px] rounded-full font-semibold text-[14px] transition-all duration-300 flex items-center justify-center tracking-wide ${isAdded
+                            className={`w-full h-[36px] border-[2px] rounded-full font-semibold text-sm transition-all duration-300 flex items-center justify-center tracking-wide ${isAdded
                                 ? 'bg-[#F96E8F] text-white border-solid border-[#F96E8F] scale-95'
                                 : 'border-dashed border-[#F96E8F] text-[#F96E8F] hover:bg-[#F96E8F] hover:text-white hover:border-solid active:scale-95'
                                 }`}
@@ -129,9 +129,9 @@ const ProductCard = ({
             </div>
 
             <div className="flex flex-col flex-1 gap-1">
-                <h4 className="text-[#F87597] font-['Nunito'] font-semibold text-[15px] md:text-[16px] tracking-wide">{title}</h4>
+                <h4 className="text-[#F87597] font-['Nunito'] font-semibold text-sm md:text-base tracking-wide">{title}</h4>
                 <div className="flex items-center">
-                    <span className="text-[#F87597] font-['Nunito'] font-extrabold text-[16px] md:text-[18px]">₹{price}</span>
+                    <span className="text-[#F87597] font-['Nunito'] font-extrabold text-base md:text-lg">₹{price}</span>
                 </div>
             </div>
 
@@ -163,7 +163,7 @@ const ProductCard = ({
                         onClick={() => {
                             if (onAddToCart) onAddToCart();
                         }}
-                        className="px-4 md:px-6 py-2 rounded-[4px] font-bold text-[12px] md:text-[13px] bg-[#F87597] text-white hover:opacity-90 active:scale-95 transition-all duration-300 flex items-center justify-center uppercase cursor-pointer"
+                        className="px-4 md:px-6 py-2 rounded-[4px] font-bold text-xs md:text-xs bg-[#F87597] text-white hover:opacity-90 active:scale-95 transition-all duration-300 flex items-center justify-center uppercase cursor-pointer"
                     >
                         Add to Cart
                     </button>

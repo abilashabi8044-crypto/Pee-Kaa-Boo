@@ -34,7 +34,7 @@ const FilterSection = ({ title, options = [], selectedOptions = [], onChange }) 
             >
                 <div className="flex items-center gap-3">
                     <div className="w-[14px] h-[26px] bg-[#F96E8F]  absolute -left-6 shadow-md shadow-[#F96E8F]/30 rounded-r-[2px]"></div>
-                    <span className="text-[16px] font-black tracking-wide">{title}</span>
+                    <span className="text-base font-black tracking-wide">{title}</span>
                 </div>
                 <svg className={`w-5 h-5 transform transition-transform text-[#F96E8F] ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
@@ -50,7 +50,7 @@ const FilterSection = ({ title, options = [], selectedOptions = [], onChange }) 
                                 onChange={(e) => onChange && onChange(title, opt, e.target.checked)}
                                 className="w-4 h-4 rounded border-gray-300 text-[#F96E8F] focus:ring-[#F96E8F] accent-[#F96E8F]"
                             />
-                            <span className="text-gray-600 text-[13px] font-bold group-hover:text-[#F96E8F] transition-colors">{opt}</span>
+                            <span className="text-gray-600 text-xs font-bold group-hover:text-[#F96E8F] transition-colors">{opt}</span>
                         </label>
                     ))}
                 </div>
@@ -287,10 +287,10 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 }}
             >
                 <div className="text-center mt-6 lg:mt-6">
-                    <h1 className="text-[36px] sm:text-[40px] md:text-[50px] font-black text-gray-900 leading-tight tracking-wide">
+                    <h1 className="text-4xl sm:text-4xl md:text-5xl font-black text-gray-900 leading-tight tracking-wide">
                         {headingParts.first} <span className="text-[#F96E8F]">{headingParts.second}</span>
                     </h1>
-                    <p className="text-[20px] sm:text-[14px] text-gray-800 font-extrabold mt-0 tracking-wide">
+                    <p className="text-xl sm:text-sm text-gray-800 font-extrabold mt-0 tracking-wide">
                         <span
                             className="cursor-pointer hover:text-[#F96E8F] transition-colors"
                             onClick={() => {
@@ -310,7 +310,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
             <div className="bg-white relative z-20">
                 {/* Collections by Age */}
                 <div className="w-full max-w-[1440px] mx-auto px-6 pt-8 md:pt-12 pb-2 md:pb-4 text-center">
-                    <h2 className="text-[24px] md:text-[43px] font-black text-gray-900 mb-6 md:mb-10">
+                    <h2 className="text-2xl md:text-5xl font-black text-gray-900 mb-6 md:mb-10">
                         Explore Collections by <span className="text-[#F96E8F]">Age</span>
                     </h2>
 
@@ -329,7 +329,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                     className="flex flex-col items-center gap-2 md:gap-3 cursor-pointer group flex-shrink-0"
                                 >
                                     <img src={item.image} alt={item.label} className="h-[70px] sm:h-[80px] md:h-[90px] object-contain mb-1 transition-transform group-hover:scale-105" />
-                                    <span className={`inline-block font-black text-[13px] sm:text-[16px] md:text-[22px] px-4 sm:px-6 md:px-8 py-2 sm:py-2 md:py-2.5 bg-no-repeat bg-center bg-contain whitespace-nowrap transition-colors ${isSelected ? 'text-[#F96E8F]' : 'text-gray-900'}`} style={{ backgroundImage: `url('${item.bgVector}')` }}>
+                                    <span className={`inline-block font-black text-xs sm:text-base md:text-xl px-4 sm:px-6 md:px-8 py-2 sm:py-2 md:py-2.5 bg-no-repeat bg-center bg-contain whitespace-nowrap transition-colors ${isSelected ? 'text-[#F96E8F]' : 'text-gray-900'}`} style={{ backgroundImage: `url('${item.bgVector}')` }}>
                                         {item.label}
                                     </span>
                                 </div>
@@ -350,7 +350,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                 className={`${selectedCategory === tag
                                     ? "bg-[#F96E8F] text-white shadow-sm hover:bg-[#E44971]"
                                     : "border border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
-                                    } px-4 py-1.5 md:px-6 md:py-2.5 rounded-[16px] text-[11px] md:text-[16px] font-extrabold transition-colors whitespace-nowrap`}
+                                    } px-4 py-1.5 md:px-6 md:py-2.5 rounded-[16px] text-xs md:text-base font-extrabold transition-colors whitespace-nowrap`}
                             >
                                 {tag}
                             </button>
@@ -364,10 +364,10 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             {/* Filter Section */}
                             <div className="flex flex-col gap-4">
                                 <div className="bg-[#F96E8F] text-white px-5 py-4 rounded-[8px] font-black flex justify-between items-center shadow-sm">
-                                    <span className="text-[18px] font-[Nunito] tracking-wide">Filters</span>
+                                    <span className="text-lg font-[Nunito] tracking-wide">Filters</span>
                                     <span
                                         onClick={applyFilters}
-                                        className="text-[11px] font-[Nunito] font-extrabold uppercase tracking-wider bg-white/20 hover:bg-white/30 px-3 py-1 rounded-[6px] cursor-pointer transition-colors"
+                                        className="text-xs font-[Nunito] font-extrabold uppercase tracking-wider bg-white/20 hover:bg-white/30 px-3 py-1 rounded-[6px] cursor-pointer transition-colors"
                                     >
                                         Apply
                                     </span>
@@ -392,7 +392,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                         setTempFilters(cleared);
                                         setResetToast(true);
                                     }}
-                                    className="w-full bg-[#F96E8F] text-white font-extrabold py-3.5 rounded-[8px] hover:bg-[#E44971] transition-colors shadow-sm text-[14px]">
+                                    className="w-full bg-[#F96E8F] text-white font-extrabold py-3.5 rounded-[8px] hover:bg-[#E44971] transition-colors shadow-sm text-sm">
                                     RESET ALL FILTER
                                 </button>
                             </div>
@@ -403,13 +403,13 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                             {/* Top Sort Bar */}
                             <div className="flex justify-between items-center mb-3 md:mb-6 border border-gray-200 bg-white rounded-[8px] py-1.5 md:py-2 pl-3 md:pl-6 pr-1.5 md:pr-2 shadow-sm">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="text-gray-900 font-extrabold text-[11px] md:text-[15px]">Showing {sortedItems.filter(i => i.type === 'product').length} Results</span>
+                                    <span className="text-gray-900 font-extrabold text-xs md:text-sm">Showing {sortedItems.filter(i => i.type === 'product').length} Results</span>
                                     {selectedAge && (
                                         <span className="inline-flex items-center gap-1.5 bg-[#F96E8F]/15 text-[#F96E8F] border border-[#F96E8F]/30 px-3 py-1 rounded-full font-black text-xs">
                                             Age: {selectedAge}
                                             <button
                                                 onClick={() => setSelectedAge(null)}
-                                                className="hover:bg-[#F96E8F]/20 w-4 h-4 rounded-full flex items-center justify-center text-[10px] cursor-pointer transition-colors"
+                                                className="hover:bg-[#F96E8F]/20 w-4 h-4 rounded-full flex items-center justify-center text-xs cursor-pointer transition-colors"
                                             >
                                                 ✕
                                             </button>
@@ -434,7 +434,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                     <div className="relative hidden lg:block">
                                         <button
                                             onClick={() => setSortOpen(!sortOpen)}
-                                            className="bg-[#F96E8F] text-white px-3 md:px-5 h-8 md:h-10 rounded-[6px] font-bold text-[11px] md:text-[14px] flex items-center gap-1 md:gap-2 hover:bg-[#E44971] transition-colors shadow-sm"
+                                            className="bg-[#F96E8F] text-white px-3 md:px-5 h-8 md:h-10 rounded-[6px] font-bold text-xs md:text-sm flex items-center gap-1 md:gap-2 hover:bg-[#E44971] transition-colors shadow-sm"
                                         >
                                             {sortBy === 'default' ? 'Sort By' :
                                                 sortBy === 'price-low-high' ? 'Price: Low to High' :
@@ -458,7 +458,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                                     <div
                                                         key={option.id}
                                                         onClick={() => { setSortBy(option.id); setSortOpen(false); }}
-                                                        className={`px-4 py-2.5 text-[13px] font-bold cursor-pointer transition-colors ${sortBy === option.id ? 'bg-gray-50 text-[#F96E8F]' : 'text-gray-700 hover:bg-gray-50 hover:text-[#F96E8F]'}`}
+                                                        className={`px-4 py-2.5 text-xs font-bold cursor-pointer transition-colors ${sortBy === option.id ? 'bg-gray-50 text-[#F96E8F]' : 'text-gray-700 hover:bg-gray-50 hover:text-[#F96E8F]'}`}
                                                     >
                                                         {option.label}
                                                     </div>
@@ -514,9 +514,9 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                             <div key={index} className={`col-span-2 md:col-span-2 rounded-[12px] md:rounded-[20px] overflow-hidden relative shadow-sm border-[2px] md:border-[3px] ${borderClass} ${bgClass} group cursor-pointer h-[220px] sm:h-[280px] md:h-auto`}>
                                                 <img src={item.bannerImage} alt={item.title} className="w-[45%] h-full object-cover absolute right-0 inset-y-0" />
                                                 <div className="relative z-10 px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8 h-full flex flex-col justify-center max-w-[55%]">
-                                                    <h3 className="text-[24px] sm:text-[34px] md:text-[52.5px] whitespace-nowrap w-full font-black text-gray-900 leading-tight md:leading-none mb-1 font-['Lobster_Two'] tracking-tight">{item.title}</h3>
-                                                    <p className="text-gray-900 font-['Nunito'] font-bold text-[12px] sm:text-[16px] md:text-[22.5px] mb-3 md:mb-6">{item.subtitle}</p>
-                                                    <button className="bg-white text-[#F96E8F] border-[2px] border-dashed border-[#F96E8F] px-4 md:px-8 py-1.5 md:py-2.5 rounded-full font-black w-fit shadow-sm hover:shadow-md transition-shadow uppercase tracking-wide text-[10px] md:text-[13px]">View Shop</button>
+                                                    <h3 className="text-2xl sm:text-4xl md:text-5xl whitespace-nowrap w-full font-black text-gray-900 leading-tight md:leading-none mb-1 font-['Lobster_Two'] tracking-tight">{item.title}</h3>
+                                                    <p className="text-gray-900 font-['Nunito'] font-bold text-xs sm:text-base md:text-2xl mb-3 md:mb-6">{item.subtitle}</p>
+                                                    <button className="bg-white text-[#F96E8F] border-[2px] border-dashed border-[#F96E8F] px-4 md:px-8 py-1.5 md:py-2.5 rounded-full font-black w-fit shadow-sm hover:shadow-md transition-shadow uppercase tracking-wide text-xs md:text-xs">View Shop</button>
                                                 </div>
                                             </div>
                                         );
@@ -542,7 +542,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                                             <button
                                                 key={pageNum}
                                                 onClick={() => setCurrentPage(pageNum)}
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-[15px] shadow-sm transition-colors ${currentPage === pageNum ? 'bg-[#F96E8F] text-white' : 'border-[1.5px] border-gray-300 text-gray-600 bg-white hover:bg-gray-50'}`}
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm shadow-sm transition-colors ${currentPage === pageNum ? 'bg-[#F96E8F] text-white' : 'border-[1.5px] border-gray-300 text-gray-600 bg-white hover:bg-gray-50'}`}
                                             >
                                                 {pageNum}
                                             </button>
@@ -576,10 +576,10 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         )}
                     </div>
                     <div className="flex-1 pr-2">
-                        <h4 className={`font-black ${wishlistToast.action === 'removed' ? 'text-gray-700' : 'text-[#F96E8F]'} text-[15px] font-['Nunito'] leading-tight`}>
+                        <h4 className={`font-black ${wishlistToast.action === 'removed' ? 'text-gray-700' : 'text-[#F96E8F]'} text-sm font-['Nunito'] leading-tight`}>
                             {wishlistToast.action === 'removed' ? 'Wishlist removed' : 'Wishlist added'}
                         </h4>
-                        <p className="text-gray-500 text-[12px] font-bold font-['Nunito'] line-clamp-1 mt-0.5">
+                        <p className="text-gray-500 text-xs font-bold font-['Nunito'] line-clamp-1 mt-0.5">
                             {wishlistToast.title || "Product"}
                         </p>
                     </div>
@@ -609,7 +609,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         </div>
                     )}
                     <div className="flex flex-col text-left">
-                        <span className="text-[#F87597] text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+                        <span className="text-[#F87597] text-sm font-black uppercase tracking-wider font-['Baloo_2']">
                             {cartToast.type === 'removed' ? 'Item Removed' : 'Cart Updated'}
                         </span>
                         <span className="text-gray-500 text-xs font-semibold">
@@ -636,7 +636,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         </svg>
                     </div>
                     <div className="flex flex-col text-left">
-                        <span className="text-[#F87597] text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+                        <span className="text-[#F87597] text-sm font-black uppercase tracking-wider font-['Baloo_2']">
                             Filters Applied
                         </span>
                         <span className="text-gray-500 text-xs font-semibold">
@@ -663,7 +663,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         </svg>
                     </div>
                     <div className="flex flex-col text-left">
-                        <span className="text-yellow-600 text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+                        <span className="text-yellow-600 text-sm font-black uppercase tracking-wider font-['Baloo_2']">
                             No Filters Selected
                         </span>
                         <span className="text-gray-500 text-xs font-semibold">
@@ -690,7 +690,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         </svg>
                     </div>
                     <div className="flex flex-col text-left">
-                        <span className="text-[#F87597] text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+                        <span className="text-[#F87597] text-sm font-black uppercase tracking-wider font-['Baloo_2']">
                             Filters Reset
                         </span>
                         <span className="text-gray-500 text-xs font-semibold">
@@ -716,7 +716,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         setTempFilters(filters);
                         setMobileFilterOpen(true);
                     }}
-                    className="flex-1 bg-[#F96E8F] hover:bg-[#E44971] font-[Helvetica] text-white py-2.5 px-4 rounded-[10px] font-bold text-[15px] flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                    className="flex-1 bg-[#F96E8F] hover:bg-[#E44971] font-[Helvetica] text-white py-2.5 px-4 rounded-[10px] font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
                 >
                     <img src={filter} alt="filter" className="w-5" />
                     <span>Filter By</span>
@@ -730,7 +730,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 {/* Sort By Button */}
                 <button
                     onClick={() => setMobileSortOpen(true)}
-                    className="flex-1 bg-white hover:bg-pink-50/40 border-[1.5px] border-[#F96E8F] font-[Helvetica] text-[#F96E8F] py-2.5 px-4 rounded-[10px] font-bold text-[15px] flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                    className="flex-1 bg-white hover:bg-pink-50/40 border-[1.5px] border-[#F96E8F] font-[Helvetica] text-[#F96E8F] py-2.5 px-4 rounded-[10px] font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
                 >
                     <img src={sort} alt="sort" className="w-5" />
                     <span>Sort By</span>
@@ -750,7 +750,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                         {/* Header */}
                         <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white">
                             <div className="flex items-center gap-2">
-                                <span className="text-gray-900 font-extrabold text-[18px]">Filters</span>
+                                <span className="text-gray-900 font-extrabold text-lg">Filters</span>
                                 {activeFilterCount > 0 && (
                                     <span className="bg-[#F96E8F] text-white text-xs px-2.5 py-0.5 rounded-full font-bold">
                                         {activeFilterCount} active
@@ -815,7 +815,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-2">
-                            <span className="text-gray-900 font-extrabold text-[18px]">Sort By</span>
+                            <span className="text-gray-900 font-extrabold text-lg">Sort By</span>
                             <button
                                 onClick={() => setMobileSortOpen(false)}
                                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 font-bold transition-colors cursor-pointer"

@@ -61,7 +61,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
     return (
         <section className="w-full mt-8 sm:mt-12 mb-8">
             <div className="w-[calc(100%-2rem)] max-w-[1200px] bg-[#F4FCFF] rounded-[2rem] mx-auto p-4 pb-4 sm:p-6 sm:pb-6 md:p-8 md:pb-6 shadow-xs border border-blue-50">
-                <h2 className="text-[28px] md:text-[36px] font-bold text-gray-800 mb-8 font-['Baloo_2']">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 font-['Baloo_2']">
                     You May <span className="text-[#F96E8F]">Also Like</span>
                 </h2>
 
@@ -92,7 +92,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                                             <path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
                                             <path d="m8.21 13.89-3 4.1c-.26.36-.02.85.43.85h3.6l1.26 3.16c.16.4.74.4 1 0L12.76 18.84h3.6c.45 0 .69-.49.43-.85l-3-4.1" />
                                         </svg>
-                                        <span className="text-[12px] font-extrabold tracking-wide">Best Selling</span>
+                                        <span className="text-xs font-extrabold tracking-wide">Best Selling</span>
                                     </div>
                                 </div>
 
@@ -123,19 +123,19 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
 
                                 {/* Overlaid details content area */}
                                 <div className="absolute bottom-2 inset-x-0 mx-[3%] sm:mx-[4%] bg-white rounded-[10px] py-1.5 px-2 sm:py-2.5 sm:px-4 text-center z-10 transition-all duration-300 shadow-xs">
-                                    <span className="text-gray-400 text-[11px] font-[Nunito] uppercase mb-1">
+                                    <span className="text-gray-400 text-xs font-[Nunito] uppercase mb-1">
                                         {item.category || 'Category'}
                                     </span>
 
-                                    <h4 className="text-gray-900 font-bold text-[18px] sm:text-[20px] leading-tight mb-1 tracking-wide font-['Nunito'] group-hover:text-[#F96E8F] transition-colors truncate">
+                                    <h4 className="text-gray-900 font-bold text-lg sm:text-xl leading-tight mb-1 tracking-wide font-['Nunito'] group-hover:text-[#F96E8F] transition-colors truncate">
                                         {item.title}
                                     </h4>
 
                                     <div className="flex justify-center items-center gap-2">
                                         {item.oldPrice && (
-                                            <del className="text-gray-400 font-bold text-[16px] font-[Nunito]">₹ {item.oldPrice}</del>
+                                            <del className="text-gray-400 font-bold text-base font-[Nunito]">₹ {item.oldPrice}</del>
                                         )}
-                                        <span className="text-[#F96E8F] font-bold text-[24px] sm:text-[27px] font-['Nunito']">₹ {item.price}</span>
+                                        <span className="text-[#F96E8F] font-bold text-2xl sm:text-2xl font-['Nunito']">₹ {item.price}</span>
                                     </div>
 
                                     {/* Expandable Content (Add to Cart) */}

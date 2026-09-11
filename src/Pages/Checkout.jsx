@@ -318,7 +318,7 @@ return (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[100] flex items-center justify-center p-4">
             <div className="bg-white rounded-[24px] p-6 sm:p-7 w-full max-w-md shadow-2xl font-['Baloo_2'] border border-gray-100">
               <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
-                <h3 className="text-[20px] font-black text-gray-900">{editingAddressId ? 'Edit Address' : 'Add New Address'}</h3>
+                <h3 className="text-xl font-black text-gray-900">{editingAddressId ? 'Edit Address' : 'Add New Address'}</h3>
                 <button
                   onClick={closeAddressModal}
                   className="w-8 h-8 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center font-bold text-base cursor-pointer transition-colors"
@@ -330,7 +330,7 @@ return (
               <form onSubmit={handleAddAddress} className="flex flex-col gap-4" noValidate>
                 {/* Address Label Styled Select */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[14px] font-black text-gray-800">Address Label <span className="text-[#F96E8F]">*</span></label>
+                  <label className="text-sm font-black text-gray-800">Address Label <span className="text-[#F96E8F]">*</span></label>
                   <div className="relative">
                     <select
                       value={newAddress.name}
@@ -339,7 +339,7 @@ return (
                         setNewAddress({ ...newAddress, name: val, type: val.toUpperCase() });
                         if (addressErrors.name) setAddressErrors(prev => ({ ...prev, name: '' }));
                       }}
-                      className={`w-full appearance-none bg-white border ${addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-[14px] ${newAddress.name ? 'text-gray-900' : 'text-gray-400'} outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
+                      className={`w-full appearance-none bg-white border ${addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-sm ${newAddress.name ? 'text-gray-900' : 'text-gray-400'} outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
                     >
                       <option value="" disabled className="text-gray-400">Select Address Label</option>
                       <option value="Home" className="text-gray-800 font-bold py-2">🏠 Home (Residence)</option>
@@ -352,12 +352,12 @@ return (
                       </svg>
                     </div>
                   </div>
-                  {addressErrors.name && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.name}</span>}
+                  {addressErrors.name && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.name}</span>}
                 </div>
 
                 {/* Full Name */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[14px] font-black text-gray-800">Full Name <span className="text-[#F96E8F]">*</span></label>
+                  <label className="text-sm font-black text-gray-800">Full Name <span className="text-[#F96E8F]">*</span></label>
                   <input
                     type="text"
                     placeholder="Enter recipient's full name"
@@ -366,14 +366,14 @@ return (
                       setNewAddress({ ...newAddress, username: e.target.value });
                       if (addressErrors.username) setAddressErrors(prev => ({ ...prev, username: '' }));
                     }}
-                    className={`w-full border ${addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border ${addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
-                  {addressErrors.username && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.username}</span>}
+                  {addressErrors.username && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.username}</span>}
                 </div>
 
                 {/* Address Line 1 */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[14px] font-black text-gray-800">Address Line 1 <span className="text-[#F96E8F]">*</span></label>
+                  <label className="text-sm font-black text-gray-800">Address Line 1 <span className="text-[#F96E8F]">*</span></label>
                   <input
                     type="text"
                     placeholder="House/Flat No., Building Name, Street"
@@ -382,14 +382,14 @@ return (
                       setNewAddress({ ...newAddress, line1: e.target.value });
                       if (addressErrors.line1) setAddressErrors(prev => ({ ...prev, line1: '' }));
                     }}
-                    className={`w-full border ${addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border ${addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
-                  {addressErrors.line1 && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line1}</span>}
+                  {addressErrors.line1 && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line1}</span>}
                 </div>
 
                 {/* City, State, Pincode */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[14px] font-black text-gray-800">City, State & Pincode <span className="text-[#F96E8F]">*</span></label>
+                  <label className="text-sm font-black text-gray-800">City, State & Pincode <span className="text-[#F96E8F]">*</span></label>
                   <input
                     type="text"
                     placeholder="e.g. Chennai, Tamil Nadu - 600001"
@@ -398,14 +398,14 @@ return (
                       setNewAddress({ ...newAddress, line2: e.target.value });
                       if (addressErrors.line2) setAddressErrors(prev => ({ ...prev, line2: '' }));
                     }}
-                    className={`w-full border ${addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border ${addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
-                  {addressErrors.line2 && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line2}</span>}
+                  {addressErrors.line2 && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line2}</span>}
                 </div>
 
                 {/* Phone Number */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[14px] font-black text-gray-800">Mobile Number <span className="text-[#F96E8F]">*</span></label>
+                  <label className="text-sm font-black text-gray-800">Mobile Number <span className="text-[#F96E8F]">*</span></label>
                   <input
                     type="text"
                     placeholder="10-digit mobile number"
@@ -414,9 +414,9 @@ return (
                       setNewAddress({ ...newAddress, phone: e.target.value.replace(/\D/g, '').slice(0, 10) });
                       if (addressErrors.phone) setAddressErrors(prev => ({ ...prev, phone: '' }));
                     }}
-                    className={`w-full border ${addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border ${addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
-                  {addressErrors.phone && <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.phone}</span>}
+                  {addressErrors.phone && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.phone}</span>}
                 </div>
 
                 <div className="flex gap-4 mt-3">
@@ -440,7 +440,7 @@ return (
         )}
         {/* Hero Section */}
         <div className="w-full text-center mb-10">
-          <h1 className="text-[40px] md:text-[72px] font-black text-gray-900 tracking-wide">
+          <h1 className="text-4xl md:text-7xl font-black text-gray-900 tracking-wide">
             Checkout
           </h1>
         </div>
@@ -501,21 +501,21 @@ return (
                         )}
                       </div>
                       <div className="flex-1 flex flex-col justify-center min-w-0">
-                        <h3 className="font-[Baloo_2] font-bold text-[16px] sm:text-[24px] text-gray-900 mb-1 leading-tight truncate" title={item.title}>
+                        <h3 className="font-[Baloo_2] font-bold text-base sm:text-2xl text-gray-900 mb-1 leading-tight truncate" title={item.title}>
                           {item.title}
                         </h3>
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-gray-500 font-extrabold text-[14px]">
+                          <span className="text-gray-500 font-extrabold text-sm">
                             Product Code: {item.code || (item.id ? `PKB-${item.id}` : 'PKB-101')}
                           </span>
                         </div>
                         <div className="flex items-center gap-3">
                           {itemOldPrice > itemPrice && (
-                            <del className="text-gray-400 font-['Baloo_2']  text-[14px]">
+                            <del className="text-gray-400 font-['Baloo_2']  text-sm">
                               ₹ {itemOldPrice * itemQty}
                             </del>
                           )}
-                          <span className="text-[#F96E8F] font-bold font-['Baloo_2']  text-[24px]">
+                          <span className="text-[#F96E8F] font-bold font-['Baloo_2']  text-2xl">
                             ₹ {itemPrice * itemQty}
                           </span>
                         </div>
@@ -542,7 +542,7 @@ return (
                 <div className="w-10 h-10 rounded-full bg-[#FFFFFF] text-white flex items-center justify-center font-black shadow-sm">
                   <img src={discount} alt="" className={`h-[30px] w-[30px] ${cartItems.length === 0 ? 'grayscale opacity-60' : ''}`} />
                 </div>
-                <span className={`font-black text-[21px] tracking-wide ${cartItems.length === 0 ? 'text-gray-400' : 'text-[#F96E8F]'}`}>
+                <span className={`font-black text-xl tracking-wide ${cartItems.length === 0 ? 'text-gray-400' : 'text-[#F96E8F]'}`}>
                   Apply Coupon
                 </span>
               </div>
@@ -558,7 +558,7 @@ return (
                   }
                 }}
                 disabled={cartItems.length === 0}
-                className={`font-black text-[16px] px-6 cursor-pointer ${cartItems.length === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#F96E8F] hover:underline'}`}
+                className={`font-black text-base px-6 cursor-pointer ${cartItems.length === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#F96E8F] hover:underline'}`}
               >
                 {appliedCoupon ? 'Remove' : 'Apply'}
               </button>
@@ -571,8 +571,8 @@ return (
                   <img src={discount} alt="" className={`h-[20px] w-[20px] ${cartItems.length === 0 ? 'grayscale opacity-60' : ''}`} />
                 </div>
                 <div>
-                  <h4 className={`font-black text-gray-900 text-[13px] uppercase ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-900'}`}>FLAT ₹1000</h4>
-                  <p className={`font-bold text-[12px] ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-600'}`}>Flat 1000 off on Preset jewellery</p>
+                  <h4 className={`font-black text-gray-900 text-xs uppercase ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-900'}`}>FLAT ₹1000</h4>
+                  <p className={`font-bold text-xs ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-600'}`}>Flat 1000 off on Preset jewellery</p>
                 </div>
               </div>
               <button
@@ -588,7 +588,7 @@ return (
                   }
                 }}
                 disabled={cartItems.length === 0}
-                className={`font-extrabold text-[12px] px-4 cursor-pointer ${cartItems.length === 0 ? 'text-gray-300 cursor-not-allowed' : (appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'text-green-600 font-black' : 'text-gray-400 hover:underline')}`}
+                className={`font-extrabold text-xs px-4 cursor-pointer ${cartItems.length === 0 ? 'text-gray-300 cursor-not-allowed' : (appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'text-green-600 font-black' : 'text-gray-400 hover:underline')}`}
               >
                 {appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'Applied ✓' : 'Apply'}
               </button>
@@ -598,7 +598,7 @@ return (
             {showCouponInput && (
               <div className="border-2 border-dashed border-[#F96E8F] bg-[#FFF5F7] rounded-xl p-4 flex flex-col gap-3 shadow-sm transition-all duration-300">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[16px] text-gray-800 font-['Baloo_2']">Enter Coupon Code</span>
+                  <span className="font-bold text-base text-gray-800 font-['Baloo_2']">Enter Coupon Code</span>
                   <button
                     onClick={() => { setShowCouponInput(false); setCouponError(''); }}
                     className="text-gray-400 hover:text-gray-600 font-bold text-sm cursor-pointer"
@@ -638,7 +638,7 @@ return (
                       setAppliedCouponCode(couponCode.trim().toUpperCase());
                       setShowCouponInput(false);
                     }}
-                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-['Nunito'] text-[12px] px-5 py-2 rounded-lg font-bold transition-colors cursor-pointer"
+                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-['Nunito'] text-xs px-5 py-2 rounded-lg font-bold transition-colors cursor-pointer"
                   >
                     Apply
                   </button>
@@ -673,7 +673,7 @@ return (
                 setShowCouponInput(!showCouponInput);
               }}
               disabled={cartItems.length === 0}
-              className={`w-full font-medium py-3 rounded-b-xl text-[12px] font-[Nunito] transition-colors shadow-xs flex items-center justify-center gap-2 ${
+              className={`w-full font-medium py-3 rounded-b-xl text-xs font-[Nunito] transition-colors shadow-xs flex items-center justify-center gap-2 ${
                 cartItems.length === 0
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60 border border-gray-200 border-t-0'
                   : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer'
@@ -687,13 +687,13 @@ return (
               <div className="flex justify-between items-center text-sm font-extrabold text-gray-900">
                 <div className="flex items-center gap-3">
                   <img src={location} alt="" className='h-[24px] w-[24px]' />
-                  <span className="text-[15px] font-[Baloo_2]">
+                  <span className="text-sm font-[Baloo_2]">
                     {pincode && pincodeLocation ? `Deliver to ${pincodeLocation.area}, ${pincodeLocation.district}` : 'Check Delivery Availability'}
                   </span>
                 </div>
                 <button
                   onClick={() => setIsChangingPincode(!isChangingPincode)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer font-bold text-[15px] font-[Baloo_2]"
+                  className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer font-bold text-sm font-[Baloo_2]"
                 >
                   {pincode ? 'Change Pincode' : 'Enter Pincode'}
                 </button>
@@ -735,23 +735,23 @@ return (
 
               {/* Pincode API Result */}
               {pincodeStatus === 'loading' && (
-                <div className="text-blue-500 font-bold text-[13px] mt-3 flex items-center gap-2">
+                <div className="text-blue-500 font-bold text-xs mt-3 flex items-center gap-2">
                   <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                   Checking delivery availability...
                 </div>
               )}
               {pincodeStatus === 'available' && pincodeLocation && (
-                <div className="text-green-600 font-bold text-[13px] mt-3">
+                <div className="text-green-600 font-bold text-xs mt-3">
                   ✓ Delivery available to {pincodeLocation.area}, {pincodeLocation.district}, {pincodeLocation.state}
                 </div>
               )}
               {pincodeStatus === 'unavailable' && pincodeLocation && (
-                <div className="text-red-500 font-bold text-[13px] mt-3">
+                <div className="text-red-500 font-bold text-xs mt-3">
                   ✕ Delivery not available to {pincodeLocation.state}. We deliver to Tamil Nadu, Andhra Pradesh, Kerala & Karnataka.
                 </div>
               )}
               {pincodeStatus === 'error' && (
-                <div className="text-red-500 font-bold text-[13px] mt-3">
+                <div className="text-red-500 font-bold text-xs mt-3">
                   ✕ Invalid pincode. Please enter a valid 6-digit pincode.
                 </div>
               )}
@@ -761,34 +761,34 @@ return (
               className="hidden lg:flex rounded-xl p-6 bg-white shadow-xs flex-col gap-4 mt-2"
               style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100%25\' height=\'100%25\' fill=\'none\' rx=\'12\' ry=\'12\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'14%2c 14\' stroke-dashoffset=\'0\' stroke-linecap=\'square\'/%3e%3c/svg%3e")' }}
             >
-              <div className="flex justify-between items-center text-[17px] font-black text-gray-800">
+              <div className="flex justify-between items-center text-base font-black text-gray-800">
                 <span>Item Total ({cartItems.reduce((acc, i) => acc + (i.quantity || 1), 0)} items)</span>
                 <span className="font-black">₹{displayItemTotal}</span>
               </div>
               {displaySaved > 0 && (
-                <div className="flex justify-between items-center text-[17px] font-black text-green-600">
+                <div className="flex justify-between items-center text-base font-black text-green-600">
                   <span>You Saved</span>
                   <span className="font-black">-₹{displaySaved}</span>
                 </div>
               )}
               {appliedCoupon && couponDiscount > 0 && (
-                <div className="flex justify-between items-center text-[17px] font-black text-[#F96E8F]">
+                <div className="flex justify-between items-center text-base font-black text-[#F96E8F]">
                   <span>Coupon Discount (FLAT 1000)</span>
                   <span className="font-black">-₹{couponDiscount}</span>
                 </div>
               )}
               {isGift && selectedGiftWrap && (
-                <div className="flex justify-between items-center text-[17px] font-black text-gray-800">
+                <div className="flex justify-between items-center text-base font-black text-gray-800">
                   <span>Gift Wrap ({giftWraps.find(w => w.id === selectedGiftWrap)?.name || 'Custom'})</span>
                   <span className="font-black">₹{giftWrapFee}</span>
                 </div>
               )}
-              <div className="flex justify-between items-center text-[17px] font-black text-gray-800">
+              <div className="flex justify-between items-center text-base font-black text-gray-800">
                 <span>Shipping (standard)</span>
                 <span className="font-black uppercase text-green-600">FREE</span>
               </div>
               <div className="border-t-2 border-gray-300 my-1"></div>
-              <div className="flex justify-between items-center text-[17px] font-black text-gray-900">
+              <div className="flex justify-between items-center text-base font-black text-gray-900">
                 <span>Bill Total</span>
                 <span className="font-black text-[#F96E8F]">₹{displayBillTotal}</span>
               </div>
@@ -810,12 +810,12 @@ return (
               </div>
 
               {/* Title */}
-              <h2 className="text-[28px] sm:text-[36px] font-black text-gray-900 mb-2 sm:mb-3">
+              <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-2 sm:mb-3">
                 Thank you!
               </h2>
 
               {/* Description */}
-              <p className="text-gray-500  font-['Nunito'] text-[14px] sm:text-[16px] max-w-[420px] mx-auto mb-8 sm:mb-10 leading-relaxed">
+              <p className="text-gray-500  font-['Nunito'] text-sm sm:text-base max-w-[420px] mx-auto mb-8 sm:mb-10 leading-relaxed">
                 Your order has been confirmed &amp; it is on the way. Check your email for the details
               </p>
 
@@ -827,7 +827,7 @@ return (
                     window.history.pushState({}, '', '/');
                     window.dispatchEvent(new Event('popstate'));
                   }}
-                  className="w-full sm:w-auto min-w-[190px] bg-[#F96E8F] hover:bg-[#E44971] text-white font-black text-[16px] sm:text-[17px] py-3.5 px-8 rounded-full transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer"
+                  className="w-full sm:w-auto min-w-[190px] bg-[#F96E8F] hover:bg-[#E44971] text-white font-black text-base sm:text-base py-3.5 px-8 rounded-full transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   Go to Homepage
                 </button>
@@ -837,7 +837,7 @@ return (
                     window.history.pushState({}, '', '/order-details');
                     window.dispatchEvent(new Event('popstate'));
                   }}
-                  className="w-full sm:w-auto min-w-[190px] bg-white border-2 border-[#F96E8F] text-[#F96E8F] hover:bg-[#FFF0F4] font-black text-[16px] sm:text-[17px] py-3.5 px-8 rounded-full transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  className="w-full sm:w-auto min-w-[190px] bg-white border-2 border-[#F96E8F] text-[#F96E8F] hover:bg-[#FFF0F4] font-black text-base sm:text-base py-3.5 px-8 rounded-full transition-all hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   Check Order Details
                 </button>
@@ -851,16 +851,16 @@ return (
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100 py-3 px-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3">
         {/* Left: Prices & Info Icon */}
         <div className="flex flex-col justify-center">
-          <del className="text-gray-400 font-bold text-[13px] leading-tight">
+          <del className="text-gray-400 font-bold text-xs leading-tight">
             ₹ {displayItemTotal}
           </del>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[#F96E8F] font-black text-[22px] leading-none font-['Nunito']">
+            <span className="text-[#F96E8F] font-black text-xl leading-none font-['Nunito']">
               ₹ {displayBillTotal}
             </span>
             <button
               onClick={() => setShowOrderSummaryModal(!showOrderSummaryModal)}
-              className={`w-4.5 h-4.5 rounded-full text-white text-[10px] font-bold inline-flex items-center justify-center cursor-pointer transition-colors shadow-2xs font-['Nunito'] ${
+              className={`w-4.5 h-4.5 rounded-full text-white text-xs font-bold inline-flex items-center justify-center cursor-pointer transition-colors shadow-2xs font-['Nunito'] ${
                 showOrderSummaryModal ? 'bg-[#F96E8F]' : 'bg-[#7C8894] hover:bg-[#5A6570]'
               }`}
               aria-label="Order Summary Info"
@@ -883,7 +883,7 @@ return (
                 setShowAddressForm(true);
               }
             }}
-            className={`text-white px-5 py-3 rounded-[12px] font-bold text-[15px] shadow-sm transition-all tracking-wide ${
+            className={`text-white px-5 py-3 rounded-[12px] font-bold text-sm shadow-sm transition-all tracking-wide ${
               addresses.length > 0 && billingAddressId
                 ? 'bg-[#F96E8F] hover:bg-[#E44971] active:scale-[0.98] cursor-pointer'
                 : 'bg-gray-400 cursor-not-allowed opacity-70'
@@ -894,7 +894,7 @@ return (
         ) : (
           <button
             onClick={handleCompletePayment}
-            className="bg-[#F96E8F] hover:bg-[#E44971] text-white px-6 py-3 rounded-[12px] font-bold text-[15px] shadow-sm transition-all tracking-wide active:scale-[0.98] cursor-pointer"
+            className="bg-[#F96E8F] hover:bg-[#E44971] text-white px-6 py-3 rounded-[12px] font-bold text-sm shadow-sm transition-all tracking-wide active:scale-[0.98] cursor-pointer"
           >
             {selectedPayment === 'online' ? 'Pay Now' : 'Place Order'}
           </button>
@@ -921,7 +921,7 @@ return (
       >
         {/* Modal Header */}
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[19px] font-black text-gray-900 font-['Baloo_2']">
+          <h3 className="text-lg font-black text-gray-900 font-['Baloo_2']">
             Order <span className="text-[#F96E8F]">Summary</span>
           </h3>
           <button
@@ -935,40 +935,40 @@ return (
 
         {/* Bill Rows */}
         <div className="flex flex-col gap-2.5">
-          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+          <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
             <span>Item Total ({cartItems.reduce((acc, i) => acc + (i.quantity || 1), 0)} items)</span>
             <span className="font-extrabold text-gray-900">₹{displayItemTotal}</span>
           </div>
 
           {displaySaved > 0 && (
-            <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+            <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
               <span>You Saved</span>
               <span className="font-extrabold text-[#27AE60]">-₹{displaySaved}</span>
             </div>
           )}
 
           {appliedCoupon && couponDiscount > 0 && (
-            <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+            <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
               <span>Coupon Discount</span>
               <span className="font-extrabold text-[#F96E8F]">-₹{couponDiscount}</span>
             </div>
           )}
 
           {isGift && selectedGiftWrap && (
-            <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+            <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
               <span>Gift Wrap</span>
               <span className="font-extrabold text-gray-900">₹{giftWrapFee}</span>
             </div>
           )}
 
-          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+          <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
             <span>Shipping (standard)</span>
             <span className="font-extrabold text-gray-900">FREE</span>
           </div>
 
           <hr className="border-t border-gray-400 my-1" />
 
-          <div className="flex justify-between items-center text-[16px] font-black text-gray-900 font-['Baloo_2']">
+          <div className="flex justify-between items-center text-base font-black text-gray-900 font-['Baloo_2']">
             <span>Bill Total</span>
             <span className="font-black text-gray-900">₹{displayBillTotal}</span>
           </div>

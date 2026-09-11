@@ -244,7 +244,7 @@ function CartToast({ toast, onClose }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
             </svg>
           </span>
-          <span className="text-[#F96E8F] text-[13px] font-black uppercase tracking-wider font-['Baloo_2']">Added to Cart!</span>
+          <span className="text-[#F96E8F] text-xs font-black uppercase tracking-wider font-['Baloo_2']">Added to Cart!</span>
         </div>
         <button
           onClick={onClose}
@@ -271,7 +271,7 @@ function CartToast({ toast, onClose }) {
             Size: <span className="font-semibold text-gray-700">{size}</span> | Color: <span className="font-semibold text-gray-700">{color}</span>
           </p>
           <div className="flex items-center justify-between mt-1">
-            <span className="text-[11px] font-bold text-gray-400">Total in Cart</span>
+            <span className="text-xs font-bold text-gray-400">Total in Cart</span>
             <span className="bg-[#F96E8F]/10 text-[#F96E8F] text-xs font-black px-2.5 py-0.5 rounded-full">
               {quantity} {quantity > 1 ? 'items' : 'item'}
             </span>

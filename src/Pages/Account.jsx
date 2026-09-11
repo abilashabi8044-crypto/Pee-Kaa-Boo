@@ -148,7 +148,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
           <button
             type="button"
             onClick={() => setViewMode(viewMode === 'months' ? 'days' : 'months')}
-            className={`px-3 py-1 rounded-xl font-black text-[15px] transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-xl font-black text-sm transition-all cursor-pointer ${
               viewMode === 'months' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
             }`}
           >
@@ -160,7 +160,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
               setYearPage(Math.floor(currentYear / 12) * 12);
               setViewMode(viewMode === 'years' ? 'days' : 'years');
             }}
-            className={`px-3 py-1 rounded-xl font-black text-[15px] transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-xl font-black text-sm transition-all cursor-pointer ${
               viewMode === 'years' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
             }`}
           >
@@ -186,7 +186,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
             {DAYS_OF_WEEK.map((day, idx) => (
               <span
                 key={idx}
-                className={`text-[12px] font-black ${idx === 0 || idx === 6 ? 'text-[#F96E8F]' : 'text-gray-400'}`}
+                className={`text-xs font-black ${idx === 0 || idx === 6 ? 'text-[#F96E8F]' : 'text-gray-400'}`}
               >
                 {day}
               </span>
@@ -197,7 +197,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
             {Array.from({ length: startDay }).map((_, i) => {
               const dayNum = prevMonthDays - startDay + i + 1;
               return (
-                <div key={`prev-${i}`} className="h-9 flex items-center justify-center text-gray-300 text-[12px] font-bold">
+                <div key={`prev-${i}`} className="h-9 flex items-center justify-center text-gray-300 text-xs font-bold">
                   {dayNum}
                 </div>
               );
@@ -213,7 +213,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   key={day}
                   type="button"
                   onClick={() => handleSelectDay(day)}
-                  className={`h-9 w-9 mx-auto rounded-full flex items-center justify-center text-[13.5px] font-bold transition-all cursor-pointer ${
+                  className={`h-9 w-9 mx-auto rounded-full flex items-center justify-center text-sm font-bold transition-all cursor-pointer ${
                     isSelected
                       ? 'bg-gradient-to-tr from-[#F96E8F] to-[#FF8EAA] text-white shadow-md shadow-pink-300 scale-105 font-black'
                       : isToday
@@ -242,7 +242,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   setCurrentMonth(idx);
                   setViewMode('days');
                 }}
-                className={`py-3 rounded-2xl font-bold text-[14px] transition-all cursor-pointer ${
+                className={`py-3 rounded-2xl font-bold text-sm transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
                     : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
@@ -268,7 +268,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   setCurrentYear(y);
                   setViewMode('months');
                 }}
-                className={`py-3 rounded-2xl font-bold text-[14px] transition-all cursor-pointer ${
+                className={`py-3 rounded-2xl font-bold text-sm transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
                     : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
@@ -286,7 +286,7 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
         <button
           type="button"
           onClick={handleSelectToday}
-          className="text-[13px] font-black text-[#F96E8F] hover:underline cursor-pointer"
+          className="text-xs font-black text-[#F96E8F] hover:underline cursor-pointer"
         >
           Today
         </button>
@@ -297,14 +297,14 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
               onChange('');
               onClose();
             }}
-            className="px-3 py-1 rounded-xl text-[12px] font-bold text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
+            className="px-3 py-1 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
           >
             Clear
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="px-3.5 py-1 rounded-xl text-[12px] font-bold bg-[#F96E8F] text-white hover:bg-[#E44971] transition-colors cursor-pointer shadow-xs"
+            className="px-3.5 py-1 rounded-xl text-xs font-bold bg-[#F96E8F] text-white hover:bg-[#E44971] transition-colors cursor-pointer shadow-xs"
           >
             Close
           </button>
@@ -331,7 +331,7 @@ const WishlistItemCard = ({ item, addToCart, onRemove }) => {
   return (
     <div className="border border-gray-200 rounded-[18px] p-4 bg-white shadow-sm flex flex-col items-center relative group hover:shadow-md transition-shadow">
       <img src={item.image} alt={item.title} className="w-full h-[180px] object-cover rounded-[14px] mb-3" />
-      <h4 className="font-bold text-[16px] text-gray-800 text-center mb-1 font-['Nunito'] line-clamp-1">
+      <h4 className="font-bold text-base text-gray-800 text-center mb-1 font-['Nunito'] line-clamp-1">
         {item.title}
       </h4>
       <div className="flex items-center gap-2 mb-3">
@@ -744,7 +744,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
       <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-10 md:py-16">
         {/* Title */}
         <div className="text-center mb-10 md:mb-16">
-          <h1 className="text-[36px] md:text-[72px] font-black tracking-wide text-gray-900 leading-tight">
+          <h1 className="text-4xl md:text-7xl font-black tracking-wide text-gray-900 leading-tight">
             My <span className="text-[#F96E8F]">Account</span>
           </h1>
         </div>
@@ -763,10 +763,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 />
               </div>
               <div className="flex flex-col z-10">
-                <h3 className="font-extrabold text-[17px] text-gray-900 leading-tight mb-1">
+                <h3 className="font-extrabold text-base text-gray-900 leading-tight mb-1">
                   {profile.fullName || 'Your name'}
                 </h3>
-                <p className="text-gray-500 font-bold text-[13px]">
+                <p className="text-gray-500 font-bold text-xs">
                   {profile.mobileNumber
                     ? profile.mobileNumber.startsWith('+91')
                       ? profile.mobileNumber
@@ -786,7 +786,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('My Profile')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
                       activeMenu === 'My Profile'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
@@ -813,7 +813,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('My Orders')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
                       activeMenu === 'My Orders'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
@@ -840,7 +840,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('Manage Addresses')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
                       activeMenu === 'Manage Addresses'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
@@ -867,7 +867,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('Saved UPI')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
                       activeMenu === 'Saved UPI'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
@@ -894,7 +894,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('Saved Cards')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
                       activeMenu === 'Saved Cards'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
@@ -921,7 +921,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('My Wishlists')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
                       activeMenu === 'My Wishlists'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
@@ -952,7 +952,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       window.history.pushState({}, '', '/login');
                       window.dispatchEvent(new Event('popstate'));
                     }}
-                    className="w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-[15px] transition-all duration-200 cursor-pointer text-red-500 hover:bg-red-50 hover:text-red-600 border-l-[3px] border-l-transparent"
+                    className="w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer text-red-500 hover:bg-red-50 hover:text-red-600 border-l-[3px] border-l-transparent"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-red-500">
@@ -979,12 +979,12 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             {/* Tab 1: My Profile */}
             {activeMenu === 'My Profile' && (
               <form onSubmit={handleProfileSubmit}>
-                <h2 className="text-[24px] font-black text-gray-900 mb-8 tracking-wide">My Profile</h2>
+                <h2 className="text-2xl font-black text-gray-900 mb-8 tracking-wide">My Profile</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
                   {/* Full Name */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                    <label className="text-lg font-['Baloo_2'] font-black text-gray-700 tracking-wide">
                       Full Name
                     </label>
                     <input
@@ -994,14 +994,14 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       onChange={handleInputChange}
                       className={`w-full bg-white border ${
                         errors.fullName ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.fullName && <span className="text-red-500 text-sm font-bold">{errors.fullName}</span>}
                   </div>
 
                   {/* Mobile Number */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                    <label className="text-lg font-['Baloo_2'] font-black text-gray-700 tracking-wide">
                       Mobile Number
                     </label>
                     <input
@@ -1011,14 +1011,14 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       onChange={handleInputChange}
                       className={`w-full bg-white border ${
                         errors.mobileNumber ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.mobileNumber && <span className="text-red-500 text-sm font-bold">{errors.mobileNumber}</span>}
                   </div>
 
                   {/* Alternate Mobile Number */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                    <label className="text-lg font-['Baloo_2'] font-black text-gray-700 tracking-wide">
                       Alternate Mobile Number
                     </label>
                     <input
@@ -1028,7 +1028,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       onChange={handleInputChange}
                       className={`w-full bg-white border ${
                         errors.altMobileNumber ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.altMobileNumber && (
                       <span className="text-red-500 text-sm font-bold">{errors.altMobileNumber}</span>
@@ -1037,7 +1037,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
 
                   {/* Email Id */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                    <label className="text-lg font-['Baloo_2'] font-black text-gray-700 tracking-wide">
                       Email Id
                     </label>
                     <input
@@ -1047,14 +1047,14 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       onChange={handleInputChange}
                       className={`w-full bg-white border ${
                         errors.emailId ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.emailId && <span className="text-red-500 text-sm font-bold">{errors.emailId}</span>}
                   </div>
 
                   {/* Alternate Email Id */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                    <label className="text-lg font-['Baloo_2'] font-black text-gray-700 tracking-wide">
                       Alternate Email Id
                     </label>
                     <input
@@ -1064,14 +1064,14 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       onChange={handleInputChange}
                       className={`w-full bg-white border ${
                         errors.altEmailId ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.altEmailId && <span className="text-red-500 text-sm font-bold">{errors.altEmailId}</span>}
                   </div>
 
                   {/* Gender Select */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                    <label className="text-lg font-['Baloo_2'] font-black text-gray-700 tracking-wide">
                       Gender
                     </label>
                     <select
@@ -1080,7 +1080,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       onChange={handleInputChange}
                       className={`w-full bg-white border ${
                         errors.gender ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-[15px] text-gray-800`}
+                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     >
                       <option value="" disabled>Select Gender</option>
                       <option value="Male">Male</option>
@@ -1092,7 +1092,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
 
                   {/* Date of Birth Picker */}
                   <div className="flex flex-col gap-2 relative" ref={calendarRef}>
-                    <label className="text-[18px] font-['Baloo_2'] font-black text-gray-700 tracking-wide">
+                    <label className="text-lg font-['Baloo_2'] font-black text-gray-700 tracking-wide">
                       Date of Birth
                     </label>
                     <div
@@ -1101,7 +1101,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                         errors.dob ? 'border-red-500' : 'border-gray-200'
                       } rounded-[12px] h-[52px] px-4 pr-12 flex items-center justify-between cursor-pointer hover:border-[#F96E8F] transition-colors shadow-sm`}
                     >
-                      <span className={`font-bold text-[15px] ${formData.dob ? 'text-gray-800' : 'text-gray-400'}`}>
+                      <span className={`font-bold text-sm ${formData.dob ? 'text-gray-800' : 'text-gray-400'}`}>
                         {formData.dob ? formData.dob : 'Select Date of Birth'}
                       </span>
                       <img
@@ -1129,13 +1129,13 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 {/* Submit Button */}
                 <div className="mt-12 flex items-center justify-end gap-4">
                   {savedSuccess && (
-                    <span className="text-green-600 font-bold text-[15px]">
+                    <span className="text-green-600 font-bold text-sm">
                       ✓ Profile updated successfully!
                     </span>
                   )}
                   <button
                     type="submit"
-                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white py-3 px-12 rounded-[12px] font-bold text-[20px] font-['Baloo_2'] shadow-sm transition-colors cursor-pointer tracking-wider"
+                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white py-3 px-12 rounded-[12px] font-bold text-xl font-['Baloo_2'] shadow-sm transition-colors cursor-pointer tracking-wider"
                   >
                     Save Changes
                   </button>
@@ -1146,13 +1146,13 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             {/* Tab 2: My Orders */}
             {activeMenu === 'My Orders' && (
               <div className="flex flex-col w-full font-['Baloo_2'] min-h-[500px]">
-                <h2 className="text-[24px] font-black text-gray-900 mb-6 tracking-wide w-full text-left">
+                <h2 className="text-2xl font-black text-gray-900 mb-6 tracking-wide w-full text-left">
                   My Orders
                 </h2>
 
                 {/* Toast Notification */}
                 {orderToast && (
-                  <div className="bg-[#F96E8F] text-white font-extrabold px-5 py-3 rounded-[14px] shadow-md mb-6 flex items-center justify-between text-[14px] animate-fade-in">
+                  <div className="bg-[#F96E8F] text-white font-extrabold px-5 py-3 rounded-[14px] shadow-md mb-6 flex items-center justify-between text-sm animate-fade-in">
                     <span>✓ {orderToast}</span>
                     <button onClick={() => setOrderToast(null)} className="ml-4 font-black cursor-pointer">
                       ✕
@@ -1168,11 +1168,11 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       value={orderSearchQuery}
                       onChange={(e) => setOrderSearchQuery(e.target.value)}
                       placeholder="Search Orders"
-                      className="flex-1 px-4 py-2.5 font-bold text-[14px] text-gray-700 outline-none font-['Nunito']"
+                      className="flex-1 px-4 py-2.5 font-bold text-sm text-gray-700 outline-none font-['Nunito']"
                     />
                     <button
                       type="button"
-                      className="bg-[#F96E8F] hover:bg-[#E44971] text-white px-5 py-2.5 font-extrabold text-[14px] flex items-center gap-1.5 cursor-pointer transition-colors h-full"
+                      className="bg-[#F96E8F] hover:bg-[#E44971] text-white px-5 py-2.5 font-extrabold text-sm flex items-center gap-1.5 cursor-pointer transition-colors h-full"
                     >
                       Search
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1182,11 +1182,11 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="font-extrabold text-[15px] text-gray-900">Sort by :</span>
+                    <span className="font-extrabold text-sm text-gray-900">Sort by :</span>
                     <select
                       value={orderSort}
                       onChange={(e) => setOrderSort(e.target.value)}
-                      className="border border-gray-300 rounded-[8px] px-3.5 py-2 font-bold text-[14px] text-gray-700 bg-white outline-none cursor-pointer hover:border-[#F96E8F] transition-colors"
+                      className="border border-gray-300 rounded-[8px] px-3.5 py-2 font-bold text-sm text-gray-700 bg-white outline-none cursor-pointer hover:border-[#F96E8F] transition-colors"
                     >
                       <option>last 3 months</option>
                       <option>last 6 months</option>
@@ -1207,11 +1207,11 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       >
                         {/* Order Header */}
                         <div className="flex items-center justify-between">
-                          <p className="font-extrabold text-[16px] sm:text-[17px] text-gray-900 font-['Baloo_2']">
+                          <p className="font-extrabold text-base sm:text-base text-gray-900 font-['Baloo_2']">
                             Order ID: <span className="text-[#F96E8F] font-black">{order.orderId}</span>
                           </p>
                           {order.status === 'cancelled' && (
-                            <span className="bg-red-50 text-red-500 font-extrabold text-[12px] px-3 py-1 rounded-full uppercase tracking-wider">
+                            <span className="bg-red-50 text-red-500 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
                               Cancelled
                             </span>
                           )}
@@ -1230,16 +1230,16 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
 
                           {/* Info */}
                           <div className="flex-1 flex flex-col justify-center text-center sm:text-left min-w-0">
-                            <h3 className="font-bold text-[18px] sm:text-[20px] text-gray-900 font-['Nunito'] mb-1 truncate" title={order.title}>
+                            <h3 className="font-bold text-lg sm:text-xl text-gray-900 font-['Nunito'] mb-1 truncate" title={order.title}>
                               {order.title}
                             </h3>
-                            <p className="text-gray-400 font-bold text-[12px] sm:text-[13px] mb-2 font-['Nunito']">
+                            <p className="text-gray-400 font-bold text-xs sm:text-xs mb-2 font-['Nunito']">
                               Product Code: {order.code}
                             </p>
-                            <p className="text-gray-500 font-bold text-[14px] font-['Nunito'] mb-2">
+                            <p className="text-gray-500 font-bold text-sm font-['Nunito'] mb-2">
                               Qty: <span className="text-[#F96E8F]">{order.qty} Nos</span>
                             </p>
-                            <p className="text-[#F96E8F] font-bold text-[24px] sm:text-[26px] font-['Nunito'] leading-tight">
+                            <p className="text-[#F96E8F] font-bold text-2xl sm:text-2xl font-['Nunito'] leading-tight">
                               ₹ {order.price}
                             </p>
                           </div>
@@ -1250,13 +1250,13 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                               <>
                                 <button
                                   onClick={() => handleCancelOrder(order.orderId)}
-                                  className="font-extrabold text-[14px] text-gray-800 hover:text-[#F96E8F] transition-colors py-2.5 px-4 cursor-pointer"
+                                  className="font-extrabold text-sm text-gray-800 hover:text-[#F96E8F] transition-colors py-2.5 px-4 cursor-pointer"
                                 >
                                   Cancel Order
                                 </button>
                                 <button
                                   onClick={() => handleTrackOrder(order)}
-                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-sm py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
                                 >
                                   Track Order
                                 </button>
@@ -1265,25 +1265,25 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                               <>
                                 <button
                                   onClick={() => handleReturnOrder(order.orderId)}
-                                  className="border border-[#F96E8F] text-[#F96E8F] hover:bg-pink-50 font-extrabold text-[15px] py-2.5 px-7 rounded-[10px] transition-all cursor-pointer hover:scale-105 active:scale-95"
+                                  className="border border-[#F96E8F] text-[#F96E8F] hover:bg-pink-50 font-extrabold text-sm py-2.5 px-7 rounded-[10px] transition-all cursor-pointer hover:scale-105 active:scale-95"
                                 >
                                   Return Order
                                 </button>
                                 <button
                                   onClick={() => handleReorder(order)}
-                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-sm py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
                                 >
                                   Reorder
                                 </button>
                               </>
                             ) : (
                               <>
-                                <span className="text-red-500 font-extrabold text-[14px] py-2.5 px-4">
+                                <span className="text-red-500 font-extrabold text-sm py-2.5 px-4">
                                   Cancelled
                                 </span>
                                 <button
                                   onClick={() => handleReorder(order)}
-                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
+                                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-sm py-2.5 px-7 rounded-[10px] transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95"
                                 >
                                   Reorder
                                 </button>
@@ -1295,14 +1295,14 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     ))
                   ) : (
                     <div className="text-center text-gray-500 font-bold py-16 bg-white rounded-[20px] border border-gray-100 flex flex-col items-center justify-center gap-3">
-                      <p className="text-[18px] text-gray-800 font-extrabold">No orders found.</p>
-                      <p className="text-[14px] text-gray-400 font-medium">You haven't placed any orders yet.</p>
+                      <p className="text-lg text-gray-800 font-extrabold">No orders found.</p>
+                      <p className="text-sm text-gray-400 font-medium">You haven't placed any orders yet.</p>
                       <button
                         onClick={() => {
                           window.history.pushState({}, '', '/shop');
                           window.dispatchEvent(new Event('popstate'));
                         }}
-                        className="mt-2 bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[14px] py-2.5 px-6 rounded-[10px] transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                        className="mt-2 bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-sm py-2.5 px-6 rounded-[10px] transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
                       >
                         Start Shopping
                       </button>
@@ -1317,10 +1317,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
               <div className="flex flex-col w-full min-h-[500px]">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                   <div>
-                    <h2 className="text-[24px] font-black text-gray-900 tracking-wide">
+                    <h2 className="text-2xl font-black text-gray-900 tracking-wide">
                       Manage Addresses ({addresses.length})
                     </h2>
-                    <p className="text-gray-500 font-bold text-[13px] mt-0.5">
+                    <p className="text-gray-500 font-bold text-xs mt-0.5">
                       Add, edit, or delete your delivery and billing addresses
                     </p>
                   </div>
@@ -1331,15 +1331,15 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       setAddressErrors({});
                       setShowAddressModal(true);
                     }}
-                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-black py-3 px-6 rounded-[12px] text-[15px] flex items-center gap-2 shadow-sm transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+                    className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-black py-3 px-6 rounded-[12px] text-sm flex items-center gap-2 shadow-sm transition-all cursor-pointer active:scale-95 whitespace-nowrap"
                   >
-                    <span className="text-[20px] leading-none">+</span> Add New Address
+                    <span className="text-xl leading-none">+</span> Add New Address
                   </button>
                 </div>
 
                 {/* Success Toast */}
                 {addressSuccessToast && (
-                  <div className="bg-green-500 text-white font-extrabold px-5 py-3 rounded-[14px] shadow-md mb-6 flex items-center justify-between text-[14px] animate-fade-in">
+                  <div className="bg-green-500 text-white font-extrabold px-5 py-3 rounded-[14px] shadow-md mb-6 flex items-center justify-between text-sm animate-fade-in">
                     <span>✓ {addressSuccessToast}</span>
                     <button onClick={() => setAddressSuccessToast(null)} className="ml-4 font-black">
                       ✕
@@ -1355,8 +1355,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     </div>
-                    <h3 className="font-extrabold text-[18px] text-gray-800 mb-1">No Saved Addresses Found</h3>
-                    <p className="text-gray-500 font-bold text-[14px] max-w-md mb-6">
+                    <h3 className="font-extrabold text-lg text-gray-800 mb-1">No Saved Addresses Found</h3>
+                    <p className="text-gray-500 font-bold text-sm max-w-md mb-6">
                       You haven't saved any addresses yet. Add an address now to make checkout faster and easier.
                     </p>
                     <button
@@ -1366,7 +1366,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                         setAddressErrors({});
                         setShowAddressModal(true);
                       }}
-                      className="border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] font-black py-2.5 px-8 rounded-[12px] hover:bg-pink-50 transition-colors cursor-pointer text-[15px]"
+                      className="border-[2px] border-dashed border-[#F96E8F] text-[#F96E8F] font-black py-2.5 px-8 rounded-[12px] hover:bg-pink-50 transition-colors cursor-pointer text-sm"
                     >
                       + Add Your First Address
                     </button>
@@ -1380,7 +1380,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       >
                         <div>
                           <div className="flex justify-between items-center mb-3">
-                            <span className="bg-[#F96E8F]/15 text-[#F96E8F] font-black text-[13px] px-3.5 py-1 rounded-full uppercase tracking-wider">
+                            <span className="bg-[#F96E8F]/15 text-[#F96E8F] font-black text-xs px-3.5 py-1 rounded-full uppercase tracking-wider">
                               {addr.name || 'HOME'}
                             </span>
                             <div className="flex items-center gap-2">
@@ -1405,10 +1405,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                             </div>
                           </div>
 
-                          <h4 className="font-extrabold text-[17px] text-gray-900 mb-1">{addr.username}</h4>
-                          <p className="text-gray-600 font-bold text-[14px] leading-snug">{addr.line1}</p>
-                          <p className="text-gray-600 font-bold text-[14px] leading-snug">{addr.line2}</p>
-                          <p className="text-gray-500 font-extrabold text-[13px] mt-3">
+                          <h4 className="font-extrabold text-base text-gray-900 mb-1">{addr.username}</h4>
+                          <p className="text-gray-600 font-bold text-sm leading-snug">{addr.line1}</p>
+                          <p className="text-gray-600 font-bold text-sm leading-snug">{addr.line2}</p>
+                          <p className="text-gray-500 font-extrabold text-xs mt-3">
                             Mobile: <span className="text-gray-800">{addr.phone}</span>
                           </p>
                         </div>
@@ -1422,7 +1422,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             {/* Tab 4: Saved UPI */}
             {activeMenu === 'Saved UPI' && (
               <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-                <h2 className="text-[24px] font-black text-gray-900 mb-4 tracking-wide w-full text-left">
+                <h2 className="text-2xl font-black text-gray-900 mb-4 tracking-wide w-full text-left">
                   Saved UPI
                 </h2>
                 <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
@@ -1434,7 +1434,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             {/* Tab 5: Saved Cards */}
             {activeMenu === 'Saved Cards' && (
               <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
-                <h2 className="text-[24px] font-black text-gray-900 mb-4 tracking-wide w-full text-left">
+                <h2 className="text-2xl font-black text-gray-900 mb-4 tracking-wide w-full text-left">
                   Saved Cards
                 </h2>
                 <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
@@ -1446,7 +1446,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             {/* Tab 6: My Wishlists */}
             {activeMenu === 'My Wishlists' && (
               <div className="flex flex-col w-full">
-                <h2 className="text-[24px] font-black text-gray-900 mb-6 tracking-wide w-full text-left">
+                <h2 className="text-2xl font-black text-gray-900 mb-6 tracking-wide w-full text-left">
                   My Wishlists ({wishlist.length})
                 </h2>
                 {wishlist.length === 0 ? (
@@ -1478,7 +1478,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[100] flex items-center justify-center p-4">
           <div className="bg-white rounded-[24px] p-6 sm:p-7 w-full max-w-md shadow-2xl font-['Baloo_2'] border border-gray-100">
             <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
-              <h3 className="text-[20px] font-black text-gray-900">
+              <h3 className="text-xl font-black text-gray-900">
                 {editingAddressId ? 'Edit Address' : 'Add New Address'}
               </h3>
               <button
@@ -1492,7 +1492,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             <form onSubmit={handleSaveAddress} className="flex flex-col gap-4" noValidate>
               {/* Address Label Select */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">
+                <label className="text-sm font-black text-gray-800">
                   Address Label <span className="text-[#F96E8F]">*</span>
                 </label>
                 <div className="relative">
@@ -1505,7 +1505,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     }}
                     className={`w-full appearance-none bg-white border ${
                       addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                    } rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-[14px] ${
+                    } rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-sm ${
                       addressFormData.name ? 'text-gray-900' : 'text-gray-400'
                     } outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
                   >
@@ -1521,13 +1521,13 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   </div>
                 </div>
                 {addressErrors.name && (
-                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.name}</span>
+                  <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.name}</span>
                 )}
               </div>
 
               {/* Full Name */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">
+                <label className="text-sm font-black text-gray-800">
                   Full Name <span className="text-[#F96E8F]">*</span>
                 </label>
                 <input
@@ -1540,16 +1540,16 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   }}
                   className={`w-full border ${
                     addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.username && (
-                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.username}</span>
+                  <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.username}</span>
                 )}
               </div>
 
               {/* Address Line 1 */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">
+                <label className="text-sm font-black text-gray-800">
                   Address Line 1 <span className="text-[#F96E8F]">*</span>
                 </label>
                 <input
@@ -1562,16 +1562,16 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   }}
                   className={`w-full border ${
                     addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.line1 && (
-                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line1}</span>
+                  <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line1}</span>
                 )}
               </div>
 
               {/* City, State, Pincode */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">
+                <label className="text-sm font-black text-gray-800">
                   City, State & Pincode <span className="text-[#F96E8F]">*</span>
                 </label>
                 <input
@@ -1584,16 +1584,16 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   }}
                   className={`w-full border ${
                     addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.line2 && (
-                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.line2}</span>
+                  <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line2}</span>
                 )}
               </div>
 
               {/* Phone Number */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[14px] font-black text-gray-800">
+                <label className="text-sm font-black text-gray-800">
                   Mobile Number <span className="text-[#F96E8F]">*</span>
                 </label>
                 <input
@@ -1606,10 +1606,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   }}
                   className={`w-full border ${
                     addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-[14px] text-gray-800 transition-all shadow-xs`}
+                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.phone && (
-                  <span className="text-red-500 text-[12px] font-bold mt-0.5">{addressErrors.phone}</span>
+                  <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.phone}</span>
                 )}
               </div>
 
@@ -1642,10 +1642,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
             </svg>
           </div>
           <div className="flex-1 pr-2">
-            <h4 className="font-black text-gray-700 text-[15px] font-['Nunito'] leading-tight">
+            <h4 className="font-black text-gray-700 text-sm font-['Nunito'] leading-tight">
               Wishlist removed
             </h4>
-            <p className="text-gray-500 text-[12px] font-bold font-['Nunito'] line-clamp-1 mt-0.5">
+            <p className="text-gray-500 text-xs font-bold font-['Nunito'] line-clamp-1 mt-0.5">
               {wishlistToast.title || 'Product'}
             </p>
           </div>

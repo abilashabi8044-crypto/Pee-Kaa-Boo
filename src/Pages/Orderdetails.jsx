@@ -203,14 +203,14 @@ Thank you for shopping with PEE KAA BOO!
           
           {/* Main Title */}
           <div className="text-center mb-8 md:mb-12">
-            <h1 className="text-[36px] sm:text-[44px] md:text-[52px] font-black text-gray-900 tracking-wide">
+            <h1 className="text-4xl sm:text-5xl md:text-5xl font-black text-gray-900 tracking-wide">
               Order <span className="text-[#F96E8F]">Details</span>
             </h1>
           </div>
 
           {/* Cancellation Success Notification */}
           {cancelSuccess && (
-            <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-6 py-3.5 rounded-[16px] flex items-center justify-between font-bold text-[15px] animate-fade-in shadow-xs">
+            <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-6 py-3.5 rounded-[16px] flex items-center justify-between font-bold text-sm animate-fade-in shadow-xs">
               <span>✓ Order cancellation requested successfully! Your refund will be processed within 2-3 business days.</span>
               <button onClick={() => setCancelSuccess(false)} className="text-green-700 hover:text-green-900 ml-4 font-black cursor-pointer">✕</button>
             </div>
@@ -228,16 +228,16 @@ Thank you for shopping with PEE KAA BOO!
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <h2 className="text-[18px] sm:text-[20px] font-black text-gray-900">
+                    <h2 className="text-lg sm:text-xl font-black text-gray-900">
                       {isCancelled ? 'Order Cancelled' : 'Arriving September 30'}
                     </h2>
-                    <p className="text-[13px] sm:text-[14px] font-black text-gray-800 mt-0.5">
+                    <p className="text-xs sm:text-sm font-black text-gray-800 mt-0.5">
                       Order ID: <span className="text-[#F96E8F]">{orderId}</span>
                     </p>
                   </div>
 
                   {isCancelled && (
-                    <span className="self-start sm:self-auto bg-red-100 text-red-600 font-extrabold text-[12px] px-3 py-1 rounded-full uppercase tracking-wider">
+                    <span className="self-start sm:self-auto bg-red-100 text-red-600 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
                       Cancelled
                     </span>
                   )}
@@ -262,16 +262,16 @@ Thank you for shopping with PEE KAA BOO!
 
                         {/* Product Details */}
                         <div className="flex-1 flex flex-col justify-center text-center sm:text-left min-w-0">
-                          <h3 className="font-bold text-[18px] sm:text-[20px] text-gray-900 font-['Nunito'] mb-1 truncate" title={item.title}>
+                          <h3 className="font-bold text-lg sm:text-xl text-gray-900 font-['Nunito'] mb-1 truncate" title={item.title}>
                             {item.title}
                           </h3>
-                          <p className="text-gray-400 font-bold text-[12px] sm:text-[13px] mb-1 font-['Nunito']">
+                          <p className="text-gray-400 font-bold text-xs sm:text-xs mb-1 font-['Nunito']">
                             Product Code : {item.code}
                           </p>
-                          <p className="text-gray-600 font-bold text-[13px] mb-1.5 font-['Nunito']">
+                          <p className="text-gray-600 font-bold text-xs mb-1.5 font-['Nunito']">
                             Order Placed on : <span className="text-[#F96E8F]">{item.orderDate}</span>
                           </p>
-                          <p className="text-gray-500 font-bold text-[13px] font-['Nunito']">
+                          <p className="text-gray-500 font-bold text-xs font-['Nunito']">
                             Quantity : <span className="text-[#F96E8F]">{String(item.qty).padStart(2, '0')} Nos</span>
                           </p>
                         </div>
@@ -279,11 +279,11 @@ Thank you for shopping with PEE KAA BOO!
                         {/* Pricing */}
                         <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2">
                           {item.oldPrice && item.oldPrice > item.price && (
-                            <del className="text-gray-400 font-bold text-[15px] sm:text-[16px] font-['Nunito']">
+                            <del className="text-gray-400 font-bold text-sm sm:text-base font-['Nunito']">
                               ₹ {item.oldPrice * item.qty}
                             </del>
                           )}
-                          <span className="text-[#F96E8F] font-bold text-[24px] sm:text-[28px] font-['Nunito'] leading-tight">
+                          <span className="text-[#F96E8F] font-bold text-2xl sm:text-3xl font-['Nunito'] leading-tight">
                             ₹ {item.price * item.qty}
                           </span>
                         </div>
@@ -301,7 +301,7 @@ Thank you for shopping with PEE KAA BOO!
                   <button
                     onClick={handleCancelOrder}
                     disabled={isCancelled}
-                    className={`font-extrabold text-[15px] py-2.5 px-8 rounded-[10px] transition-all shadow-sm ${
+                    className={`font-extrabold text-sm py-2.5 px-8 rounded-[10px] transition-all shadow-sm ${
                       isCancelled
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
                         : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer hover:scale-105 active:scale-95'
@@ -315,7 +315,7 @@ Thank you for shopping with PEE KAA BOO!
 
               {/* Order Updates Card */}
               <div className="bg-white rounded-[24px] p-6 sm:p-8 shadow-xs border border-pink-200/80 font-['Nunito']">
-                <h3 className="font-extrabold text-[18px] sm:text-[20px] text-gray-900 mb-8">
+                <h3 className="font-extrabold text-lg sm:text-xl text-gray-900 mb-8">
                   Order Updates
                 </h3>
 
@@ -328,54 +328,54 @@ Thank you for shopping with PEE KAA BOO!
 
                   {/* Step 1 */}
                   <div className="flex flex-col items-center text-center relative z-10">
-                    <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full text-white flex items-center justify-center font-black text-[17px] sm:text-[18px] shadow-sm mb-3 ${
+                    <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3 ${
                       isCancelled ? 'bg-red-500' : 'bg-[#F96E8F]'
                     }`}>
                       1
                     </div>
-                    <span className="font-extrabold text-[12px] sm:text-[14px] text-gray-900 whitespace-nowrap">
+                    <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
                       {isCancelled ? 'Cancelled' : 'Order Dispatch'}
                     </span>
-                    <span className="text-[11px] sm:text-[12px] font-bold text-gray-400 mt-0.5">
+                    <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
                       {isCancelled ? 'Terminated' : 'Processing'}
                     </span>
                   </div>
 
                   {/* Step 2 */}
                   <div className="flex flex-col items-center text-center relative z-10">
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-[17px] sm:text-[18px] shadow-sm mb-3">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
                       2
                     </div>
-                    <span className="font-extrabold text-[12px] sm:text-[14px] text-gray-900 whitespace-nowrap">
+                    <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
                       Order Shipped
                     </span>
-                    <span className="text-[11px] sm:text-[12px] font-bold text-gray-400 mt-0.5">
+                    <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
                       Pending
                     </span>
                   </div>
 
                   {/* Step 3 */}
                   <div className="flex flex-col items-center text-center relative z-10">
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-[17px] sm:text-[18px] shadow-sm mb-3">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
                       3
                     </div>
-                    <span className="font-extrabold text-[12px] sm:text-[14px] text-gray-900 whitespace-nowrap">
+                    <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
                       Out For Delivery
                     </span>
-                    <span className="text-[11px] sm:text-[12px] font-bold text-gray-400 mt-0.5">
+                    <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
                       Pending
                     </span>
                   </div>
 
                   {/* Step 4 */}
                   <div className="flex flex-col items-center text-center relative z-10">
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-[17px] sm:text-[18px] shadow-sm mb-3">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
                       4
                     </div>
-                    <span className="font-extrabold text-[12px] sm:text-[14px] text-gray-900 whitespace-nowrap">
+                    <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
                       Delivered
                     </span>
-                    <span className="text-[11px] sm:text-[12px] font-bold text-gray-400 mt-0.5">
+                    <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
                       Pending
                     </span>
                   </div>
@@ -386,10 +386,10 @@ Thank you for shopping with PEE KAA BOO!
 
               {/* Rate Your Experience Card */}
               <div className="bg-white rounded-[24px] p-6 sm:p-7 shadow-xs border border-pink-200/80 font-['Nunito']">
-                <h3 className="font-extrabold text-[18px] sm:text-[20px] text-gray-900 mb-1">
+                <h3 className="font-extrabold text-lg sm:text-xl text-gray-900 mb-1">
                   Rate your experience
                 </h3>
-                <p className="flex items-center gap-1.5 text-gray-500 font-bold text-[13px] mb-4">
+                <p className="flex items-center gap-1.5 text-gray-500 font-bold text-xs mb-4">
                   <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
@@ -431,13 +431,13 @@ Thank you for shopping with PEE KAA BOO!
               
               {/* Delivery Details Card */}
               <div className="bg-white rounded-[24px] p-6 shadow-xs border border-pink-200/80 font-['Nunito']">
-                <h3 className="font-extrabold text-[18px] sm:text-[20px] text-gray-900 mb-4">
+                <h3 className="font-extrabold text-lg sm:text-xl text-gray-900 mb-4">
                   Delivery Details
                 </h3>
 
                 <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[18px] p-4 sm:p-5 flex flex-col gap-3.5">
                   {/* Address */}
-                  <div className="flex items-start gap-3 text-[13px] sm:text-[14px]">
+                  <div className="flex items-start gap-3 text-xs sm:text-sm">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-gray-900 mt-0.5">
                       <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -450,7 +450,7 @@ Thank you for shopping with PEE KAA BOO!
                   </div>
 
                   {/* Phone */}
-                  <div className="flex items-center gap-3 text-[13px] sm:text-[14px]">
+                  <div className="flex items-center gap-3 text-xs sm:text-sm">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-gray-900">
                       <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -466,52 +466,52 @@ Thank you for shopping with PEE KAA BOO!
 
               {/* Price Details Card */}
               <div className="bg-white rounded-[24px] p-6 shadow-xs border border-pink-200/80 font-['Nunito'] flex flex-col gap-3.5">
-                <h3 className="font-extrabold text-[18px] sm:text-[20px] text-gray-900 mb-1">
+                <h3 className="font-extrabold text-lg sm:text-xl text-gray-900 mb-1">
                   Price Details
                 </h3>
 
-                <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
+                <div className="flex justify-between items-center text-sm font-bold text-gray-700">
                   <span>Item Total</span>
                   <span className="font-extrabold text-gray-900">₹{itemTotal}</span>
                 </div>
 
                 {savedAmount > 0 && (
-                  <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
+                  <div className="flex justify-between items-center text-sm font-bold text-gray-700">
                     <span>You Saved</span>
                     <span className="font-extrabold text-green-600">-₹{savedAmount}</span>
                   </div>
                 )}
 
                 {couponDiscount > 0 && (
-                  <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
+                  <div className="flex justify-between items-center text-sm font-bold text-gray-700">
                     <span>Coupon Discount</span>
                     <span className="font-extrabold text-[#F96E8F]">-₹{couponDiscount}</span>
                   </div>
                 )}
 
-                <div className="flex justify-between items-center text-[15px] font-bold text-gray-700">
+                <div className="flex justify-between items-center text-sm font-bold text-gray-700">
                   <span>Shipping (standard)</span>
                   <span className="font-black text-green-600 uppercase">FREE</span>
                 </div>
 
                 <div className="border-t border-gray-200 my-1"></div>
 
-                <div className="flex justify-between items-center text-[17px] font-black text-gray-900">
+                <div className="flex justify-between items-center text-base font-black text-gray-900">
                   <span>Bill Total</span>
                   <span className="font-black text-[#F96E8F]">₹{billTotal}</span>
                 </div>
 
                 {/* Paid By Box - Only shows the chosen payment option */}
                 {isCod ? (
-                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-sm font-black text-gray-900 mt-2">
                     <span>Paid By</span>
                     <div className="flex items-center gap-1.5">
                       <span className="font-extrabold text-gray-800">Cash On Delivery</span>
-                      <span className="text-[#F96E8F] font-black text-[15px]">(₹{billTotal})</span>
+                      <span className="text-[#F96E8F] font-black text-sm">(₹{billTotal})</span>
                     </div>
                   </div>
                 ) : isUpi ? (
-                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-sm font-black text-gray-900 mt-2">
                     <span>Paid By</span>
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-gray-800">UPI</span>
@@ -519,7 +519,7 @@ Thank you for shopping with PEE KAA BOO!
                     </div>
                   </div>
                 ) : isNetBanking ? (
-                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-sm font-black text-gray-900 mt-2">
                     <span>Paid By</span>
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-gray-800">{paymentMethod}</span>
@@ -527,7 +527,7 @@ Thank you for shopping with PEE KAA BOO!
                     </div>
                   </div>
                 ) : isDebit ? (
-                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-sm font-black text-gray-900 mt-2">
                     <span>Paid By</span>
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-gray-800">Debit Card</span>
@@ -535,7 +535,7 @@ Thank you for shopping with PEE KAA BOO!
                     </div>
                   </div>
                 ) : isCredit ? (
-                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-sm font-black text-gray-900 mt-2">
                     <span>Paid By</span>
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-gray-800">Credit Card</span>
@@ -543,7 +543,7 @@ Thank you for shopping with PEE KAA BOO!
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-[14px] font-black text-gray-900 mt-2">
+                  <div className="bg-[#FFF0F4] border border-pink-200/80 rounded-[14px] p-3.5 flex justify-between items-center text-sm font-black text-gray-900 mt-2">
                     <span>Paid By</span>
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-gray-800">{paymentMethod}</span>
@@ -555,7 +555,7 @@ Thank you for shopping with PEE KAA BOO!
                 <button
                   onClick={handleDownloadInvoice}
                   disabled={downloadingInvoice}
-                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-[15px] py-3.5 px-6 rounded-[12px] flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer hover:scale-[1.02] active:scale-95 w-full mt-2"
+                  className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-extrabold text-sm py-3.5 px-6 rounded-[12px] flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer hover:scale-[1.02] active:scale-95 w-full mt-2"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

@@ -158,10 +158,10 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
         <div className="w-full relative pt-6 pb-20 sm:pb-28 flex flex-col items-center justify-center">
           {/* Breadcrumb & Heading */}
           <div className="text-center z-10 px-4">
-            <h1 className="text-[32px] md:text-[72px] font-black text-gray-900 mb-2 tracking-wide">
+            <h1 className="text-3xl md:text-7xl font-black text-gray-900 mb-2 tracking-wide">
               My <span className="text-[#F96E8F]">Cart</span>
             </h1>
-            <div className="text-[20px] md:text-base font-extrabold text-gray-800 flex items-center justify-center gap-2">
+            <div className="text-xl md:text-base font-extrabold text-gray-800 flex items-center justify-center gap-2">
               <button onClick={() => navigateTo('/')} className="hover:text-[#F96E8F] transition-colors cursor-pointer">
                 Home
               </button>
@@ -225,13 +225,13 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                     {/* Product Info */}
                     <div className="flex-1 text-left flex flex-col justify-between self-stretch py-0.5 sm:py-0">
                       <div>
-                        <h3 className="text-gray-900 font-bold sm:font-extrabold text-[18px] sm:text-[25px] leading-tight font-['Baloo_2']">
+                        <h3 className="text-gray-900 font-bold sm:font-extrabold text-lg sm:text-2xl leading-tight font-['Baloo_2']">
                           {item.title || 'Name of the product'}
                         </h3>
-                        <p className="text-gray-900 sm:text-gray-500 font-bold text-[12px] sm:text-[15px] mt-0.5 sm:mb-1">
+                        <p className="text-gray-900 sm:text-gray-500 font-bold text-xs sm:text-sm mt-0.5 sm:mb-1">
                           Product Code : {item.code || (item.id ? `64A288${item.id}` : '64A288075')}
                         </p>
-                        <p className="text-gray-900 sm:text-gray-700 font-extrabold text-[12px] sm:text-[17px] my-1.5 sm:mt-16 sm:mb-3">
+                        <p className="text-gray-900 sm:text-gray-700 font-extrabold text-xs sm:text-base my-1.5 sm:mt-16 sm:mb-3">
                           Expected Delivery Date : {getExpectedDeliveryDate()}
                         </p>
                       </div>
@@ -260,10 +260,10 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                       {/* Mobile Only Bottom Row (Prices on Left, Quantity on Right) */}
                       <div className="flex sm:hidden items-center justify-between mt-auto pt-1">
                         <div className="flex items-center gap-1.5">
-                          <del className="text-gray-400 font-bold text-[14px]">
+                          <del className="text-gray-400 font-bold text-sm">
                             ₹{item.oldPrice || 2000}
                           </del>
-                          <span className="text-[#F96E8F] font-black text-[24px] font-['Nunito']">
+                          <span className="text-[#F96E8F] font-black text-2xl font-['Nunito']">
                             ₹ {item.price || 1710}
                           </span>
                         </div>
@@ -292,10 +292,10 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
                     {/* Desktop Only Price Tag */}
                     <div className="hidden sm:flex sm:flex-row items-end justify-end mt-48 gap-1 text-right min-w-[100px]">
-                      <del className="text-gray-400 font-bold text-[20px]">
+                      <del className="text-gray-400 font-bold text-xl">
                         ₹{item.oldPrice || 2000}
                       </del>
-                      <span className="text-[#F96E8F] font-black text-[25px] font-['Nunito']">
+                      <span className="text-[#F96E8F] font-black text-2xl font-['Nunito']">
                         ₹ {item.price || 1710}
                       </span>
                     </div>
@@ -309,7 +309,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
             <div className="mt-4 sm:mt-8 flex flex-col items-center text-center gap-3">
               <button
                 onClick={() => navigateTo('/shop')}
-                className="text-[#F96E8F] font-bold text-[17px] sm:text-base hover:underline cursor-pointer transition-colors"
+                className="text-[#F96E8F] font-bold text-base sm:text-base hover:underline cursor-pointer transition-colors"
               >
                 Continue Shopping
               </button>
@@ -347,7 +347,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 <div className="w-10 h-10 rounded-full bg-[#FFFFFF] text-white flex items-center justify-center font-black">
                   <img src={discount} alt="" className={`h-[36px] w-[36px] ${cartItems.length === 0 ? 'grayscale opacity-60' : ''}`} />
                 </div>
-                <span className={`font-bold text-[21px] md:text-[28px] font-[Baloo_2] tracking-wide ${cartItems.length === 0 ? 'text-gray-400' : 'text-[#F96E8F]'}`}>
+                <span className={`font-bold text-xl md:text-3xl font-[Baloo_2] tracking-wide ${cartItems.length === 0 ? 'text-gray-400' : 'text-[#F96E8F]'}`}>
                   Apply Coupon
                 </span>
               </div>
@@ -363,7 +363,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                   }
                 }}
                 disabled={cartItems.length === 0}
-                className={`font-bold text-[16px] md:text-[21px] px-8 cursor-pointer ${cartItems.length === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#F96E8F] hover:underline'}`}
+                className={`font-bold text-base md:text-xl px-8 cursor-pointer ${cartItems.length === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#F96E8F] hover:underline'}`}
               >
                 {appliedCoupon ? 'Remove' : 'Apply'}
               </button>
@@ -376,8 +376,8 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                   <img src={discount} alt="" className={`h-[24px] w-[24px] ${cartItems.length === 0 ? 'grayscale opacity-60' : ''}`} />
                 </div>
                 <div>
-                  <h4 className={`font-[Baloo_2] font-bold text-[14px] md:text-[17px] uppercase ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-900'}`}>FLAT ₹1000</h4>
-                  <p className={`font-[Baloo_2] font-bold text-[12px] md:text-[15px] ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-800'}`}>Flat 1000 off on Preset jewellery</p>
+                  <h4 className={`font-[Baloo_2] font-bold text-sm md:text-base uppercase ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-900'}`}>FLAT ₹1000</h4>
+                  <p className={`font-[Baloo_2] font-bold text-xs md:text-sm ${cartItems.length === 0 ? 'text-gray-400' : 'text-gray-800'}`}>Flat 1000 off on Preset jewellery</p>
                 </div>
               </div>
               <button
@@ -393,7 +393,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                   }
                 }}
                 disabled={cartItems.length === 0}
-                className={`font-extrabold text-[12px] md:text-[14px] px-4 cursor-pointer ${cartItems.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-400 hover:underline'}`}
+                className={`font-extrabold text-xs md:text-sm px-4 cursor-pointer ${cartItems.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-400 hover:underline'}`}
               >
                 {appliedCoupon && appliedCouponCode === 'FLAT1000' ? 'Applied' : 'Apply'}
               </button>
@@ -403,7 +403,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
             {showCouponInput && (
               <div className="border-2 border-dashed border-[#F96E8F] bg-[#FFF5F7] rounded-xl p-4 flex flex-col gap-3 shadow-sm transition-all duration-300">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[16px] text-gray-800 font-['Baloo_2']">Enter Coupon Code</span>
+                  <span className="font-bold text-base text-gray-800 font-['Baloo_2']">Enter Coupon Code</span>
                   <button
                     onClick={() => { setShowCouponInput(false); setCouponError(''); }}
                     className="text-gray-400 hover:text-gray-600 font-bold text-sm cursor-pointer"
@@ -478,7 +478,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 setShowCouponInput(!showCouponInput);
               }}
               disabled={cartItems.length === 0}
-              className={`w-full font-medium py-3 rounded-b-xl text-[15px] font-[Nunito] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2 ${
+              className={`w-full font-medium py-3 rounded-b-xl text-sm font-[Nunito] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2 ${
                 cartItems.length === 0
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60 border border-gray-200 border-t-0'
                   : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer'
@@ -492,13 +492,13 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
               <div className="flex justify-between items-center text-sm font-extrabold text-gray-900">
                 <div className="flex items-center gap-3">
                   <img src={location} alt="" className='h-[24px] w-[24px]' />
-                  <span className="text-[15px] font-[Baloo_2]">
+                  <span className="text-sm font-[Baloo_2]">
                     {pincode && pincodeLocation ? `Deliver to ${pincodeLocation.area}, ${pincodeLocation.district}` : 'Check Delivery Availability'}
                   </span>
                 </div>
                 <button
                   onClick={() => setIsChangingPincode(!isChangingPincode)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer font-bold text-[15px] font-[Baloo_2]"
+                  className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer font-bold text-sm font-[Baloo_2]"
                 >
                   {pincode ? 'Change Pincode' : 'Enter Pincode'}
                 </button>
@@ -540,23 +540,23 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
               {/* Pincode API Result */}
               {pincodeStatus === 'loading' && (
-                <div className="text-blue-500 font-bold text-[13px] mt-3 flex items-center gap-2">
+                <div className="text-blue-500 font-bold text-xs mt-3 flex items-center gap-2">
                   <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                   Checking delivery availability...
                 </div>
               )}
               {pincodeStatus === 'available' && pincodeLocation && (
-                <div className="text-green-600 font-bold text-[13px] mt-3">
+                <div className="text-green-600 font-bold text-xs mt-3">
                   ✓ Delivery available to {pincodeLocation.area}, {pincodeLocation.district}, {pincodeLocation.state}
                 </div>
               )}
               {pincodeStatus === 'unavailable' && pincodeLocation && (
-                <div className="text-red-500 font-bold text-[13px] mt-3">
+                <div className="text-red-500 font-bold text-xs mt-3">
                   ✕ Delivery not available to {pincodeLocation.state}. We deliver to Tamil Nadu, Andhra Pradesh, Kerala & Karnataka.
                 </div>
               )}
               {pincodeStatus === 'error' && (
-                <div className="text-red-500 font-bold text-[13px] mt-3">
+                <div className="text-red-500 font-bold text-xs mt-3">
                   ✕ Invalid pincode. Please enter a valid 6-digit pincode.
                 </div>
               )}
@@ -567,29 +567,29 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
               className="hidden lg:flex rounded-xl p-6 bg-white shadow-xs flex-col gap-5 mt-2"
               style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100%25\' height=\'100%25\' fill=\'none\' rx=\'12\' ry=\'12\' stroke=\'%23F96E8F\' stroke-width=\'2\' stroke-dasharray=\'14%2c 14\' stroke-dashoffset=\'0\' stroke-linecap=\'square\'/%3e%3c/svg%3e")' }}
             >
-              <div className="flex justify-between items-center text-[17px] font-[Baloo_2] font-black text-gray-800">
+              <div className="flex justify-between items-center text-base font-[Baloo_2] font-black text-gray-800">
                 <span>Item Total</span>
                 <span className="font-black">₹{displayItemTotal}</span>
               </div>
 
-              <div className="flex justify-between items-center text-[17px] font-[Baloo_2] font-black text-gray-800">
+              <div className="flex justify-between items-center text-base font-[Baloo_2] font-black text-gray-800">
                 <span>You Saved</span>
                 <span className="font-black">-₹{displaySaved}</span>
               </div>
 
-              <div className="flex justify-between items-center text-[17px] font-[Baloo_2] font-black text-gray-800">
+              <div className="flex justify-between items-center text-base font-[Baloo_2] font-black text-gray-800">
                 <span>Coupon Discount</span>
                 <span className="font-black">₹{couponDiscount}</span>
               </div>
 
-              <div className="flex justify-between items-center text-[17px] font-[Baloo_2] font-black text-gray-800">
+              <div className="flex justify-between items-center text-base font-[Baloo_2] font-black text-gray-800">
                 <span>Shipping (standard)</span>
                 <span className="font-black uppercase">FREE</span>
               </div>
 
               <div className="border-t-2 border-gray-400 my-1"></div>
 
-              <div className="flex justify-between items-center text-[17px] font-[Baloo_2] font-black text-gray-900">
+              <div className="flex justify-between items-center text-base font-[Baloo_2] font-black text-gray-900">
                 <span>Bill Total</span>
                 <span className="font-black">₹{displayBillTotal}</span>
               </div>
@@ -606,16 +606,16 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100 py-3 px-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3">
         {/* Left: Prices & Info Icon */}
         <div className="flex flex-col justify-center">
-          <del className="text-gray-400 font-bold text-[13px] leading-tight">
+          <del className="text-gray-400 font-bold text-xs leading-tight">
             ₹{displayItemTotal}
           </del>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[#F96E8F] font-black text-[22px] leading-none font-['Nunito']">
+            <span className="text-[#F96E8F] font-black text-xl leading-none font-['Nunito']">
               ₹ {displayBillTotal}
             </span>
             <button
               onClick={() => setShowOrderSummaryModal(!showOrderSummaryModal)}
-              className={`w-4.5 h-4.5 rounded-full text-white text-[10px] font-bold inline-flex items-center justify-center cursor-pointer transition-colors shadow-2xs font-['Nunito'] ${
+              className={`w-4.5 h-4.5 rounded-full text-white text-xs font-bold inline-flex items-center justify-center cursor-pointer transition-colors shadow-2xs font-['Nunito'] ${
                 showOrderSummaryModal ? 'bg-[#F96E8F]' : 'bg-[#7C8894] hover:bg-[#5A6570]'
               }`}
               aria-label="Order Summary Info"
@@ -634,7 +634,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
             }
           }}
           disabled={cartItems.length === 0}
-          className={`text-white px-6 py-3 rounded-[12px] font-bold text-[15px] shadow-sm transition-all tracking-wide ${cartItems.length === 0
+          className={`text-white px-6 py-3 rounded-[12px] font-bold text-sm shadow-sm transition-all tracking-wide ${cartItems.length === 0
               ? 'bg-gray-400 cursor-not-allowed opacity-70'
               : 'bg-[#F96E8F] hover:bg-[#E44971] active:scale-[0.98] cursor-pointer'
             }`}
@@ -663,7 +663,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
       >
         {/* Modal Header */}
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[19px] font-black text-gray-900 font-['Baloo_2']">
+          <h3 className="text-lg font-black text-gray-900 font-['Baloo_2']">
             Order <span className="text-[#F96E8F]">Summary</span>
           </h3>
           <button
@@ -677,29 +677,29 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
         {/* Bill Rows */}
         <div className="flex flex-col gap-2.5">
-          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+          <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
             <span>Item Total</span>
             <span className="font-extrabold text-gray-900">₹{displayItemTotal}</span>
           </div>
 
-          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+          <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
             <span>You Saved</span>
             <span className="font-extrabold text-gray-900">-₹{displaySaved}</span>
           </div>
 
-          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+          <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
             <span>Coupon Discount</span>
             <span className="font-extrabold text-gray-900">₹{couponDiscount}</span>
           </div>
 
-          <div className="flex justify-between items-center text-[15px] font-bold text-gray-800 font-['Baloo_2']">
+          <div className="flex justify-between items-center text-sm font-bold text-gray-800 font-['Baloo_2']">
             <span>Shipping (standard)</span>
             <span className="font-extrabold text-gray-900">FREE</span>
           </div>
 
           <hr className="border-t border-gray-400 my-1" />
 
-          <div className="flex justify-between items-center text-[16px] font-black text-gray-900 font-['Baloo_2']">
+          <div className="flex justify-between items-center text-base font-black text-gray-900 font-['Baloo_2']">
             <span>Bill Total</span>
             <span className="font-black text-gray-900">₹{displayBillTotal}</span>
           </div>
@@ -726,7 +726,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
             </div>
           )}
           <div className="flex flex-col text-left">
-            <span className="text-[#F96E8F] text-[15px] font-black uppercase tracking-wider font-['Baloo_2']">
+            <span className="text-[#F96E8F] text-sm font-black uppercase tracking-wider font-['Baloo_2']">
               {toastType === 'removed' ? 'Item Removed' : 'Cart Updated'}
             </span>
             <span className="text-gray-500 text-xs font-semibold">

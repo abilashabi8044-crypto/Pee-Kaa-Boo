@@ -42,22 +42,22 @@ const LoginPopup2 = ({ onClose }) => {
 
                         <div className="relative z-10">
                             <div className="flex items-center gap-4 mb-1">
-                                <span className="text-[#333333] font-bold text-[20px] md:text-[24px]">Summer</span>
+                                <span className="text-[#333333] font-bold text-xl md:text-2xl">Summer</span>
                                 <div className="w-[50px] h-[2px] bg-[#A881DB]/40"></div>
                             </div>
 
-                            <h1 className="text-[55px] md:text-[75px] font-['Lobster_Two'] font-bold leading-[1] text-[#A881DB] mb-1 drop-shadow-[2px_2px_0px_#F49800]">
+                            <h1 className="text-6xl md:text-7xl font-['Lobster_Two'] font-bold leading-[1] text-[#A881DB] mb-1 drop-shadow-[2px_2px_0px_#F49800]">
                                 SALE OFF
                             </h1>
 
-                            <h3 className="font-['Lobster_Two'] font-bold text-[16px] md:text-[22px] text-[#333333] mb-8">
+                            <h3 className="font-['Lobster_Two'] font-bold text-base md:text-xl text-[#333333] mb-8">
                                 Anything for your kids
                             </h3>
 
                             {/* Custom Double Border Button */}
                             <div className="relative inline-block mt-2 mb-4 group cursor-pointer w-fit">
                                 <div className="absolute inset-0 bg-transparent border-[2px] border-[#333333] rounded-[4px] translate-x-2 translate-y-2 group-hover:translate-x-1 group-hover:translate-y-1 transition-transform"></div>
-                                <button className="relative bg-[#Fdfdfd] border-[2px] border-[#333333] px-8 py-3.5 rounded-[4px] font-bold text-[#333333] text-[16px] tracking-wide transition-transform shadow-sm">
+                                <button className="relative bg-[#Fdfdfd] border-[2px] border-[#333333] px-8 py-3.5 rounded-[4px] font-bold text-[#333333] text-base tracking-wide transition-transform shadow-sm">
                                     View All Deals
                                 </button>
                             </div>
@@ -69,10 +69,10 @@ const LoginPopup2 = ({ onClose }) => {
                                 <img src={vector5} className='absolute inset-0 w-full h-full drop-shadow-md text-[#FFD700] fill-current' />
                                 
                                 <div className="relative z-10 flex flex-col items-center justify-center text-center mt-1">
-                                    <span className="text-[#333333] font-bold text-[13px] uppercase tracking-wider mb-0 leading-none">UP TO</span>
+                                    <span className="text-[#333333] font-bold text-xs uppercase tracking-wider mb-0 leading-none">UP TO</span>
                                     <div className="flex items-start justify-center">
-                                        <span className="text-[#A881DB] font-black text-[42px] leading-none tracking-tighter">60</span>
-                                        <div className="flex flex-col text-[#333333] font-bold text-[12px] leading-[1] ml-1 mt-1.5">
+                                        <span className="text-[#A881DB] font-black text-4xl leading-none tracking-tighter">60</span>
+                                        <div className="flex flex-col text-[#333333] font-bold text-xs leading-[1] ml-1 mt-1.5">
                                             <span>%</span>
                                             <span>OFF</span>
                                         </div>

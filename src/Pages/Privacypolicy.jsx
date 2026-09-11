@@ -13,16 +13,16 @@ export default function Privacypolicy({ cartItems = [] }) {
 
             <main className="flex-grow max-w-[1000px] mx-auto px-6 py-12 md:py-16">
                 <div className="bg-white rounded-[24px] p-8 md:p-12 shadow-sm border border-gray-200">
-                    <h1 className="text-[32px] md:text-[42px] font-black text-gray-900 mb-2 leading-none text-center">
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2 leading-none text-center">
                         PRIVACY <span className="text-[#F96E8F]">POLICY</span>
                     </h1>
-                    <p className="text-gray-400 font-extrabold text-[14px] text-center mb-10 tracking-wide font-['Nunito']">
+                    <p className="text-gray-400 font-extrabold text-sm text-center mb-10 tracking-wide font-['Nunito']">
                         Learn about our PRIVACY POLICY and how we protect your personal information.
                     </p>
 
-                    <div className="text-gray-700 font-['Nunito'] text-[15px] leading-relaxed space-y-8">
+                    <div className="text-gray-700 font-['Nunito'] text-sm leading-relaxed space-y-8">
                         <div>
-                            <h2 className="text-[20px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h2 className="text-xl font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 Privacy Policy – PEE KAA BOO
                             </h2>
                             <p>
@@ -32,7 +32,7 @@ export default function Privacypolicy({ cartItems = [] }) {
 
                         {/* Section 1 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 1. Information We Collect
                             </h3>
                             
@@ -67,7 +67,7 @@ export default function Privacypolicy({ cartItems = [] }) {
 
                         {/* Section 2 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 2. How We Use Your Information
                             </h3>
                             <ul className="list-disc pl-5 space-y-2">
@@ -82,7 +82,7 @@ export default function Privacypolicy({ cartItems = [] }) {
 
                         {/* Section 3 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 3. Information Sharing
                             </h3>
                             <p className="mb-3">We may share your data with:</p>
@@ -102,7 +102,7 @@ export default function Privacypolicy({ cartItems = [] }) {
 
                         {/* Section 4 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 4. Your Rights & Choices
                             </h3>
                             <ul className="list-disc pl-5 space-y-1">
@@ -113,7 +113,7 @@ export default function Privacypolicy({ cartItems = [] }) {
 
                         {/* Section 5 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 5. Data Security
                             </h3>
                             <p>
@@ -123,7 +123,7 @@ export default function Privacypolicy({ cartItems = [] }) {
 
                         {/* Section 6 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 6. External Links
                             </h3>
                             <p>
@@ -133,7 +133,7 @@ export default function Privacypolicy({ cartItems = [] }) {
 
                         {/* Section 7 */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 7. Policy Updates
                             </h3>
                             <p>

@@ -13,16 +13,16 @@ export default function Returnpolicy({ cartItems = [] }) {
 
             <main className="flex-grow max-w-[1000px] mx-auto px-6 py-12 md:py-16">
                 <div className="bg-white rounded-[24px] p-8 md:p-12 shadow-sm border border-gray-200">
-                    <h1 className="text-[32px] md:text-[42px] font-black text-gray-900 mb-2 leading-none text-center">
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2 leading-none text-center">
                         RETURN <span className="text-[#F96E8F]">POLICY</span>
                     </h1>
-                    <p className="text-gray-400 font-extrabold text-[14px] text-center mb-10 tracking-wide font-['Nunito']">
+                    <p className="text-gray-400 font-extrabold text-sm text-center mb-10 tracking-wide font-['Nunito']">
                         Learn how we protect your personal information and handle product returns.
                     </p>
 
-                    <div className="text-gray-700 font-['Nunito'] text-[15px] leading-relaxed space-y-8">
+                    <div className="text-gray-700 font-['Nunito'] text-sm leading-relaxed space-y-8">
                         <div>
-                            <h2 className="text-[20px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h2 className="text-xl font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 Returns, Refunds & Exchange Policy
                             </h2>
                             <p>
@@ -32,7 +32,7 @@ export default function Returnpolicy({ cartItems = [] }) {
 
                         {/* Sections */}
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 1. Return Policy
                             </h3>
                             <p className="mb-3">
@@ -61,7 +61,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 2. Important Unboxing Requirement
                             </h3>
                             <p className="mb-3">
@@ -84,7 +84,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 3. Product Condition Guidelines
                             </h3>
                             <p className="mb-3">
@@ -101,7 +101,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 4. Missing or Incomplete Returns
                             </h3>
                             <p>
@@ -110,7 +110,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 5. Refund Policy
                             </h3>
                             <p className="mb-3">
@@ -126,7 +126,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 6. Replacement & Exchange
                             </h3>
                             <p className="mb-2">
@@ -141,7 +141,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 7. Return Process
                             </h3>
                             <p className="mb-3">
@@ -153,7 +153,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 8. Reverse Pickup Limitations
                             </h3>
                             <p>
@@ -162,7 +162,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 9. Fair Usage & Fraud Prevention
                             </h3>
                             <p>
@@ -171,7 +171,7 @@ export default function Returnpolicy({ cartItems = [] }) {
                         </div>
 
                         <div className="border-t border-dashed border-gray-200 pt-6">
-                            <h3 className="text-[18px] font-black text-gray-900 mb-3 font-['Baloo_2']">
+                            <h3 className="text-lg font-black text-gray-900 mb-3 font-['Baloo_2']">
                                 10. Policy Updates
                             </h3>
                             <p>

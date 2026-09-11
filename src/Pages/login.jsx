@@ -172,29 +172,29 @@ export default function Login() {
                     {/* Mobile-Only Card Decorators */}
                     <img src={bunnyImg} alt="" className="block md:hidden absolute -top-[10vw] right-[2vw] w-[15vw] z-30 object-contain pointer-events-none" />
 
-                    <h1 className="text-white text-[32px] md:text-[40px] font-bold text-center mb-[15px] leading-none tracking-wide">Login</h1>
+                    <h1 className="text-white text-3xl md:text-4xl font-bold text-center mb-[15px] leading-none tracking-wide">Login</h1>
 
                     <div className="mb-[15px]">
-                        <label className="text-white text-[14px] font-bold mb-[5px] block">Email</label>
+                        <label className="text-white text-sm font-bold mb-[5px] block">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => handleEmailChange(e.target.value)}
                             placeholder="username@gmail.com"
-                            className={`w-full h-[45px] rounded-[10px] px-[15px] text-[14px] text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${emailError ? 'border-[#FF5252]' : 'border-transparent'}`}
+                            className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${emailError ? 'border-[#FF5252]' : 'border-transparent'}`}
                         />
-                        {emailError && <p className="text-[#FF5252] text-[12.5px] font-bold mt-[4px]">{emailError}</p>}
+                        {emailError && <p className="text-[#FF5252] text-xs font-bold mt-[4px]">{emailError}</p>}
                     </div>
 
                     <div className="mb-[5px]">
-                        <label className="text-white text-[14px] font-bold mb-[5px] block">Password</label>
+                        <label className="text-white text-sm font-bold mb-[5px] block">Password</label>
                         <div className="relative">
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => handlePasswordChange(e.target.value)}
                                 placeholder="Password"
-                                className={`w-full h-[45px] rounded-[10px] px-[15px] text-[14px] text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${passwordError ? 'border-[#FF5252]' : 'border-transparent'}`}
+                                className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${passwordError ? 'border-[#FF5252]' : 'border-transparent'}`}
                             />
                             {/* Eye Icon placeholder */}
                             <span className="absolute right-[15px] top-[12px] text-gray-400 cursor-pointer">
@@ -204,21 +204,21 @@ export default function Login() {
                                 </svg>
                             </span>
                         </div>
-                        {passwordError && <p className="text-[#FF5252] text-[12.5px] font-bold mt-[4px]">{passwordError}</p>}
+                        {passwordError && <p className="text-[#FF5252] text-xs font-bold mt-[4px]">{passwordError}</p>}
                     </div>
 
                     <div className="mb-[20px]">
-                        <a href="#" onClick={handleForgotPassword} className="text-white text-[12px] font-bold hover:underline">Forgot Password?</a>
+                        <a href="#" onClick={handleForgotPassword} className="text-white text-xs font-bold hover:underline">Forgot Password?</a>
                     </div>
 
                     <button
                         onClick={handleLogin}
-                        className="w-full h-[45px] bg-[#04BCC6] text-white text-[18px] font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md cursor-pointer"
+                        className="w-full h-[45px] bg-[#04BCC6] text-white text-lg font-bold rounded-[10px] transition-transform hover:scale-[1.02] shadow-md cursor-pointer"
                     >
                         Sign in
                     </button>
 
-                    <p className="text-white text-[12px] text-center my-[15px] font-bold">or continue with</p>
+                    <p className="text-white text-xs text-center my-[15px] font-bold">or continue with</p>
 
                     <div className="flex justify-between gap-[10px]">
                         <button className="flex-1 h-[45px] bg-white rounded-[10px] flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm">
@@ -242,7 +242,7 @@ export default function Login() {
                         </button>
                     </div>
 
-                    <p className="text-white text-[12px] text-center mt-[20px] font-bold">
+                    <p className="text-white text-xs text-center mt-[20px] font-bold">
                         Don't have an account yet? <a href="#" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/signup'); window.dispatchEvent(new Event('popstate')); }} className="underline hover:text-gray-200">Register For Free</a>
                     </p>
                 </div>
