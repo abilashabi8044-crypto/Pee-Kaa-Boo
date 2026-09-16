@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from '../redux/wishlistSlice';
+import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from '../redux/wishlistReducer';
 import { gridItems } from '../Pages/Shop';
 import arrowLeft from '../assets/product/arrow-l.png';
 import arrowRight from '../assets/product/arrow-r.png';

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart as addToCartAction, updateQuantity as updateQuantityAction, selectCartItems, clearCart } from './redux/cartSlice';
-import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from './redux/wishlistSlice';
-import { addOrders as addOrdersAction, selectOrders } from './redux/ordersSlice';
+import { addToCart as addToCartAction, updateQuantity as updateQuantityAction, selectCartItems, clearCart } from './redux/cartReducer';
+import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from './redux/wishlistReducer';
+import { addOrders as addOrdersAction, selectOrders } from './redux/ordersReducer';
 import Header from './components/Header';
 import Login from './Pages/login';
 import Signup from './Pages/Signup';

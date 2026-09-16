@@ -1,7 +1,7 @@
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import React, { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from '../redux/wishlistSlice';
+import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from '../redux/wishlistReducer';
 import Header from '../components/Header';
 
 // Assets

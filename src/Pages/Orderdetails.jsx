@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectOrders, selectLatestOrder, cancelOrder as cancelOrderAction } from '../redux/ordersSlice';
-import { selectCartItems } from '../redux/cartSlice';
-import { selectWishlistItems } from '../redux/wishlistSlice';
+import { selectOrders, selectLatestOrder, cancelOrder as cancelOrderAction } from '../redux/ordersReducer';
+import { selectCartItems } from '../redux/cartReducer';
+import { selectWishlistItems } from '../redux/wishlistReducer';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import upiIcon from '../assets/checkout/upi-id 1.png';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectOrders, cancelOrder as cancelOrderAction } from '../redux/ordersSlice';
-import { addToCart as addToCartAction } from '../redux/cartSlice';
+import { selectOrders, cancelOrder as cancelOrderAction } from '../redux/ordersReducer';
+import { addToCart as addToCartAction } from '../redux/cartReducer';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 

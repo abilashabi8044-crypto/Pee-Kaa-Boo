@@ -1,8 +1,8 @@
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { addOrders as addOrdersAction } from '../redux/ordersSlice';
-import { clearCart } from '../redux/cartSlice';
+import { addOrders as addOrdersAction } from '../redux/ordersReducer';
+import { clearCart } from '../redux/cartReducer';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
