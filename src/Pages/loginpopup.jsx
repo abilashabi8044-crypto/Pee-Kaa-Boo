@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import asset1 from '../assets/Loginpopup/Asset 1.png';
-import vector1 from '../assets/Loginpopup/Vector (1).png';
-import vector2 from '../assets/Loginpopup/Vector (2).png';
+import vector1 from '../assets/Loginpopup/Vector1.png';
+import vector2 from '../assets/Loginpopup/Vector2.png';
 import closeBtn from '../assets/Loginpopup/close.png';
-import vector3 from '../assets/Loginpopup/vector (3).png';
+import vector3 from '../assets/Loginpopup/vector3.png';
 
 const LoginPopup = ({ onClose }) => {
     const [email, setEmail] = useState('');
