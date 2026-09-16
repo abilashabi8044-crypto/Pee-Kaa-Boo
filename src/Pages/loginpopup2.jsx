@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import frameImage from '../assets/Loginpopup2/Frame 1000003579.png';
-import vector4 from '../assets/Loginpopup2/Vector (4).png';
-import vector5 from '../assets/Loginpopup2/Vector (5).png';
+import vector4 from '../assets/Loginpopup2/Vector4.png';
+import vector5 from '../assets/Loginpopup2/Vector5.png';
 import closeBtn from '../assets/Loginpopup2/close.png';
 
 const LoginPopup2 = ({ onClose }) => {

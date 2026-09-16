@@ -10,8 +10,6 @@ import headerBg from '../assets/cart/shop-bg.png';
 import shopMobBg from '../assets/shop/shop-mob-bg.png';
 import cloud from '../assets/shop/cloud.png';
 import prod1 from '../assets/shop/62741597f1c25de37c22ae67896b59fca2148f7e.jpg';
-import arrowLeft from '../assets/product/arrow-l.png';
-import arrowRight from '../assets/product/arrow-r.png';
 import discount from '../assets/cart/discount.png';
 import location from '../assets/cart/location.png';
 import { gridItems } from './Shop';
