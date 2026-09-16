@@ -5,6 +5,10 @@ import { store } from './redux/store'
 import './index.css'
 import App from './App.jsx'
 
+if (typeof window !== 'undefined') {
+  window.store = store;
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
