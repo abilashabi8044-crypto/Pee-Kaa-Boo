@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { selectCartCount } from '../redux/cartReducer';
-import { selectWishlistCount } from '../redux/wishlistReducer';
+import { selectCartCount } from '../redux/reducers/cartReducer';
+import { selectWishlistCount } from '../redux/reducers/wishlistReducer';
 import { gridItems } from '../Pages/Shop';
 import logo from '../assets/Header/peekaaboo.png';
 import profile from '../assets/Header/profile.png';

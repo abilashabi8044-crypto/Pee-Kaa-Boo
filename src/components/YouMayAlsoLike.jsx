@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from '../redux/wishlistReducer';
+import { toggleWishlist as toggleWishlistAction } from '../redux/actions/wishlistActions';
+import { selectWishlistItems } from '../redux/reducers/wishlistReducer';
 import { gridItems } from '../Pages/Shop';
 import arrowLeft from '../assets/product/arrow-l.png';
 import arrowRight from '../assets/product/arrow-r.png';
@@ -41,7 +42,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
     const navigateToProduct = (item) => {
         try {
             localStorage.setItem('pkb_selected_product', JSON.stringify(item));
-        } catch (err) {}
+        } catch (err) { }
         window.dispatchEvent(new CustomEvent('pkb_select_product', { detail: item }));
         if (window.location.pathname !== '/product') {
             window.history.pushState({}, '', '/product');
@@ -101,9 +102,8 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                                     <button
                                         onClick={(e) => handleWishlistClick(e, item)}
                                         title="Add to Wishlist"
-                                        className={`w-9 h-9 text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer ${
-                                            itemWishlisted ? 'bg-[#F96E8F]' : 'bg-[#00D0CC] hover:bg-[#00b3b0]'
-                                        }`}
+                                        className={`w-9 h-9 text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer ${itemWishlisted ? 'bg-[#F96E8F]' : 'bg-[#00D0CC] hover:bg-[#00b3b0]'
+                                            }`}
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={itemWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                                             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
@@ -154,8 +154,8 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                                                 }, 2000);
                                             }}
                                             className={`w-full py-2.5 px-4 border-2 border-[#F96E8F] rounded-full font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center shadow-xs ${addedItems[item.id || index]
-                                                    ? 'bg-[#F96E8F] text-white border-solid scale-95'
-                                                    : 'border-dashed text-[#F96E8F] hover:bg-[#F96E8F] hover:text-white hover:border-solid active:scale-95'
+                                                ? 'bg-[#F96E8F] text-white border-solid scale-95'
+                                                : 'border-dashed text-[#F96E8F] hover:bg-[#F96E8F] hover:text-white hover:border-solid active:scale-95'
                                                 }`}
                                         >
                                             {addedItems[item.id || index] ? (

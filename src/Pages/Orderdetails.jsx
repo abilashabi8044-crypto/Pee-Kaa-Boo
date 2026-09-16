@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectOrders, selectLatestOrder, cancelOrder as cancelOrderAction } from '../redux/ordersReducer';
-import { selectCartItems } from '../redux/cartReducer';
-import { selectWishlistItems } from '../redux/wishlistReducer';
+import { cancelOrder as cancelOrderAction } from '../redux/actions/ordersActions';
+import { selectOrders, selectLatestOrder } from '../redux/reducers/ordersReducer';
+import { selectCartItems } from '../redux/reducers/cartReducer';
+import { selectWishlistItems } from '../redux/reducers/wishlistReducer';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import upiIcon from '../assets/checkout/upi-id 1.png';
@@ -89,18 +90,18 @@ const Orderdetails = () => {
   // Dynamic products list
   const displayItems = activeOrder?.items && activeOrder.items.length > 0
     ? activeOrder.items.map((item, idx) => ({
-        id: item.id || `item-${idx}`,
-        title: item.title || item.name || 'Product',
-        code: item.code || (item.id ? `64A288${item.id}` : '64A288075'),
-        image: item.image || prod1,
-        orderDate: item.orderDate || (activeOrder.date ? new Date(activeOrder.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB')),
-        qty: item.quantity || item.qty || 1,
-        oldPrice: Number(item.oldPrice) || Number(item.price) || 0,
-        price: Number(item.price) || 0,
-        status: item.status || activeOrder.status || 'active'
-      }))
+      id: item.id || `item-${idx}`,
+      title: item.title || item.name || 'Product',
+      code: item.code || (item.id ? `64A288${item.id}` : '64A288075'),
+      image: item.image || prod1,
+      orderDate: item.orderDate || (activeOrder.date ? new Date(activeOrder.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB')),
+      qty: item.quantity || item.qty || 1,
+      oldPrice: Number(item.oldPrice) || Number(item.price) || 0,
+      price: Number(item.price) || 0,
+      status: item.status || activeOrder.status || 'active'
+    }))
     : activeOrder?.title || activeOrder?.name
-    ? [{
+      ? [{
         id: activeOrder.id || 'order-1',
         title: activeOrder.title || activeOrder.name || 'Product',
         code: activeOrder.code || (activeOrder.id ? `64A288${activeOrder.id}` : '64A288075'),
@@ -111,7 +112,7 @@ const Orderdetails = () => {
         price: Number(activeOrder.price) || 0,
         status: activeOrder.status || 'active'
       }]
-    : [];
+      : [];
 
   const orderId = activeOrder?.orderId || activeOrder?.id || '123456789';
   const isCancelled = activeOrder?.status === 'cancelled';
@@ -200,7 +201,7 @@ Thank you for shopping with PEE KAA BOO!
 
       <main className="flex-grow w-full py-8 sm:py-12 md:py-16">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 md:px-8">
-          
+
           {/* Main Title */}
           <div className="text-center mb-8 md:mb-12">
             <h1 className="text-4xl sm:text-5xl md:text-5xl font-black text-gray-900 tracking-wide">
@@ -218,13 +219,13 @@ Thank you for shopping with PEE KAA BOO!
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             {/* Left Column */}
             <div className="lg:col-span-7 flex flex-col gap-6">
-              
+
               {/* Top Arriving & Products Card */}
               <div className="bg-[#F4FCFF] rounded-[24px] p-5 sm:p-7 border border-blue-100/70 shadow-xs flex flex-col gap-5">
-                
+
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
@@ -301,11 +302,10 @@ Thank you for shopping with PEE KAA BOO!
                   <button
                     onClick={handleCancelOrder}
                     disabled={isCancelled}
-                    className={`font-extrabold text-sm py-2.5 px-8 rounded-[10px] transition-all shadow-sm ${
-                      isCancelled
+                    className={`font-extrabold text-sm py-2.5 px-8 rounded-[10px] transition-all shadow-sm ${isCancelled
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
                         : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer hover:scale-105 active:scale-95'
-                    }`}
+                      }`}
                   >
                     {isCancelled ? 'Order Cancelled' : 'Cancel order'}
                   </button>
@@ -322,65 +322,64 @@ Thank you for shopping with PEE KAA BOO!
                 {/* Steps Tracker */}
                 <div className="overflow-x-auto pb-4 hide-scrollbar">
                   <div className="relative flex items-center justify-between px-2 sm:px-6 min-w-[550px] sm:min-w-full">
-                  
-                  {/* Connecting Horizontal Line */}
-                  <div className="absolute top-6 left-12 right-12 sm:left-12 sm:right-12 h-[2px] bg-gray-300 z-0"></div>
 
-                  {/* Step 1 */}
-                  <div className="flex flex-col items-center text-center relative z-10">
-                    <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3 ${
-                      isCancelled ? 'bg-red-500' : 'bg-[#F96E8F]'
-                    }`}>
-                      1
+                    {/* Connecting Horizontal Line */}
+                    <div className="absolute top-6 left-12 right-12 sm:left-12 sm:right-12 h-[2px] bg-gray-300 z-0"></div>
+
+                    {/* Step 1 */}
+                    <div className="flex flex-col items-center text-center relative z-10">
+                      <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3 ${isCancelled ? 'bg-red-500' : 'bg-[#F96E8F]'
+                        }`}>
+                        1
+                      </div>
+                      <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
+                        {isCancelled ? 'Cancelled' : 'Order Dispatch'}
+                      </span>
+                      <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
+                        {isCancelled ? 'Terminated' : 'Processing'}
+                      </span>
                     </div>
-                    <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
-                      {isCancelled ? 'Cancelled' : 'Order Dispatch'}
-                    </span>
-                    <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
-                      {isCancelled ? 'Terminated' : 'Processing'}
-                    </span>
-                  </div>
 
-                  {/* Step 2 */}
-                  <div className="flex flex-col items-center text-center relative z-10">
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
-                      2
+                    {/* Step 2 */}
+                    <div className="flex flex-col items-center text-center relative z-10">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
+                        2
+                      </div>
+                      <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
+                        Order Shipped
+                      </span>
+                      <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
+                        Pending
+                      </span>
                     </div>
-                    <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
-                      Order Shipped
-                    </span>
-                    <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
-                      Pending
-                    </span>
-                  </div>
 
-                  {/* Step 3 */}
-                  <div className="flex flex-col items-center text-center relative z-10">
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
-                      3
+                    {/* Step 3 */}
+                    <div className="flex flex-col items-center text-center relative z-10">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
+                        3
+                      </div>
+                      <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
+                        Out For Delivery
+                      </span>
+                      <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
+                        Pending
+                      </span>
                     </div>
-                    <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
-                      Out For Delivery
-                    </span>
-                    <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
-                      Pending
-                    </span>
-                  </div>
 
-                  {/* Step 4 */}
-                  <div className="flex flex-col items-center text-center relative z-10">
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
-                      4
+                    {/* Step 4 */}
+                    <div className="flex flex-col items-center text-center relative z-10">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#2B2B2B] text-white flex items-center justify-center font-black text-base sm:text-lg shadow-sm mb-3">
+                        4
+                      </div>
+                      <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
+                        Delivered
+                      </span>
+                      <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
+                        Pending
+                      </span>
                     </div>
-                    <span className="font-extrabold text-xs sm:text-sm text-gray-900 whitespace-nowrap">
-                      Delivered
-                    </span>
-                    <span className="text-xs sm:text-xs font-bold text-gray-400 mt-0.5">
-                      Pending
-                    </span>
-                  </div>
 
-                </div>
+                  </div>
                 </div>
               </div>
 
@@ -411,9 +410,8 @@ Thank you for shopping with PEE KAA BOO!
                         title={`${star} Star${star > 1 ? 's' : ''}`}
                       >
                         <svg
-                          className={`w-7 h-7 sm:w-9 sm:h-9 transition-colors ${
-                            isFilled ? 'text-[#F96E8F] fill-[#F96E8F]' : 'text-gray-400 fill-gray-400 hover:text-pink-300'
-                          }`}
+                          className={`w-7 h-7 sm:w-9 sm:h-9 transition-colors ${isFilled ? 'text-[#F96E8F] fill-[#F96E8F]' : 'text-gray-400 fill-gray-400 hover:text-pink-300'
+                            }`}
                           viewBox="0 0 24 24"
                         >
                           <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
@@ -428,7 +426,7 @@ Thank you for shopping with PEE KAA BOO!
 
             {/* Right Column */}
             <div className="lg:col-span-5 flex flex-col gap-6">
-              
+
               {/* Delivery Details Card */}
               <div className="bg-white rounded-[24px] p-6 shadow-xs border border-pink-200/80 font-['Nunito']">
                 <h3 className="font-extrabold text-lg sm:text-xl text-gray-900 mb-4">

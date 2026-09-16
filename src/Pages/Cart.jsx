@@ -36,6 +36,7 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 640 : false);
   const [toastTrigger, setToastTrigger] = useState(0);
   const [toastType, setToastType] = useState('updated'); 
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     const handleResize = () => {
@@ -92,12 +93,26 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
     }
   };
 
+  const triggerCouponToast = (code, discountAmount = 1000) => {
+    setToastType('coupon_applied');
+    setToastMessage(`Coupon "${code}" applied successfully! You saved ₹${discountAmount}.`);
+    setToastTrigger(prev => prev + 1);
+  };
+
+  const triggerCouponRemovedToast = (code) => {
+    setToastType('coupon_removed');
+    setToastMessage(code ? `Coupon "${code}" removed` : 'Coupon removed');
+    setToastTrigger(prev => prev + 1);
+  };
+
   const handleQtyChange = (item, delta) => {
     if (updateQuantity) {
       if (delta === -1 && (item.quantity || 1) <= 1) {
         setToastType('removed');
+        setToastMessage('Item removed from cart');
       } else {
         setToastType('updated');
+        setToastMessage('Your items have been updated');
       }
       updateQuantity(item, delta);
       setToastTrigger(prev => prev + 1);
@@ -355,9 +370,11 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 onClick={() => {
                   if (cartItems.length === 0) return;
                   if (appliedCoupon) {
+                    const prevCode = appliedCouponCode;
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
                     setCouponCode('');
+                    triggerCouponRemovedToast(prevCode);
                   } else {
                     setShowCouponInput(true);
                   }
@@ -386,10 +403,12 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                   if (appliedCoupon && appliedCouponCode === 'FLAT1000') {
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
+                    triggerCouponRemovedToast('FLAT1000');
                   } else {
                     setAppliedCoupon(true);
                     setAppliedCouponCode('FLAT1000');
                     setShowCouponInput(false);
+                    triggerCouponToast('FLAT1000', 1000);
                   }
                 }}
                 disabled={cartItems.length === 0}
@@ -425,9 +444,11 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                           setCouponError('Please enter a coupon code');
                           return;
                         }
+                        const code = couponCode.trim().toUpperCase();
                         setAppliedCoupon(true);
-                        setAppliedCouponCode(couponCode.trim().toUpperCase());
+                        setAppliedCouponCode(code);
                         setShowCouponInput(false);
+                        triggerCouponToast(code, 1000);
                       }
                     }}
                     placeholder="Enter coupon code (e.g. FLAT1000)"
@@ -439,9 +460,11 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                         setCouponError('Please enter a coupon code');
                         return;
                       }
+                      const code = couponCode.trim().toUpperCase();
                       setAppliedCoupon(true);
-                      setAppliedCouponCode(couponCode.trim().toUpperCase());
+                      setAppliedCouponCode(code);
                       setShowCouponInput(false);
+                      triggerCouponToast(code, 1000);
                     }}
                     className="bg-[#F96E8F] hover:bg-[#E44971] text-white text-sm px-5 py-2 rounded-lg font-bold transition-colors cursor-pointer"
                   >
@@ -460,9 +483,11 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
                 <span>✓ {appliedCouponCode ? `Coupon "${appliedCouponCode}" Applied (-₹1000)` : 'FLAT ₹1000 Coupon Applied!'}</span>
                 <button
                   onClick={() => {
+                    const prevCode = appliedCouponCode;
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
                     setCouponCode('');
+                    triggerCouponRemovedToast(prevCode);
                   }}
                   className="text-red-500 hover:text-red-700 hover:underline cursor-pointer ml-2 text-xs uppercase font-extrabold"
                 >
@@ -711,31 +736,52 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
 
       {/* Toast Notification */}
       {toastTrigger > 0 && (
-        <div className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] animate-toast-up bg-white rounded-2xl shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-[#F96E8F]/20 px-5 py-4 font-['Nunito'] flex items-center gap-3">
-          {toastType === 'removed' ? (
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-50 text-rose-500">
+        <div className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] animate-toast-up bg-white rounded-2xl shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-[#F96E8F]/20 px-5 py-4 font-['Nunito'] flex items-center gap-3.5 min-w-[290px] sm:min-w-[360px] max-w-[92vw] sm:max-w-[440px]">
+          {toastType === 'coupon_applied' ? (
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex-shrink-0 border border-emerald-200 shadow-xs">
+              <img src={discount} alt="Discount" className="w-5 h-5 object-contain" />
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] font-black shadow-xs">
+                ✓
+              </span>
+            </div>
+          ) : toastType === 'coupon_removed' ? (
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex-shrink-0 border border-rose-200 shadow-xs">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+          ) : toastType === 'removed' ? (
+            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-rose-50 text-rose-500 flex-shrink-0">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
           ) : (
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-500">
+            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-emerald-50 text-emerald-500 flex-shrink-0">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
               </svg>
             </div>
           )}
-          <div className="flex flex-col text-left">
-            <span className="text-[#F96E8F] text-sm font-black uppercase tracking-wider font-['Baloo_2']">
-              {toastType === 'removed' ? 'Item Removed' : 'Cart Updated'}
+          <div className="flex flex-col text-left flex-1 min-w-0">
+            <span className={`text-sm font-black uppercase tracking-wider font-['Baloo_2'] ${
+              toastType === 'coupon_applied' ? 'text-emerald-600' :
+              toastType === 'coupon_removed' ? 'text-rose-500' : 'text-[#F96E8F]'
+            }`}>
+              {toastType === 'coupon_applied' ? 'Coupon Applied!' :
+               toastType === 'coupon_removed' ? 'Coupon Removed' :
+               toastType === 'removed' ? 'Item Removed' : 'Cart Updated'}
             </span>
-            <span className="text-gray-500 text-xs font-semibold">
-              {toastType === 'removed' ? 'Item removed from cart' : 'Your items have been updated'}
+            <span className="text-gray-600 text-xs font-bold font-['Nunito'] leading-snug">
+              {toastMessage || (
+                toastType === 'removed' ? 'Item removed from cart' : 'Your items have been updated'
+              )}
             </span>
           </div>
           <button 
             onClick={() => setToastTrigger(0)}
-            className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-2"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-1 flex-shrink-0"
+            aria-label="Close notification"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />

@@ -1,7 +1,8 @@
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import React, { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from '../redux/wishlistReducer';
+import { toggleWishlist as toggleWishlistAction } from '../redux/actions/wishlistActions';
+import { selectWishlistItems } from '../redux/reducers/wishlistReducer';
 import Header from '../components/Header';
 
 // Assets
@@ -425,8 +426,8 @@ const Product = ({ product, cartItems, addToCart }) => {
                                     }}
                                     disabled={!pincode.trim()}
                                     className={`h-full px-3 sm:px-6 font-['Nunito'] text-white text-xs sm:text-sm font-bold rounded-r-md transition-colors whitespace-nowrap flex-shrink-0 flex items-center justify-center ${!pincode.trim()
-                                            ? 'bg-pink-300 cursor-not-allowed'
-                                            : 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
+                                        ? 'bg-pink-300 cursor-not-allowed'
+                                        : 'bg-[#F96E8F] hover:bg-[#E44971] cursor-pointer'
                                         }`}
                                 >
                                     Check availability

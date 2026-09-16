@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setLoggedIn } from '../redux/actions/authActions';
 import LoginPopup from './loginpopup';
 import LoginPopup2 from './loginpopup2';
 import logo from '../assets/login/PEEKAABOO (2) 8.png';
@@ -13,6 +15,7 @@ import imgMain from '../assets/login/cloud.png';
 import mainlogo from '../assets/login/logo.png';
 
 export default function Login() {
+    const dispatch = useDispatch();
     const [popupState, setPopupState] = useState(0); // 0 = none, 1 = first popup, 2 = second popup
     const [bgIndex, setBgIndex] = useState(0);
 
@@ -101,6 +104,7 @@ export default function Login() {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', userEmail);
         localStorage.setItem('userId', userId);
+        dispatch(setLoggedIn(true));
 
         const existingProfile = localStorage.getItem('userProfile');
         if (!existingProfile) {

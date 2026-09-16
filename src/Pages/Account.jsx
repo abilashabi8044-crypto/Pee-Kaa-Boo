@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectOrders, cancelOrder as cancelOrderAction } from '../redux/ordersReducer';
-import { addToCart as addToCartAction } from '../redux/cartReducer';
+import { cancelOrder as cancelOrderAction } from '../redux/actions/ordersActions';
+import { addToCart as addToCartAction } from '../redux/actions/cartActions';
+import { selectOrders } from '../redux/reducers/ordersReducer';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -148,9 +149,8 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
           <button
             type="button"
             onClick={() => setViewMode(viewMode === 'months' ? 'days' : 'months')}
-            className={`px-3 py-1 rounded-xl font-black text-sm transition-all cursor-pointer ${
-              viewMode === 'months' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
-            }`}
+            className={`px-3 py-1 rounded-xl font-black text-sm transition-all cursor-pointer ${viewMode === 'months' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
+              }`}
           >
             {MONTHS_LIST[currentMonth]}
           </button>
@@ -160,9 +160,8 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
               setYearPage(Math.floor(currentYear / 12) * 12);
               setViewMode(viewMode === 'years' ? 'days' : 'years');
             }}
-            className={`px-3 py-1 rounded-xl font-black text-sm transition-all cursor-pointer ${
-              viewMode === 'years' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
-            }`}
+            className={`px-3 py-1 rounded-xl font-black text-sm transition-all cursor-pointer ${viewMode === 'years' ? 'bg-[#F96E8F] text-white' : 'text-gray-800 hover:bg-pink-50 hover:text-[#F96E8F]'
+              }`}
           >
             {currentYear}
           </button>
@@ -213,13 +212,12 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   key={day}
                   type="button"
                   onClick={() => handleSelectDay(day)}
-                  className={`h-9 w-9 mx-auto rounded-full flex items-center justify-center text-sm font-bold transition-all cursor-pointer ${
-                    isSelected
+                  className={`h-9 w-9 mx-auto rounded-full flex items-center justify-center text-sm font-bold transition-all cursor-pointer ${isSelected
                       ? 'bg-gradient-to-tr from-[#F96E8F] to-[#FF8EAA] text-white shadow-md shadow-pink-300 scale-105 font-black'
                       : isToday
                         ? 'border-2 border-[#F96E8F] text-[#F96E8F] font-black hover:bg-pink-50'
                         : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
-                  }`}
+                    }`}
                 >
                   {day}
                 </button>
@@ -242,11 +240,10 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   setCurrentMonth(idx);
                   setViewMode('days');
                 }}
-                className={`py-3 rounded-2xl font-bold text-sm transition-all cursor-pointer ${
-                  isSelected
+                className={`py-3 rounded-2xl font-bold text-sm transition-all cursor-pointer ${isSelected
                     ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
                     : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
-                }`}
+                  }`}
               >
                 {m.substring(0, 3)}
               </button>
@@ -268,11 +265,10 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   setCurrentYear(y);
                   setViewMode('months');
                 }}
-                className={`py-3 rounded-2xl font-bold text-sm transition-all cursor-pointer ${
-                  isSelected
+                className={`py-3 rounded-2xl font-bold text-sm transition-all cursor-pointer ${isSelected
                     ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
                     : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
-                }`}
+                  }`}
               >
                 {y}
               </button>
@@ -340,11 +336,10 @@ const WishlistItemCard = ({ item, addToCart, onRemove }) => {
       </div>
       <button
         onClick={handleAdd}
-        className={`w-full py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-sm mb-2 font-['Nunito'] flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${
-          isAdded
+        className={`w-full py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-sm mb-2 font-['Nunito'] flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${isAdded
             ? 'bg-[#fc148c] text-white scale-95'
             : 'bg-[#F96E8F] text-white hover:bg-[#E44971]'
-        }`}
+          }`}
       >
         {isAdded ? (
           <span className="flex items-center gap-1.5 transform transition-transform duration-300">
@@ -786,11 +781,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('My Profile')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
-                      activeMenu === 'My Profile'
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'My Profile'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <span className={activeMenu === 'My Profile' ? 'text-[#F96E8F]' : 'text-gray-400'}>
@@ -813,11 +807,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('My Orders')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
-                      activeMenu === 'My Orders'
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'My Orders'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <span className={activeMenu === 'My Orders' ? 'text-[#F96E8F]' : 'text-gray-400'}>
@@ -840,11 +833,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('Manage Addresses')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
-                      activeMenu === 'Manage Addresses'
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'Manage Addresses'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <span className={activeMenu === 'Manage Addresses' ? 'text-[#F96E8F]' : 'text-gray-400'}>
@@ -867,11 +859,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('Saved UPI')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
-                      activeMenu === 'Saved UPI'
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'Saved UPI'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <span className={activeMenu === 'Saved UPI' ? 'text-[#F96E8F]' : 'text-gray-400'}>
@@ -894,11 +885,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('Saved Cards')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
-                      activeMenu === 'Saved Cards'
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'Saved Cards'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <span className={activeMenu === 'Saved Cards' ? 'text-[#F96E8F]' : 'text-gray-400'}>
@@ -921,11 +911,10 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                 <li>
                   <button
                     onClick={() => setActiveMenu('My Wishlists')}
-                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${
-                      activeMenu === 'My Wishlists'
+                    className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'My Wishlists'
                         ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
                         : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <span className={activeMenu === 'My Wishlists' ? 'text-[#F96E8F]' : 'text-gray-400'}>
@@ -992,9 +981,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className={`w-full bg-white border ${
-                        errors.fullName ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
+                      className={`w-full bg-white border ${errors.fullName ? 'border-red-500' : 'border-gray-200'
+                        } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.fullName && <span className="text-red-500 text-sm font-bold">{errors.fullName}</span>}
                   </div>
@@ -1009,9 +997,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       name="mobileNumber"
                       value={formData.mobileNumber}
                       onChange={handleInputChange}
-                      className={`w-full bg-white border ${
-                        errors.mobileNumber ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
+                      className={`w-full bg-white border ${errors.mobileNumber ? 'border-red-500' : 'border-gray-200'
+                        } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.mobileNumber && <span className="text-red-500 text-sm font-bold">{errors.mobileNumber}</span>}
                   </div>
@@ -1026,9 +1013,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       name="altMobileNumber"
                       value={formData.altMobileNumber}
                       onChange={handleInputChange}
-                      className={`w-full bg-white border ${
-                        errors.altMobileNumber ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
+                      className={`w-full bg-white border ${errors.altMobileNumber ? 'border-red-500' : 'border-gray-200'
+                        } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.altMobileNumber && (
                       <span className="text-red-500 text-sm font-bold">{errors.altMobileNumber}</span>
@@ -1045,9 +1031,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       name="emailId"
                       value={formData.emailId}
                       onChange={handleInputChange}
-                      className={`w-full bg-white border ${
-                        errors.emailId ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
+                      className={`w-full bg-white border ${errors.emailId ? 'border-red-500' : 'border-gray-200'
+                        } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.emailId && <span className="text-red-500 text-sm font-bold">{errors.emailId}</span>}
                   </div>
@@ -1062,9 +1047,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       name="altEmailId"
                       value={formData.altEmailId}
                       onChange={handleInputChange}
-                      className={`w-full bg-white border ${
-                        errors.altEmailId ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
+                      className={`w-full bg-white border ${errors.altEmailId ? 'border-red-500' : 'border-gray-200'
+                        } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     />
                     {errors.altEmailId && <span className="text-red-500 text-sm font-bold">{errors.altEmailId}</span>}
                   </div>
@@ -1078,9 +1062,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       name="gender"
                       value={formData.gender}
                       onChange={handleInputChange}
-                      className={`w-full bg-white border ${
-                        errors.gender ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
+                      className={`w-full bg-white border ${errors.gender ? 'border-red-500' : 'border-gray-200'
+                        } rounded-[12px] h-[52px] px-4 outline-none focus:border-[#F96E8F] transition-colors shadow-sm font-bold text-sm text-gray-800`}
                     >
                       <option value="" disabled>Select Gender</option>
                       <option value="Male">Male</option>
@@ -1097,9 +1080,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     </label>
                     <div
                       onClick={() => setShowCalendar(!showCalendar)}
-                      className={`w-full bg-white border ${
-                        errors.dob ? 'border-red-500' : 'border-gray-200'
-                      } rounded-[12px] h-[52px] px-4 pr-12 flex items-center justify-between cursor-pointer hover:border-[#F96E8F] transition-colors shadow-sm`}
+                      className={`w-full bg-white border ${errors.dob ? 'border-red-500' : 'border-gray-200'
+                        } rounded-[12px] h-[52px] px-4 pr-12 flex items-center justify-between cursor-pointer hover:border-[#F96E8F] transition-colors shadow-sm`}
                     >
                       <span className={`font-bold text-sm ${formData.dob ? 'text-gray-800' : 'text-gray-400'}`}>
                         {formData.dob ? formData.dob : 'Select Date of Birth'}
@@ -1503,11 +1485,9 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       setAddressFormData({ ...addressFormData, name: val, type: val.toUpperCase() });
                       if (addressErrors.name) setAddressErrors(prev => ({ ...prev, name: '' }));
                     }}
-                    className={`w-full appearance-none bg-white border ${
-                      addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                    } rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-sm ${
-                      addressFormData.name ? 'text-gray-900' : 'text-gray-400'
-                    } outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
+                    className={`w-full appearance-none bg-white border ${addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                      } rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-sm ${addressFormData.name ? 'text-gray-900' : 'text-gray-400'
+                      } outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
                   >
                     <option value="" disabled className="text-gray-400">Select Address Label</option>
                     <option value="Home" className="text-gray-800 font-bold py-2">🏠 Home (Residence)</option>
@@ -1538,9 +1518,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     setAddressFormData({ ...addressFormData, username: e.target.value });
                     if (addressErrors.username) setAddressErrors(prev => ({ ...prev, username: '' }));
                   }}
-                  className={`w-full border ${
-                    addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                  className={`w-full border ${addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                    } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.username && (
                   <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.username}</span>
@@ -1560,9 +1539,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     setAddressFormData({ ...addressFormData, line1: e.target.value });
                     if (addressErrors.line1) setAddressErrors(prev => ({ ...prev, line1: '' }));
                   }}
-                  className={`w-full border ${
-                    addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                  className={`w-full border ${addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                    } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.line1 && (
                   <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line1}</span>
@@ -1582,9 +1560,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     setAddressFormData({ ...addressFormData, line2: e.target.value });
                     if (addressErrors.line2) setAddressErrors(prev => ({ ...prev, line2: '' }));
                   }}
-                  className={`w-full border ${
-                    addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                  className={`w-full border ${addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                    } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.line2 && (
                   <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line2}</span>
@@ -1604,9 +1581,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     setAddressFormData({ ...addressFormData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) });
                     if (addressErrors.phone) setAddressErrors(prev => ({ ...prev, phone: '' }));
                   }}
-                  className={`w-full border ${
-                    addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                  } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                  className={`w-full border ${addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
+                    } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.phone && (
                   <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.phone}</span>

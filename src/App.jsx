@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart as addToCartAction, updateQuantity as updateQuantityAction, selectCartItems, clearCart } from './redux/cartReducer';
-import { toggleWishlist as toggleWishlistAction, selectWishlistItems } from './redux/wishlistReducer';
-import { addOrders as addOrdersAction, selectOrders } from './redux/ordersReducer';
+import { addToCart as addToCartAction, updateQuantity as updateQuantityAction, clearCart } from './redux/actions/cartActions';
+import { toggleWishlist as toggleWishlistAction } from './redux/actions/wishlistActions';
+import { addOrders as addOrdersAction } from './redux/actions/ordersActions';
+import { selectCartItems } from './redux/reducers/cartReducer';
+import { selectWishlistItems } from './redux/reducers/wishlistReducer';
+import { selectOrders } from './redux/reducers/ordersReducer';
+import { selectIsLoggedIn } from './redux/reducers/authReducer';
 import Header from './components/Header';
 import Login from './Pages/login';
 import Signup from './Pages/Signup';
 import Forgotpassword from './Pages/Forgotpassword';
-import Footer from './components/Footer';
 import Shop from './Pages/Shop';
 import Product from './Pages/Product';
 import Cart from './Pages/Cart';
@@ -36,9 +39,11 @@ function App() {
     }
   });
 
+  const reduxIsLoggedIn = useSelector(selectIsLoggedIn);
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem('isLoggedIn') === 'true';
   });
+  const effectiveIsLoggedIn = reduxIsLoggedIn || isLoggedIn;
 
   const cartItems = useSelector(selectCartItems);
   const wishlist = useSelector(selectWishlistItems);
@@ -149,7 +154,7 @@ function App() {
   const isHomePage = currentPath === '/' || currentPath === '';
 
   // Show login page first for all new / unauthenticated users
-  if (!isLoggedIn) {
+  if (!effectiveIsLoggedIn) {
     if (isSignupPage) {
       return <Signup />;
     }

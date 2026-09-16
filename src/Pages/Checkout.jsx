@@ -1,8 +1,8 @@
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { addOrders as addOrdersAction } from '../redux/ordersReducer';
-import { clearCart } from '../redux/cartReducer';
+import { addOrders as addOrdersAction } from '../redux/actions/ordersActions';
+import { clearCart } from '../redux/actions/cartActions';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -57,8 +57,8 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
   const handleNextCarousel = () => {
     setCarouselIndex((prev) => Math.min(maxCarousel, prev + 1));
   };
-  const progressWidth = recommendedProducts.length > 0 
-    ? ((carouselIndex + Math.min(itemsPerPage, recommendedProducts.length)) / recommendedProducts.length) * 100 
+  const progressWidth = recommendedProducts.length > 0
+    ? ((carouselIndex + Math.min(itemsPerPage, recommendedProducts.length)) / recommendedProducts.length) * 100
     : 100;
 
   const navigateTo = (path) => {
@@ -104,6 +104,30 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
   const [newPincode, setNewPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState(null);
   const [pincodeLocation, setPincodeLocation] = useState(null);
+  const [toastTrigger, setToastTrigger] = useState(0);
+  const [toastType, setToastType] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+
+  useEffect(() => {
+    if (toastTrigger > 0) {
+      const timer = setTimeout(() => {
+        setToastTrigger(0);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastTrigger]);
+
+  const triggerCouponToast = (code, discountAmount = 1000) => {
+    setToastType('coupon_applied');
+    setToastMessage(`Coupon "${code}" applied successfully! You saved ₹${discountAmount}.`);
+    setToastTrigger(prev => prev + 1);
+  };
+
+  const triggerCouponRemovedToast = (code) => {
+    setToastType('coupon_removed');
+    setToastMessage(code ? `Coupon "${code}" removed` : 'Coupon removed');
+    setToastTrigger(prev => prev + 1);
+  };
 
   const handleCompletePayment = () => {
     const userProfile = (() => {
@@ -307,7 +331,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
 
 
 
-return (
+  return (
     <div className="w-full min-h-screen bg-white font-['Baloo_2'] flex flex-col">
       <Header cartItems={cartItems} />
 
@@ -550,9 +574,11 @@ return (
                 onClick={() => {
                   if (cartItems.length === 0) return;
                   if (appliedCoupon) {
+                    const prevCode = appliedCouponCode;
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
                     setCouponCode('');
+                    triggerCouponRemovedToast(prevCode);
                   } else {
                     setShowCouponInput(true);
                   }
@@ -581,10 +607,13 @@ return (
                   if (appliedCoupon && appliedCouponCode === 'FLAT1000') {
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
+                    triggerCouponRemovedToast('FLAT1000');
                   } else {
+                    const discountAmt = displaySubTotal >= 1000 ? 1000 : displaySubTotal;
                     setAppliedCoupon(true);
                     setAppliedCouponCode('FLAT1000');
                     setShowCouponInput(false);
+                    triggerCouponToast('FLAT1000', discountAmt);
                   }
                 }}
                 disabled={cartItems.length === 0}
@@ -620,9 +649,12 @@ return (
                           setCouponError('Please enter a coupon code');
                           return;
                         }
+                        const code = couponCode.trim().toUpperCase();
+                        const discountAmt = displaySubTotal >= 1000 ? 1000 : displaySubTotal;
                         setAppliedCoupon(true);
-                        setAppliedCouponCode(couponCode.trim().toUpperCase());
+                        setAppliedCouponCode(code);
                         setShowCouponInput(false);
+                        triggerCouponToast(code, discountAmt);
                       }
                     }}
                     placeholder="Enter coupon code (e.g. FLAT1000)"
@@ -634,9 +666,12 @@ return (
                         setCouponError('Please enter a coupon code');
                         return;
                       }
+                      const code = couponCode.trim().toUpperCase();
+                      const discountAmt = displaySubTotal >= 1000 ? 1000 : displaySubTotal;
                       setAppliedCoupon(true);
-                      setAppliedCouponCode(couponCode.trim().toUpperCase());
+                      setAppliedCouponCode(code);
                       setShowCouponInput(false);
+                      triggerCouponToast(code, discountAmt);
                     }}
                     className="bg-[#F96E8F] hover:bg-[#E44971] text-white font-['Nunito'] text-xs px-5 py-2 rounded-lg font-bold transition-colors cursor-pointer"
                   >
@@ -655,9 +690,11 @@ return (
                 <span>✓ {appliedCouponCode ? `Coupon "${appliedCouponCode}" Applied (-₹1000)` : 'FLAT ₹1000 Coupon Applied!'}</span>
                 <button
                   onClick={() => {
+                    const prevCode = appliedCouponCode;
                     setAppliedCoupon(false);
                     setAppliedCouponCode('');
                     setCouponCode('');
+                    triggerCouponRemovedToast(prevCode);
                   }}
                   className="text-red-500 hover:text-red-700 hover:underline cursor-pointer ml-2 text-xs uppercase font-extrabold"
                 >
@@ -673,11 +710,10 @@ return (
                 setShowCouponInput(!showCouponInput);
               }}
               disabled={cartItems.length === 0}
-              className={`w-full font-medium py-3 rounded-b-xl text-xs font-[Nunito] transition-colors shadow-xs flex items-center justify-center gap-2 ${
-                cartItems.length === 0
+              className={`w-full font-medium py-3 rounded-b-xl text-xs font-[Nunito] transition-colors shadow-xs flex items-center justify-center gap-2 ${cartItems.length === 0
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60 border border-gray-200 border-t-0'
                   : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer'
-              }`}
+                }`}
             >
               {showCouponInput ? 'Close Coupon Input' : 'Apply More Coupons'}
             </button>
@@ -860,9 +896,8 @@ return (
             </span>
             <button
               onClick={() => setShowOrderSummaryModal(!showOrderSummaryModal)}
-              className={`w-4.5 h-4.5 rounded-full text-white text-xs font-bold inline-flex items-center justify-center cursor-pointer transition-colors shadow-2xs font-['Nunito'] ${
-                showOrderSummaryModal ? 'bg-[#F96E8F]' : 'bg-[#7C8894] hover:bg-[#5A6570]'
-              }`}
+              className={`w-4.5 h-4.5 rounded-full text-white text-xs font-bold inline-flex items-center justify-center cursor-pointer transition-colors shadow-2xs font-['Nunito'] ${showOrderSummaryModal ? 'bg-[#F96E8F]' : 'bg-[#7C8894] hover:bg-[#5A6570]'
+                }`}
               aria-label="Order Summary Info"
               title="View Order Summary"
             >
@@ -883,11 +918,10 @@ return (
                 setShowAddressForm(true);
               }
             }}
-            className={`text-white px-5 py-3 rounded-[12px] font-bold text-sm shadow-sm transition-all tracking-wide ${
-              addresses.length > 0 && billingAddressId
+            className={`text-white px-5 py-3 rounded-[12px] font-bold text-sm shadow-sm transition-all tracking-wide ${addresses.length > 0 && billingAddressId
                 ? 'bg-[#F96E8F] hover:bg-[#E44971] active:scale-[0.98] cursor-pointer'
                 : 'bg-gray-400 cursor-not-allowed opacity-70'
-            }`}
+              }`}
           >
             Deliver To This Address
           </button>
@@ -912,11 +946,10 @@ return (
 
       {/* Popup Card with Smooth Slide Up/Down from Behind the Fixed Button */}
       <div
-        className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t-2 border-dashed border-[#F96E8F] rounded-t-[24px] p-5 pb-22 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transform transition-all duration-300 ease-out ${
-          showOrderSummaryModal
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t-2 border-dashed border-[#F96E8F] rounded-t-[24px] p-5 pb-22 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transform transition-all duration-300 ease-out ${showOrderSummaryModal
             ? 'translate-y-0 opacity-100 pointer-events-auto'
             : 'translate-y-full opacity-0 pointer-events-none'
-        }`}
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
@@ -974,6 +1007,44 @@ return (
           </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toastTrigger > 0 && (
+        <div className="fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] animate-toast-up bg-white rounded-2xl shadow-[0_12px_40px_rgba(249,110,143,0.18)] border border-[#F96E8F]/20 px-5 py-4 font-['Nunito'] flex items-center gap-3.5 min-w-[290px] sm:min-w-[360px] max-w-[92vw] sm:max-w-[440px]">
+          {toastType === 'coupon_applied' ? (
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex-shrink-0 border border-emerald-200 shadow-xs">
+              <img src={discount} alt="Discount" className="w-5 h-5 object-contain" />
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] font-black shadow-xs">
+                ✓
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex-shrink-0 border border-rose-200 shadow-xs">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+          )}
+          <div className="flex flex-col text-left flex-1 min-w-0">
+            <span className={`text-sm font-black uppercase tracking-wider font-['Baloo_2'] ${toastType === 'coupon_applied' ? 'text-emerald-600' : 'text-rose-500'
+              }`}>
+              {toastType === 'coupon_applied' ? 'Coupon Applied!' : 'Coupon Removed'}
+            </span>
+            <span className="text-gray-600 text-xs font-bold font-['Nunito'] leading-snug">
+              {toastMessage}
+            </span>
+          </div>
+          <button
+            onClick={() => setToastTrigger(0)}
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 cursor-pointer ml-1 flex-shrink-0"
+            aria-label="Close notification"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       <Footer />
     </div>
