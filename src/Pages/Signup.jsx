@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setLoggedIn } from '../redux/actions/authActions';
 import logo from '../assets/login/PEEKAABOO (2) 8.png';
 import logo2 from '../assets/login/PEEKAABOO.png';
 import bunnyImg from '../assets/login/bunny@4x 1.png';
@@ -11,6 +13,7 @@ import imgMain from '../assets/login/cloud.png';
 import mainlogo from '../assets/login/logo.png';
 
 export default function Signup() {
+    const dispatch = useDispatch();
     const [bgIndex, setBgIndex] = useState(0);
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -91,6 +94,7 @@ export default function Signup() {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', userEmail);
         localStorage.setItem('userId', userId);
+        dispatch(setLoggedIn(true));
 
         const newProfile = {
             fullName: fullName.trim(),
@@ -113,13 +117,24 @@ export default function Signup() {
         window.dispatchEvent(new Event('popstate'));
     };
 
+    const handleGoHome = (e) => {
+        if (e) e.preventDefault();
+        window.history.pushState({}, '', '/');
+        window.dispatchEvent(new Event('popstate'));
+    };
+
     return (
         <div className={`min-h-[100dvh] bg-gradient-to-br ${gradients[bgIndex]} relative overflow-hidden flex flex-col md:flex-row md:items-center justify-center font-['Baloo_2'] pt-0 md:pt-8 pb-4 md:pb-8 px-4 md:px-8`}>
             {/* Mobile Top Header (Centered Logo) */}
             <div className="md:hidden absolute top-0 left-0 w-[100vw] flex justify-center z-10 pointer-events-none">
                 <div className="relative flex justify-center items-center w-full -mt-[9vw]">
                     <img src={imgMain} alt="Cloud Background" className="w-full h-auto object-cover" />
-                    <img src={mainlogo} alt="Main Logo" className="absolute w-[18vw] mt-[7vw] z-30" />
+                    <img
+                        src={mainlogo}
+                        alt="Main Logo"
+                        onClick={handleGoHome}
+                        className="absolute w-[18vw] mt-[7vw] z-30 cursor-pointer pointer-events-auto hover:opacity-90 transition-opacity"
+                    />
                 </div>
             </div>
 
@@ -138,7 +153,12 @@ export default function Signup() {
             <div className="hidden md:flex absolute -top-[42px] -left-8 z-10 pointer-events-none">
                 <div className="relative flex justify-center items-center">
                     <img src={imgMain} alt="Decoration" className="w-[250px] lg:w-[450px] object-contain" />
-                    <img src={mainlogo} alt="Main Logo" className="absolute w-[60px] lg:w-[90px] z-30 mt-[10px] lg:mt-[30px]" />
+                    <img
+                        src={mainlogo}
+                        alt="Main Logo"
+                        onClick={handleGoHome}
+                        className="absolute w-[60px] lg:w-[90px] z-30 mt-[10px] lg:mt-[30px] cursor-pointer pointer-events-auto hover:opacity-90 transition-opacity"
+                    />
                 </div>
             </div>
             <img src={bunnyImg} alt="Large Bunny" className="hidden xl:block absolute top-12 left-[56%] w-[126px] h-[193px] z-30 object-contain" />
@@ -209,6 +229,17 @@ export default function Signup() {
                     <p className="text-white text-xs text-center mt-[15px] font-bold">
                         Already have an account? <a href="#" onClick={navigateToLogin} className="underline hover:text-gray-200">Sign In</a>
                     </p>
+
+                    <div className="text-center mt-[12px]">
+                        <a
+                            href="/"
+                            onClick={handleGoHome}
+                            className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-xs font-bold transition-all hover:underline"
+                        >
+                            <span>←</span>
+                            <span>Continue browsing as Guest</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

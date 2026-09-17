@@ -153,17 +153,6 @@ function App() {
   const isShopPage = currentPath.includes('/shop');
   const isHomePage = currentPath === '/' || currentPath === '';
 
-  // Show login page first for all new / unauthenticated users
-  if (!effectiveIsLoggedIn) {
-    if (isSignupPage) {
-      return <Signup />;
-    }
-    if (isForgotPasswordPage) {
-      return <Forgotpassword />;
-    }
-    return <Login />;
-  }
-
   return (
     <section>
       {isLoginPage ? (
@@ -191,13 +180,17 @@ function App() {
       ) : isOrderDetailsPage ? (
         <Orderdetails cartItems={cartItems} wishlist={wishlist} />
       ) : isAccountPage ? (
-        <Account
-          cartItems={cartItems}
-          addToCart={addToCart}
-          orders={orders}
-          wishlist={wishlist}
-          addToWishlist={addToWishlist}
-        />
+        effectiveIsLoggedIn ? (
+          <Account
+            cartItems={cartItems}
+            addToCart={addToCart}
+            orders={orders}
+            wishlist={wishlist}
+            addToWishlist={addToWishlist}
+          />
+        ) : (
+          <Login />
+        )
       ) : isCheckoutPage ? (
         <Checkout cartItems={cartItems} updateQuantity={updateQuantity} addToCart={addToCart} placeOrder={placeOrder} />
       ) : isCartPage ? (

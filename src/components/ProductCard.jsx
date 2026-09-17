@@ -76,11 +76,11 @@ const ProductCard = ({
                         {category || "Category"}
                     </div>
 
-                    <h4 className={`text-[#333] font-['Nunito'] font-bold leading-tight mb-1 md:mb-1.5 tracking-wide md:group-hover:text-base md:group-hover:mb-2 transition-all duration-300 ${isHomepage ? 'text-2xl' : 'text-xs'} md:text-lg`}>{title}</h4>
+                    <h4 className={`text-[#333] font-['Nunito'] font-bold leading-tight mb-1 md:mb-1.5 tracking-wide md:group-hover:text-base md:group-hover:mb-2 transition-all duration-300 ${isHomepage ? 'text-[14px]' : 'text-xs'} md:text-lg`}>{title}</h4>
 
                     <div className="flex justify-center items-center gap-1 md:gap-2 mb-0 md:group-hover:mb-3 transition-all duration-300">
-                        <span className={`text-gray-400 font-['Nunito'] font-medium line-through ${isHomepage ? 'text-lg' : 'text-xs'} md:text-sm`}>₹ {oldPrice}</span>
-                        <span className={`text-[#F76188] font-['Nunito'] font-bold md:group-hover:text-xl transition-all ${isHomepage ? 'text-3xl' : 'text-xs'} md:text-xl`}>₹ {price}</span>
+                        <span className={`text-gray-400 font-['Nunito'] font-medium line-through ${isHomepage ? 'text-[12px]' : 'text-xs'} md:text-sm`}>₹ {oldPrice}</span>
+                        <span className={`text-[#F76188] font-['Nunito'] font-bold md:group-hover:text-xl transition-all ${isHomepage ? 'text-[14px]' : 'text-xs'} md:text-xl`}>₹ {price}</span>
                     </div>
 
                     <div className="h-0 opacity-0 group-hover:h-[36px] group-hover:opacity-100 transition-all duration-300 overflow-hidden w-full">
