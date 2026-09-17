@@ -396,7 +396,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             </div> {/* End of Hero Section */}
 
             {/* Top Selling Products Section */}
-            <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 py-16 lg:py-24 relative bg-white">
+            <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 pt-8 pb-6 md:pt-12 md:pb-8 lg:pt-14 lg:pb-10 relative bg-white">
                 <img src={butterfly} alt="Butterfly" className="hidden md:block absolute top-10 lg:top-2 xl:top-10 right-10 w-[60px] md:w-[100px] lg:w-[75px] xl:w-[100px] object-contain rotate-12 z-10 pointer-events-none" />
 
                 <div className="flex flex-col xl:flex-row gap-8 lg:gap-12 relative z-20 items-stretch">
@@ -516,7 +516,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
 
 
             {/* Certification Section */}
-            <div className="w-full relative mt-10 md:mt-20 flex justify-center items-center py-24 md:py-32 px-4 md:px-[128px] lg:px-[200px]"
+            <div className="w-full relative mt-6 md:mt-10 flex justify-center items-center py-20 md:py-28 px-4 md:px-[128px] lg:px-[200px]"
                 style={{
                     backgroundImage: `url(${section3Bg})`,
                     backgroundSize: 'cover',
@@ -525,10 +525,10 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 }}
             >
                 {/* Airplane */}
-                <img src={fly} alt="Airplane" className="absolute top-20 left-10 md:left-10 w-24 md:w-[280px] z-10 animate-bounce-slow" />
+                <img src={fly} alt="Airplane" className="absolute top-10 md:top-14 left-6 md:left-10 w-24 md:w-[280px] z-10 animate-bounce-slow" />
 
                 {/* Main Box */}
-                <div className="relative w-full min-h-[250px] border-[6px] border-[#333333] rounded-[30px] md:rounded-[40px] py-16 md:py-20 px-6 md:px-16 flex flex-col md:flex-row justify-center items-center z-20 mt-10 md:mt-15">
+                <div className="relative w-full min-h-[250px] border-[6px] border-[#333333] rounded-[30px] md:rounded-[40px] py-10 md:py-14 px-6 md:px-16 flex flex-col md:flex-row justify-center items-center z-20 mt-8 md:mt-10">
 
                     {/* Title overlapping border */}
                     <div className="absolute -top-[24px] md:-top-[28px] lg:-top-[24px] xl:-top-[32px] left-1/2 -translate-x-1/2 bg-[#FCDCEA] px-6 md:px-8 lg:px-6 xl:px-10 py-1.5 lg:py-1 xl:py-2 border-[4px] lg:border-[3px] xl:border-[4px] border-[#333333] rounded-2xl md:rounded-[24px] xl:rounded-[30px] whitespace-nowrap z-30">
@@ -537,8 +537,8 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                         </h2>
                     </div>
 
-                    {/* Logos */}
-                    <div className="w-full flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 xl:gap-30 md:pr-[20px]">
+                    {/* Desktop Logos (Static Flex Row - Preserved 100% on md and up) */}
+                    <div className="hidden md:flex w-full flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 xl:gap-30 md:pr-[20px]">
                         <img src={section3Tested} alt="Dermatologically Tested" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Glp} alt="GLP" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                         <img src={section3Butterfly} alt="Sensitive Skin" className="h-28 md:h-[160px] object-contain hover:scale-105 transition-transform" />
@@ -546,12 +546,65 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                         <img src={section3Baby} alt="Minor Skin Safe" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
                     </div>
 
+                    {/* Mobile Auto-Scrolling Carousel (Only on mobile responsive) */}
+                    <div className="w-full overflow-hidden md:hidden py-2 relative z-20" style={{
+                        maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+                        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)'
+                    }}>
+                        <style dangerouslySetInnerHTML={{
+                            __html: `
+                            @keyframes cert-scroll {
+                                0% { transform: translateX(0); }
+                                100% { transform: translateX(-50%); }
+                            }
+                            .animate-cert-scroll {
+                                animation: cert-scroll 18s linear infinite;
+                            }
+                            .animate-cert-scroll:hover,
+                            .animate-cert-scroll:active {
+                                animation-play-state: paused;
+                            }
+                        `}} />
+                        <div className="flex w-max items-center gap-8 animate-cert-scroll">
+                            {[
+                                { src: section3Tested, alt: "Dermatologically Tested", h: "h-20" },
+                                { src: section3Glp, alt: "GLP", h: "h-20" },
+                                { src: section3Butterfly, alt: "Sensitive Skin", h: "h-24" },
+                                { src: section3Iso, alt: "ISO", h: "h-20" },
+                                { src: section3Baby, alt: "Minor Skin Safe", h: "h-20" },
+                                { src: section3Tested, alt: "Dermatologically Tested", h: "h-20" },
+                                { src: section3Glp, alt: "GLP", h: "h-20" },
+                                { src: section3Butterfly, alt: "Sensitive Skin", h: "h-24" },
+                                { src: section3Iso, alt: "ISO", h: "h-20" },
+                                { src: section3Baby, alt: "Minor Skin Safe", h: "h-20" },
+                                { src: section3Tested, alt: "Dermatologically Tested", h: "h-20" },
+                                { src: section3Glp, alt: "GLP", h: "h-20" },
+                                { src: section3Butterfly, alt: "Sensitive Skin", h: "h-24" },
+                                { src: section3Iso, alt: "ISO", h: "h-20" },
+                                { src: section3Baby, alt: "Minor Skin Safe", h: "h-20" },
+                                { src: section3Tested, alt: "Dermatologically Tested", h: "h-20" },
+                                { src: section3Glp, alt: "GLP", h: "h-20" },
+                                { src: section3Butterfly, alt: "Sensitive Skin", h: "h-24" },
+                                { src: section3Iso, alt: "ISO", h: "h-20" },
+                                { src: section3Baby, alt: "Minor Skin Safe", h: "h-20" },
+                            ].map((logo, idx) => (
+                                <div key={idx} className="flex-shrink-0 flex items-center justify-center px-1">
+                                    <img
+                                        src={logo.src}
+                                        alt={logo.alt}
+                                        className={`${logo.h} object-contain`}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* Rabbit Image */}
                     <img src={section3Rabbit} alt="Rabbit Mascot" className="absolute -right-6 md:-right-34 bottom-0 translate-y-[20%] h-40 md:h-[280px] object-contain z-30 pointer-events-none" />
                 </div>
             </div>
             {/* Flash Sale Section */}
-            <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 py-16 lg:py-24 relative bg-white border-t border-gray-100 mt-12 lg:mt-20">
+            <div className="w-full max-w-[1920px] mx-auto px-6 md:px-10 lg:px-20 pt-8 pb-6 md:pt-12 md:pb-8 lg:pt-14 lg:pb-10 relative bg-white border-t border-gray-100 mt-6 md:mt-8">
                 <div className="flex flex-col xl:flex-row gap-8 items-stretch">
                     {/* Left Column (Header + Products) */}
                     <div className="w-full xl:w-[65%] flex flex-col">
@@ -674,7 +727,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             </div>
 
             {/* Trending Products Section */}
-            <div className="w-full relative pt-6 pb-[190px] md:pt-10 md:pb-[200px] lg:pt-16 lg:pb-56 xl:pt-20 xl:pb-64 flex flex-col items-center bg-[#E6F8FB]"
+            <div className="w-full relative pt-8 pb-[220px] md:pt-12 md:pb-[260px] lg:pt-16 lg:pb-[300px] xl:pt-20 xl:pb-[340px] min-h-[750px] md:min-h-[850px] flex flex-col items-center bg-[#E6F8FB]"
                 style={{
                     backgroundImage: `url(${shopbg})`,
                     backgroundSize: 'cover',
@@ -756,7 +809,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             </div>
 
             {/* Trending Instagram Feeds Section */}
-            <div className="w-full bg-white py-16 lg:py-24 flex flex-col items-center overflow-hidden">
+            <div className="w-full bg-white pt-8 pb-6 md:pt-12 md:pb-8 lg:pt-14 lg:pb-10 flex flex-col items-center overflow-hidden">
                 <style dangerouslySetInnerHTML={{
                     __html: `
                     @keyframes instagram-scroll {
@@ -793,7 +846,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             </div>
 
             {/* Client Testimonials Section */}
-            <div className="w-full relative py-20 lg:py-28 bg-gradient-to-r from-[#F7FCFD] to-[#E9F9FA] flex flex-col items-center overflow-hidden">
+            <div className="w-full relative pt-10 pb-8 md:pt-14 md:pb-10 lg:pt-16 lg:pb-12 bg-gradient-to-r from-[#F7FCFD] to-[#E9F9FA] flex flex-col items-center overflow-hidden">
                 {/* Decorative Images */}
                 <img src={butterfly} alt="Butterfly" className="absolute top-10 left-10 w-[80px] md:w-[120px] object-contain pointer-events-none drop-shadow-sm" />
                 <img src={car} alt="Car" className="absolute bottom-10 right-10 w-[80px] md:w-[100px] object-contain pointer-events-none drop-shadow-sm z-10" />
@@ -847,7 +900,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 </div>
 
                 {/* Pagination */}
-                <div className="flex gap-2 mt-16 relative z-20 flex-wrap justify-center px-4">
+                <div className="flex gap-2 mt-8 md:mt-10 relative z-20 flex-wrap justify-center px-4">
                     {Array.from({ length: isMobile ? testimonialsData.length : isTablet || isLargeTablet ? testimonialsData.length - 1 : 3 }).map((_, pageIndex) => (
                         <button
                             key={pageIndex}
@@ -863,12 +916,12 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             </div>
 
             {/* Gallery Section */}
-            <div className="w-full relative py-16 lg:py-[160px] bg-white flex justify-center overflow-hidden">
+            <div className="w-full relative pt-16 pb-6 md:pt-32 lg:pt-36 md:pb-8 lg:pb-10 bg-white flex justify-center overflow-visible">
                 <div className="w-full max-w-[1200px] mx-auto px-6 md:px-10 lg:px-20 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 h-auto md:h-[400px] lg:h-[450px] xl:h-[500px] relative z-20">
 
                     {/* Decorative Elements */}
-                    <div className="absolute -left-4 md:left-20 -top-24 md:-top-34 z-10 pointer-events-none">
-                        <img src={galleryBunny} alt="Bunny" className="w-[50px] md:w-[80px] object-contain drop-shadow-md" />
+                    <div className="absolute -left-2 sm:left-6 md:left-14 lg:left-20 -top-16 sm:-top-20 md:-top-[125px] z-10 pointer-events-none">
+                        <img src={galleryBunny} alt="Bunny" className="w-[55px] md:w-[85px] object-contain drop-shadow-md" />
                     </div>
                     <div className="absolute -left-6 md:-left-12 top-1/3 z-30 pointer-events-none hidden sm:block">
                         <img src={galleryFlower} alt="Flower" className="w-[50px] md:w-[70px] object-contain drop-shadow-md" />
@@ -893,7 +946,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             </div>
 
             {/* Last-minute Requests Section */}
-            <div className="w-full relative pt-[240px] pb-[320px] md:py-20 lg:py-32 flex flex-col items-center justify-center overflow-hidden"
+            <div className="w-full relative pt-[160px] pb-[120px] md:pt-12 md:pb-10 lg:pt-16 lg:pb-12 flex flex-col items-center justify-center overflow-hidden"
                 style={{
                     backgroundImage: `url(${requestBg})`,
                     backgroundSize: 'cover',
