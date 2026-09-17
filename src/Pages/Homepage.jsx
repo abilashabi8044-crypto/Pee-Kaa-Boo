@@ -211,6 +211,18 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
             ? testimonialsData.slice(testimonialPage, testimonialPage + 2)
             : testimonialsData.slice(testimonialPage * 3, testimonialPage * 3 + 3);
 
+    const [gallerySlide, setGallerySlide] = useState(0);
+    const handleGalleryNext = () => setGallerySlide(prev => (prev + 1) % 3);
+    const handleGalleryPrev = () => setGallerySlide(prev => (prev === 0 ? 2 : prev - 1));
+
+    // Auto-swipe gallery slides every 3 seconds on mobile
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setGallerySlide(prev => (prev + 1) % 3);
+        }, 3000);
+        return () => clearInterval(timer);
+    }, [gallerySlide]);
+
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
     const minSwipeDistance = 50;
@@ -917,8 +929,8 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
 
             {/* Gallery Section */}
             <div className="w-full relative pt-16 pb-6 md:pt-32 lg:pt-36 md:pb-8 lg:pb-10 bg-white flex justify-center overflow-visible">
-                <div className="w-full max-w-[1200px] mx-auto px-6 md:px-10 lg:px-20 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 h-auto md:h-[400px] lg:h-[450px] xl:h-[500px] relative z-20">
-
+                {/* Desktop Grid (Preserved 100% on md and up) */}
+                <div className="hidden md:grid w-full max-w-[1200px] mx-auto px-6 md:px-10 lg:px-20 grid-cols-2 gap-4 md:gap-6 h-auto md:h-[400px] lg:h-[450px] xl:h-[500px] relative z-20">
                     {/* Decorative Elements */}
                     <div className="absolute -left-2 sm:left-6 md:left-14 lg:left-20 -top-16 sm:-top-20 md:-top-[125px] z-10 pointer-events-none">
                         <img src={galleryBunny} alt="Bunny" className="w-[55px] md:w-[85px] object-contain drop-shadow-md" />
@@ -941,7 +953,57 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                             <img src={g3} alt="Baby with jewelry" className="w-full h-full object-cover " />
                         </div>
                     </div>
+                </div>
 
+                {/* Mobile Swiper (Only on mobile responsive) */}
+                <div className="md:hidden w-full max-w-[500px] mx-auto px-5 sm:px-8 relative z-20 flex flex-col items-center">
+                    {/* Decorative Bunny (Placed on backside of swiper card) */}
+                    <div className="absolute left-6 sm:left-9 -top-12 sm:-top-14 z-10 pointer-events-none">
+                        <img src={galleryBunny} alt="Bunny" className="w-[55px] sm:w-[65px] object-contain drop-shadow-md" />
+                    </div>
+
+                    {/* Swiper Slider Card */}
+                    <div
+                        className="w-full relative z-20 overflow-hidden rounded-[24px] shadow-sm bg-white"
+                        onTouchStart={onTouchStart}
+                        onTouchMove={onTouchMove}
+                        onTouchEnd={() => onTouchEnd(handleGalleryNext, handleGalleryPrev)}
+                    >
+                        <div
+                            className="flex transition-transform duration-300 ease-out"
+                            style={{ transform: `translateX(-${gallerySlide * 100}%)` }}
+                        >
+                            {/* Slide 1: g1 */}
+                            <div className="w-full flex-shrink-0 h-[320px] sm:h-[380px] rounded-[24px] bg-[#F379A7] overflow-hidden relative flex items-center justify-center">
+                                <img src={g1} alt="Girl in Pink Beret" className="w-full h-full object-cover" />
+                            </div>
+
+                            {/* Slide 2: g2 */}
+                            <div className="w-full flex-shrink-0 h-[320px] sm:h-[380px] rounded-[24px] bg-gray-50 overflow-hidden relative flex items-center justify-center">
+                                <img src={g2} alt="Girl smiling" className="w-full h-full object-cover" />
+                            </div>
+
+                            {/* Slide 3: g3 */}
+                            <div className="w-full flex-shrink-0 h-[320px] sm:h-[380px] rounded-[24px] bg-gray-50 overflow-hidden relative flex items-center justify-center">
+                                <img src={g3} alt="Baby with jewelry" className="w-full h-full object-cover" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Pagination Dots */}
+                    <div className="flex justify-center items-center gap-2 mt-4">
+                        {[0, 1, 2].map(idx => (
+                            <button
+                                key={idx}
+                                onClick={() => setGallerySlide(idx)}
+                                className={`transition-all duration-300 rounded-full cursor-pointer ${gallerySlide === idx
+                                        ? 'w-6 h-2 bg-[#F96E8F]'
+                                        : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
+                                    }`}
+                                aria-label={`Go to slide ${idx + 1}`}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
 
