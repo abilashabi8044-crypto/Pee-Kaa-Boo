@@ -339,7 +339,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 </div>
 
                 {/* Main Content Layout */}
-                <div className="max-w-[1440px] mx-auto px-4 md:px-6 pt-2 md:pt-4 pb-28 md:pb-20">
+                <div className="max-w-[1440px] mx-auto px-4 md:px-6 pt-2 md:pt-4 pb-8 md:pb-6">
 
                     {/* Category Tags */}
                     <div className="flex gap-2 md:gap-4 mb-3 md:mb-8 flex-nowrap overflow-x-auto pb-1 md:pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -527,7 +527,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
 
                             {/* Pagination */}
                             {totalPages > 1 && (
-                                <div className="flex justify-center items-center gap-3 mt-16 mb-8">
+                                <div className="flex justify-center items-center gap-3 mt-6 md:mt-8 mb-2 md:mb-4">
                                     <button
                                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                         disabled={currentPage === 1}
