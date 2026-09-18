@@ -528,7 +528,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
 
 
             {/* Certification Section */}
-            <div className="w-full relative mt-6 md:mt-10 flex justify-center items-center py-20 md:py-28 px-4 md:px-[128px] lg:px-[200px]"
+            <div className="w-full relative mt-6 md:mt-10 flex justify-center items-center py-20 md:py-28 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-[200px]"
                 style={{
                     backgroundImage: `url(${section3Bg})`,
                     backgroundSize: 'cover',
@@ -540,26 +540,26 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 <img src={fly} alt="Airplane" className="absolute top-10 md:top-14 left-6 md:left-10 w-24 md:w-[280px] z-10 animate-bounce-slow" />
 
                 {/* Main Box */}
-                <div className="relative w-full min-h-[250px] border-[6px] border-[#333333] rounded-[30px] md:rounded-[40px] py-10 md:py-14 px-6 md:px-16 flex flex-col md:flex-row justify-center items-center z-20 mt-8 md:mt-10">
+                <div className="relative w-full min-h-[200px] md:min-h-[220px] lg:min-h-[250px] border-[6px] border-[#333333] rounded-[30px] md:rounded-[40px] py-8 md:py-10 lg:py-14 px-4 sm:px-6 md:px-10 lg:px-16 flex flex-col lg:flex-row justify-center items-center z-20 mt-8 md:mt-10">
 
                     {/* Title overlapping border */}
-                    <div className="absolute -top-[24px] md:-top-[28px] lg:-top-[24px] xl:-top-[32px] left-1/2 -translate-x-1/2 bg-[#FCDCEA] px-6 md:px-8 lg:px-6 xl:px-10 py-1.5 lg:py-1 xl:py-2 border-[4px] lg:border-[3px] xl:border-[4px] border-[#333333] rounded-2xl md:rounded-[24px] xl:rounded-[30px] whitespace-nowrap z-30">
-                        <h2 className="text-xl md:text-4xl lg:text-3xl xl:text-5xl font-['Baloo_2'] font-bold text-[#333333] flex items-center gap-2 font-['Lobster_Two']">
+                    <div className="absolute -top-[22px] md:-top-[26px] lg:-top-[24px] xl:-top-[32px] left-1/2 -translate-x-1/2 bg-[#FCDCEA] px-5 sm:px-6 md:px-8 lg:px-6 xl:px-10 py-1 md:py-1.5 lg:py-1 xl:py-2 border-[4px] lg:border-[3px] xl:border-[4px] border-[#333333] rounded-2xl md:rounded-[24px] xl:rounded-[30px] whitespace-nowrap z-30">
+                        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl font-['Baloo_2'] font-bold text-[#333333] flex items-center gap-2 font-['Lobster_Two']">
                             Certified Big Care for Little <span className="text-[#F96E8F]">Jewellery</span>
                         </h2>
                     </div>
 
-                    {/* Desktop Logos (Static Flex Row - Preserved 100% on md and up) */}
-                    <div className="hidden md:flex w-full flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 xl:gap-30 md:pr-[20px]">
-                        <img src={section3Tested} alt="Dermatologically Tested" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
-                        <img src={section3Glp} alt="GLP" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
-                        <img src={section3Butterfly} alt="Sensitive Skin" className="h-28 md:h-[160px] object-contain hover:scale-105 transition-transform" />
-                        <img src={section3Iso} alt="ISO" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
-                        <img src={section3Baby} alt="Minor Skin Safe" className="h-24 md:h-[150px] object-contain hover:scale-105 transition-transform" />
+                    {/* Desktop Logos (Static Flex Row - Preserved 100% on 2xl and up) */}
+                    <div className="hidden 2xl:flex w-full flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 xl:gap-30 2xl:pr-[20px]">
+                        <img src={section3Tested} alt="Dermatologically Tested" className="h-24 lg:h-[150px] object-contain hover:scale-105 transition-transform" />
+                        <img src={section3Glp} alt="GLP" className="h-24 lg:h-[150px] object-contain hover:scale-105 transition-transform" />
+                        <img src={section3Butterfly} alt="Sensitive Skin" className="h-28 lg:h-[160px] object-contain hover:scale-105 transition-transform" />
+                        <img src={section3Iso} alt="ISO" className="h-24 lg:h-[150px] object-contain hover:scale-105 transition-transform" />
+                        <img src={section3Baby} alt="Minor Skin Safe" className="h-24 lg:h-[150px] object-contain hover:scale-105 transition-transform" />
                     </div>
 
-                    {/* Mobile Auto-Scrolling Carousel (Only on mobile responsive) */}
-                    <div className="w-full overflow-hidden md:hidden py-2 relative z-20" style={{
+                    {/* Mobile and Tablet Auto-Scrolling Carousel (Only on responsive views) */}
+                    <div className="w-full overflow-hidden 2xl:hidden py-2 relative z-20" style={{
                         maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
                         WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)'
                     }}>
@@ -577,7 +577,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                                 animation-play-state: paused;
                             }
                         `}} />
-                        <div className="flex w-max items-center gap-8 animate-cert-scroll">
+                        <div className="flex w-max items-center gap-8 md:gap-12 animate-cert-scroll">
                             {[
                                 { src: section3Tested, alt: "Dermatologically Tested", h: "h-20" },
                                 { src: section3Glp, alt: "GLP", h: "h-20" },
@@ -604,7 +604,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                                     <img
                                         src={logo.src}
                                         alt={logo.alt}
-                                        className={`${logo.h} object-contain`}
+                                        className={`${logo.h === 'h-24' ? 'h-24 md:h-32' : 'h-20 md:h-28'} object-contain`}
                                     />
                                 </div>
                             ))}
@@ -612,7 +612,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     </div>
 
                     {/* Rabbit Image */}
-                    <img src={section3Rabbit} alt="Rabbit Mascot" className="absolute -right-6 md:-right-34 bottom-0 translate-y-[20%] h-40 md:h-[280px] object-contain z-30 pointer-events-none" />
+                    <img src={section3Rabbit} alt="Rabbit Mascot" className="absolute -right-4 sm:-right-6 md:-right-8 lg:-right-34 bottom-0 translate-y-[15%] md:translate-y-[18%] lg:translate-y-[20%] h-36 sm:h-40 md:h-48 lg:h-[280px] object-contain z-30 pointer-events-none" />
                 </div>
             </div>
             {/* Flash Sale Section */}
