@@ -284,7 +284,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
 
 
                     {/* Heading & Subtitle */}
-                    <div className="w-full px-6 pt-4 pb-1 flex flex-col items-start z-30">
+                    <div className="w-full px-6 pt-6 pb-1 flex flex-col items-start z-30">
                         <h1 className="text-[#1e293b] font-['Baloo_2'] font-black text-4xl sm:text-5xl leading-[1.1] mb-2 tracking-tight">
                             Best Kids Store <br />
                             & <span className="text-[#F96E8F]">Online Shop</span>
