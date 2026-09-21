@@ -171,7 +171,7 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 2xl:-ml-[128px] 2xl:-mr-[128px] relative z-10 pb-2">
                     {/* Copyright (Left on desktop, bottom on mobile) */}
                     <p className="text-gray-900 text-xl sm:text-sm font-extrabold text-center md:text-left order-2 md:order-1">
-                        © 2026 PEE KAA BOO All Rights Reserved.
+                        © {new Date().getFullYear()} PEE KAA BOO All Rights Reserved.
                     </p>
 
                     {/* We Accept (Right on desktop, top on mobile) */}
