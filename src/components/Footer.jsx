@@ -30,15 +30,15 @@ export default function Footer() {
                     {/* Column 1: Logo & Socials (Left Column on desktop) */}
                     <div className="lg:col-span-3 flex flex-col items-start">
                         <img
-                             src={footerBunny}
-                             alt="PEE KAA BOO"
-                             className="w-[100px] sm:w-[150px] lg:w-[185px] 2xl:-ml-[128px] h-auto mt-[40px] object-contain mb-5 lg:mb-6"
-                         />
- 
-                         <h4 className="text-gray-900 font-['Baloo_2'] font-black text-2xl lg:text-2xl 2xl:-ml-[128px] mb-3 uppercase tracking-wider">
-                             Follow Us
-                         </h4>
-                         <div className="flex items-center gap-3 2xl:-ml-[128px]">
+                            src={footerBunny}
+                            alt="PEE KAA BOO"
+                            className="w-[100px] sm:w-[150px] lg:w-[185px] 2xl:-ml-[128px] h-auto mt-[40px] object-contain mb-5 lg:mb-6"
+                        />
+
+                        <h4 className="text-gray-900 font-['Baloo_2'] font-black text-2xl lg:text-2xl 2xl:-ml-[128px] mb-3 uppercase tracking-wider">
+                            Follow Us
+                        </h4>
+                        <div className="flex items-center gap-3 2xl:-ml-[128px]">
                             <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#F96E8F] flex items-center justify-center text-white hover:bg-[#E44971] hover:scale-105 transition-all shadow-xs">
                                 <img src={fb} alt="facebook" className='w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain' />
                             </a>
