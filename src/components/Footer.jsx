@@ -59,10 +59,10 @@ export default function Footer() {
 
                     {/* Column 2: About Us */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-3xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             About Us
                         </h4>
-                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-xl">
+                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-3xl">
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/about-us')}
@@ -87,7 +87,7 @@ export default function Footer() {
                                     FAQ
                                 </button>
                             </li>
-                            <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap">Testimonials</a></li>
+                            <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']">Testimonials</a></li>
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/offers')}
@@ -101,10 +101,10 @@ export default function Footer() {
 
                     {/* Column 3: Why Us */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-3xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             Why Us ?
                         </h4>
-                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-xl">
+                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-3xl">
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/return-policy')}
@@ -121,7 +121,7 @@ export default function Footer() {
                                     Privacy Policy
                                 </button>
                             </li>
-                            <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap">Cancel and Refund</a></li>
+                            <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap text-left bg-transparent border-none p-0 outline-none font-bold text-lg sm:text-lg lg:text-xl xl:text-xl font-['Baloo_2']">Cancel and Refund</a></li>
                             <li className="whitespace-nowrap">
                                 <button
                                     onClick={() => navigateTo('/certified-jewellery')}
@@ -143,10 +143,10 @@ export default function Footer() {
 
                     {/* Column 4: Jewellery Guides + Bunny Illustration */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 relative min-h-[220px] xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-3xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             Jewellery Guides
                         </h4>
-                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-xl mb-4 md:mb-0">
+                        <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-['Baloo_2'] font-bold text-lg sm:text-lg lg:text-xl xl:text-xl mb-4 md:mb-0">
                             <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap">Lorem Ipsum</a></li>
                             <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap">Lorem Ipsum</a></li>
                             <li className="whitespace-nowrap"><a href="#" className="hover:text-[#F96E8F] transition-colors whitespace-nowrap">Lorem Ipsum</a></li>
