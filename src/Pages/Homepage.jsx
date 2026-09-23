@@ -840,7 +840,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                     <h2 className="text-3xl md:text-5xl font-black text-gray-900 font-['Baloo_2'] tracking-tight mb-4">
                         Trending <span className="text-[#F96E8F]">Instagram Feeds</span>
                     </h2>
-                    <p className="text-gray-600 font-['Baloo_2'] font-bold text-sm md:text-lg">
+                    <p className="text-gray-600 font-['Baloo_2'] font-bold text-sm md:text-lg"> 
                         Don't miss out on great promotional news or upcoming events in our store system
                     </p>
                 </div>
@@ -997,8 +997,8 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                                 key={idx}
                                 onClick={() => setGallerySlide(idx)}
                                 className={`transition-all duration-300 rounded-full cursor-pointer ${gallerySlide === idx
-                                        ? 'w-6 h-2 bg-[#F96E8F]'
-                                        : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
+                                    ? 'w-6 h-2 bg-[#F96E8F]'
+                                    : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
                                     }`}
                                 aria-label={`Go to slide ${idx + 1}`}
                             />
@@ -1056,9 +1056,7 @@ const Homepage = ({ cartItems, wishlistCount, addToCart, wishlist, onAddToWishli
                 <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] sm:bottom-6 sm:right-6 sm:left-auto sm:translate-x-0 sm:w-auto z-[9999] bg-white border-[2px] ${wishlistToast.action === 'removed' ? 'border-gray-300 shadow-lg' : 'border-[#F96E8F] shadow-lg'} text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 max-w-[360px] animate-toast-up`}>
                     <div className={`w-10 h-10 rounded-[12px] ${wishlistToast.action === 'removed' ? 'bg-gray-100 text-gray-500' : 'bg-[#F96E8F]/15 text-[#F96E8F]'} flex items-center justify-center flex-shrink-0`}>
                         {wishlistToast.action === 'removed' ? (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <img src={wlist} alt="wishlist" className="h-5 grayscale opacity-60" />
                         ) : (
                             <img src={wlist} alt="wishlist" className="h-5" />
                         )}

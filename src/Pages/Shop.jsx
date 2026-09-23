@@ -568,9 +568,7 @@ export default function Shop({ onSelectProduct, addToCart, wishlist = [], onAddT
                 <div className={`fixed bottom-24 right-6 sm:bottom-6 sm:right-6 z-[9999] bg-white border-[2px] ${wishlistToast.action === 'removed' ? 'border-gray-300 shadow-lg' : 'border-[#F96E8F] shadow-lg'} text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 min-w-[280px] max-w-[360px] animate-toast-up`}>
                     <div className={`w-10 h-10 rounded-[12px] ${wishlistToast.action === 'removed' ? 'bg-gray-100 text-gray-500' : 'bg-[#F96E8F]/15 text-[#F96E8F]'} flex items-center justify-center flex-shrink-0`}>
                         {wishlistToast.action === 'removed' ? (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <img src={wlist} alt="wishlist" className="h-5 grayscale opacity-60" />
                         ) : (
                             <img src={wlist} alt="wishlist" className="h-5" />
                         )}

@@ -11,6 +11,7 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
     const [carouselIndex, setCarouselIndex] = useState(0);
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
     const [addedItems, setAddedItems] = useState({});
+    const [wishlistAdded, setWishlistAdded] = useState({});
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 640);
@@ -27,9 +28,14 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
 
     const wishlistItems = useSelector(selectWishlistItems);
 
-    const handleWishlistClick = (e, item) => {
+    const handleWishlistClick = (e, item, index) => {
         e.stopPropagation();
         dispatch(toggleWishlistAction(item));
+        
+        setWishlistAdded(prev => ({ ...prev, [item.id || index]: true }));
+        setTimeout(() => {
+            setWishlistAdded(prev => ({ ...prev, [item.id || index]: false }));
+        }, 2000);
     };
 
     const handleNextCarousel = () => setCarouselIndex(prev => Math.min(prev + 1, maxCarouselIndex));
@@ -98,17 +104,27 @@ const YouMayAlsoLike = ({ addToCart, updateQuantity }) => {
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                                    <button
-                                        onClick={(e) => handleWishlistClick(e, item)}
-                                        title="Add to Wishlist"
-                                        className={`w-9 h-9 text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer ${itemWishlisted ? 'bg-[#F96E8F]' : 'bg-[#00D0CC] hover:bg-[#00b3b0]'
-                                            }`}
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={itemWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                                        </svg>
-                                    </button>
+                                <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 z-20">
+                                    <div className="relative">
+                                        <button
+                                            onClick={(e) => handleWishlistClick(e, item, index)}
+                                            title="Add to Wishlist"
+                                            className={`w-9 h-9 text-white rounded-xl flex items-center justify-center transition-colors shadow-md cursor-pointer ${itemWishlisted ? 'bg-[#F96E8F]' : 'bg-[#00D0CC] hover:bg-[#00b3b0]'
+                                                }`}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={itemWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                            </svg>
+                                        </button>
+                                        {/* Tooltip Feedback */}
+                                        {wishlistAdded[item.id || index] && (
+                                            <div className="absolute top-1/2 right-11 -translate-y-1/2 bg-[#01254F] text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow-md whitespace-nowrap animate-fade-in-out pointer-events-none">
+                                                {itemWishlisted ? "Added!" : "Removed!"}
+                                                {/* Left Triangle */}
+                                                <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-0 h-0 border-y-4 border-y-transparent border-l-4 border-l-[#01254F]"></div>
+                                            </div>
+                                        )}
+                                    </div>
                                     <button
                                         onClick={copyLink}
                                         title="Copy Link"

@@ -60,7 +60,12 @@ export default function CheckoutAddress({
           <div className="relative z-10 text-left">
             <p className="font-extrabold text-sm text-gray-900 mb-1">{addr.username}</p>
             <p>{addr.line1}</p>
-            <p>{addr.line2}</p>
+            {addr.landmark && <p className="text-gray-500 italic text-[11px]">Landmark: {addr.landmark}</p>}
+            {addr.city || addr.state || addr.pincode ? (
+              <p>{[addr.city, addr.state].filter(Boolean).join(', ')} {addr.pincode ? `- ${addr.pincode}` : ''}</p>
+            ) : (
+              addr.line2 && <p>{addr.line2}</p>
+            )}
             <p className="mt-1">Phone Number : {addr.phone}</p>
             <p>Address Type : {addr.type}</p>
           </div>
@@ -77,7 +82,7 @@ export default function CheckoutAddress({
           Select Billing <span className="text-[#F96E8F]">Addresses</span>
         </h2>
         {addresses.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[380px] overflow-y-auto pr-2 pb-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#F96E8F #f3f4f6' }}>
             {addresses.map(addr => renderAddressCard(addr, billingAddressId, setBillingAddressId))}
           </div>
         ) : (
@@ -111,7 +116,7 @@ export default function CheckoutAddress({
           Select shipping <span className="text-[#F96E8F]">Addresses</span>
         </h2>
         {addresses.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[380px] overflow-y-auto pr-2 pb-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#F96E8F #f3f4f6' }}>
             {addresses.map(addr => renderAddressCard(addr, shippingAddressId, setShippingAddressId))}
           </div>
         ) : (
@@ -148,7 +153,7 @@ export default function CheckoutAddress({
         {isGift && (
           <div className="mt-6 animate-fade-in">
             <h4 className="font-black text-sm text-gray-900 mb-4 font-['Baloo_2']">Choose a Gift Wrap</h4>
-            <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-4 py-2 px-1 snap-x" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-4 py-2 px-1 snap-x pb-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#F96E8F #f3f4f6' }}>
               {giftWraps.map(wrap => (
                 <div
                   key={wrap.id}

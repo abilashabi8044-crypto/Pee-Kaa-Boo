@@ -129,6 +129,20 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
     setToastTrigger(prev => prev + 1);
   };
 
+  const handleQtyChange = (item, delta) => {
+    if (updateQuantity) {
+      if (delta < 0 && (item.quantity || 1) <= Math.abs(delta)) {
+        setToastType('removed');
+        setToastMessage('Item removed from cart');
+      } else {
+        setToastType('updated');
+        setToastMessage('Your items have been updated');
+      }
+      updateQuantity(item, delta);
+      setToastTrigger(prev => prev + 1);
+    }
+  };
+
   const handleCompletePayment = () => {
     const userProfile = (() => {
       try {
@@ -181,7 +195,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
       address: {
         name: deliveryAddress.name || 'Home',
         username: deliveryAddress.username || currentUserName,
-        address: `${deliveryAddress.line1 || ''}, ${deliveryAddress.line2 || ''}`.replace(/^,\s*|,\s*$/g, '') || '123 Anywhere St., Any City, ST 12345',
+        address: [deliveryAddress.line1, deliveryAddress.landmark, deliveryAddress.city, deliveryAddress.state, deliveryAddress.pincode].filter(Boolean).join(', ') || '123 Anywhere St., Any City, ST 12345',
         phone: deliveryAddress.phone || currentUserPhone
       },
       paymentMethod: selectedPayment === 'cod' ? 'Cash On Delivery' : 'Online Payment',
@@ -264,7 +278,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
     }
   }, [addresses]);
   const [showAddressForm, setShowAddressForm] = useState(false);
-  const [newAddress, setNewAddress] = useState({ name: '', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
+  const [newAddress, setNewAddress] = useState({ name: '', username: '', line1: '', landmark: '', city: '', state: '', pincode: '', phone: '', type: 'HOME' });
   const [editingAddressId, setEditingAddressId] = useState(null);
   const [addressErrors, setAddressErrors] = useState({});
 
@@ -279,8 +293,14 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
     if (!newAddress.line1 || !newAddress.line1.trim()) {
       errors.line1 = 'Address Line 1 is required';
     }
-    if (!newAddress.line2 || !newAddress.line2.trim()) {
-      errors.line2 = 'City, State & Pincode is required';
+    if (!newAddress.city || !newAddress.city.trim()) {
+      errors.city = 'City is required';
+    }
+    if (!newAddress.state || !newAddress.state.trim()) {
+      errors.state = 'State is required';
+    }
+    if (!newAddress.pincode || !newAddress.pincode.trim()) {
+      errors.pincode = 'Pincode is required';
     }
     const cleanPhone = (newAddress.phone || '').replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) {
@@ -289,6 +309,31 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
 
     setAddressErrors(errors);
     return Object.keys(errors).length === 0;
+  };
+
+  const handlePincodeChange = async (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setNewAddress({ ...newAddress, pincode: value });
+    if (addressErrors.pincode) setAddressErrors(prev => ({ ...prev, pincode: '' }));
+
+    if (value.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${value}`);
+        const data = await response.json();
+        if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
+          const postOffice = data[0].PostOffice[0];
+          setNewAddress(prev => ({
+            ...prev,
+            city: postOffice.District || postOffice.Block || postOffice.Region || prev.city,
+            state: postOffice.State || prev.state,
+            pincode: value
+          }));
+          setAddressErrors(prev => ({ ...prev, city: '', state: '' }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch pincode details:", error);
+      }
+    }
   };
 
   const handleAddAddress = (e) => {
@@ -305,7 +350,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
     }
 
     setShowAddressForm(false);
-    setNewAddress({ name: '', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
+    setNewAddress({ name: '', username: '', line1: '', landmark: '', city: '', state: '', pincode: '', phone: '', type: 'HOME' });
     setEditingAddressId(null);
     setAddressErrors({});
   };
@@ -313,7 +358,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
   const closeAddressModal = () => {
     setShowAddressForm(false);
     setEditingAddressId(null);
-    setNewAddress({ name: '', username: '', line1: '', line2: '', phone: '', type: 'HOME' });
+    setNewAddress({ name: '', username: '', line1: '', landmark: '', city: '', state: '', pincode: '', phone: '', type: 'HOME' });
     setAddressErrors({});
   };
 
@@ -411,20 +456,63 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                   {addressErrors.line1 && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line1}</span>}
                 </div>
 
-                {/* City, State, Pincode */}
+                {/* Landmark (Optional) */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-black text-gray-800">City, State & Pincode <span className="text-[#F96E8F]">*</span></label>
+                  <label className="text-sm font-black text-gray-800">Landmark (Optional)</label>
                   <input
                     type="text"
-                    placeholder="e.g. Chennai, Tamil Nadu - 600001"
-                    value={newAddress.line2}
-                    onChange={e => {
-                      setNewAddress({ ...newAddress, line2: e.target.value });
-                      if (addressErrors.line2) setAddressErrors(prev => ({ ...prev, line2: '' }));
-                    }}
-                    className={`w-full border ${addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    placeholder="e.g. Near Apollo Hospital"
+                    value={newAddress.landmark || ''}
+                    onChange={e => setNewAddress({ ...newAddress, landmark: e.target.value })}
+                    className={`w-full border border-gray-200 p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
-                  {addressErrors.line2 && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line2}</span>}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* City */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-black text-gray-800">City <span className="text-[#F96E8F]">*</span></label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Chennai"
+                      value={newAddress.city || ''}
+                      onChange={e => {
+                        setNewAddress({ ...newAddress, city: e.target.value });
+                        if (addressErrors.city) setAddressErrors(prev => ({ ...prev, city: '' }));
+                      }}
+                      className={`w-full border ${addressErrors.city ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    />
+                    {addressErrors.city && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.city}</span>}
+                  </div>
+
+                  {/* Pincode */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-black text-gray-800">Pincode <span className="text-[#F96E8F]">*</span></label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 600001"
+                      value={newAddress.pincode || ''}
+                      onChange={handlePincodeChange}
+                      className={`w-full border ${addressErrors.pincode ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    />
+                    {addressErrors.pincode && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.pincode}</span>}
+                  </div>
+                </div>
+
+                {/* State */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-sm font-black text-gray-800">State <span className="text-[#F96E8F]">*</span></label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Tamil Nadu"
+                    value={newAddress.state || ''}
+                    onChange={e => {
+                      setNewAddress({ ...newAddress, state: e.target.value });
+                      if (addressErrors.state) setAddressErrors(prev => ({ ...prev, state: '' }));
+                    }}
+                    className={`w-full border ${addressErrors.state ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                  />
+                  {addressErrors.state && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.state}</span>}
                 </div>
 
                 {/* Phone Number */}
@@ -509,41 +597,76 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
           <div className="lg:col-span-5 flex flex-col gap-5 lg:sticky lg:top-24 h-fit">
 
             {/* Products List */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 max-h-[380px] overflow-y-auto pr-2 pb-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#F96E8F #f3f4f6' }}>
               {cartItems.length > 0 ? (
                 cartItems.map((item, index) => {
                   const itemQty = item.quantity || 1;
                   const itemPrice = Number(item.price) || 0;
                   const itemOldPrice = Number(item.oldPrice) || itemPrice;
                   return (
-                    <div key={item.id || index} className="border border-[#F96E8F]/30 rounded-[20px] p-4 bg-white flex items-center gap-4 sm:gap-5 shadow-sm relative overflow-hidden">
-                      <div className="w-[100px] h-[100px] sm:w-[110px] sm:h-[110px] rounded-[16px] overflow-hidden flex-shrink-0 bg-[#F4D9DC]">
+                    <div key={item.id || index} className="shrink-0 border border-gray-100 rounded-[24px] p-4 bg-white flex flex-col sm:flex-row items-center gap-4 sm:gap-6 shadow-sm relative overflow-hidden">
+
+                      {/* Left: Image */}
+                      <div className="w-[100px] h-[100px] sm:w-[130px] sm:h-[130px] rounded-[16px] overflow-hidden flex-shrink-0 bg-[#E0F2FE] border-[4px] border-[#FCE7F3] p-1 flex items-center justify-center">
                         {item.image ? (
-                          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                          <img src={item.image} alt={item.title} className="w-full h-full object-cover rounded-xl" />
                         ) : (
-                          <div className="w-full h-full bg-[#F9E5E8]"></div>
+                          <div className="w-full h-full bg-[#FCE7F3] rounded-xl"></div>
                         )}
                       </div>
-                      <div className="flex-1 flex flex-col justify-center min-w-0">
-                        <h3 className="font-[Baloo_2] font-bold text-base sm:text-2xl text-gray-900 mb-1 leading-tight truncate" title={item.title}>
-                          {item.title}
-                        </h3>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-gray-500 font-extrabold text-sm">
-                            Product Code: {item.code || (item.id ? `PKB-${item.id}` : 'PKB-101')}
-                          </span>
+
+                      {/* Right: Info & Controls */}
+                      <div className="flex-1 flex flex-col justify-between self-stretch py-1 w-full">
+                        <div>
+                          <h3 className="font-['Baloo_2'] font-extrabold text-xl sm:text-[22px] text-[#01254F] mb-1 leading-tight truncate">
+                            {item.title || 'Name of the product'}
+                          </h3>
+                          <div className="text-[#64748B] font-bold text-xs sm:text-sm mb-3">
+                            Product Code : {item.code || (item.id ? `64A288${item.id}` : '64A288103')}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          {itemOldPrice > itemPrice && (
-                            <del className="text-gray-400 font-['Baloo_2']  text-sm">
-                              ₹ {itemOldPrice * itemQty}
-                            </del>
-                          )}
-                          <span className="text-[#F96E8F] font-bold font-['Baloo_2']  text-2xl">
-                            ₹ {itemPrice * itemQty}
-                          </span>
+
+                        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mt-auto gap-4">
+
+                          {/* Details & Pricing */}
+                          <div className="flex flex-col gap-2 w-full sm:w-auto justify-end">
+                            <div className="flex items-center gap-3">
+                              {itemOldPrice > itemPrice && (
+                                <del className="text-[#94A3B8] font-bold text-md font-['Nunito'] whitespace-nowrap">
+                                  ₹{itemOldPrice}
+                                </del>
+                              )}
+                              <span className="text-[#F96E8F] font-black text-xl font-['Nunito'] leading-none whitespace-nowrap">
+                                ₹ {itemPrice}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Controls */}
+                          <div className="flex items-center gap-4 self-end shrink-0 mb-2">
+                            {/* Qty */}
+                            <div className="flex items-center border-[1.5px] border-dashed border-[#01254F] rounded-full overflow-hidden bg-white px-3 py-1">
+                              <button onClick={() => handleQtyChange(item, 1)} className="w-6 h-6 flex items-center justify-center font-bold text-[#01254F] hover:bg-gray-100 cursor-pointer text-base">
+                                +
+                              </button>
+                              <span className="w-8 text-center font-black text-[#01254F] text-sm">
+                                {itemQty}
+                              </span>
+                              <button onClick={() => handleQtyChange(item, -1)} className="w-6 h-6 flex items-center justify-center font-bold text-[#01254F] hover:bg-gray-100 cursor-pointer text-base">
+                                -
+                              </button>
+                            </div>
+                            {/* Delete */}
+                            <button onClick={() => handleQtyChange(item, -itemQty)} className="text-[#EF4444] hover:text-red-700 transition-colors w-10 h-10 bg-[#FEF2F2] rounded-full cursor-pointer flex items-center justify-center shrink-0" title="Remove item">
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+
                         </div>
                       </div>
+
                     </div>
                   );
                 })
@@ -711,8 +834,8 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
               }}
               disabled={cartItems.length === 0}
               className={`w-full font-medium py-3 rounded-b-xl text-xs font-[Nunito] transition-colors shadow-xs flex items-center justify-center gap-2 ${cartItems.length === 0
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60 border border-gray-200 border-t-0'
-                  : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer'
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60 border border-gray-200 border-t-0'
+                : 'bg-[#F96E8F] hover:bg-[#E44971] text-white cursor-pointer'
                 }`}
             >
               {showCouponInput ? 'Close Coupon Input' : 'Apply More Coupons'}
@@ -759,7 +882,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
           </div>
         </div>
 
-        <YouMayAlsoLike />
+        <YouMayAlsoLike addToCart={addToCart} updateQuantity={updateQuantity} />
 
         {/* Thank You / Order Confirmation Popup Modal */}
         {showThankYouModal && (
@@ -846,8 +969,8 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
               }
             }}
             className={`text-white px-5 py-3 rounded-[12px] font-bold text-sm shadow-sm transition-all tracking-wide ${addresses.length > 0 && billingAddressId
-                ? 'bg-[#F96E8F] hover:bg-[#E44971] active:scale-[0.98] cursor-pointer'
-                : 'bg-gray-400 cursor-not-allowed opacity-70'
+              ? 'bg-[#F96E8F] hover:bg-[#E44971] active:scale-[0.98] cursor-pointer'
+              : 'bg-gray-400 cursor-not-allowed opacity-70'
               }`}
           >
             Deliver To This Address
@@ -874,8 +997,8 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
       {/* Popup Card with Smooth Slide Up/Down from Behind the Fixed Button */}
       <div
         className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t-2 border-dashed border-[#F96E8F] rounded-t-[24px] p-5 pb-22 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transform transition-all duration-300 ease-out ${showOrderSummaryModal
-            ? 'translate-y-0 opacity-100 pointer-events-auto'
-            : 'translate-y-full opacity-0 pointer-events-none'
+          ? 'translate-y-0 opacity-100 pointer-events-auto'
+          : 'translate-y-full opacity-0 pointer-events-none'
           }`}
         onClick={(e) => e.stopPropagation()}
       >

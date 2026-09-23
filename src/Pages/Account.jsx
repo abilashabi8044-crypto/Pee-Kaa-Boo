@@ -1613,9 +1613,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
       {wishlistToast && (
         <div className="fixed top-8 right-8 z-50 bg-white border-[2px] border-gray-300 shadow-lg text-gray-800 px-5 py-4 rounded-[16px] flex items-center gap-3.5 min-w-[280px] max-w-[360px]">
           <div className="w-10 h-10 rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <img src={heartIcon} alt="wishlist" className="h-5 grayscale opacity-60" />
           </div>
           <div className="flex-1 pr-2">
             <h4 className="font-black text-gray-700 text-sm font-['Nunito'] leading-tight">

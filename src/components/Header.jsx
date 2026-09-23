@@ -238,7 +238,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                             <div
                                                 key={item.id}
                                                 onClick={() => handleSelectSearchResult(item)}
-                                                className="flex items-center gap-3 p-2 rounded-xl hover:bg-pink-50/80 cursor-pointer transition-all duration-200 border-b border-gray-100 last:border-0"
+                                                className="flex items-center gap-3 p-2 rounded-xl hover:bg-pink-50/80 cursor-pointer transition-all duration-200 border border-black mb-1.5"
                                             >
                                                 <div className="w-11 h-11 rounded-lg bg-[#F9E2E8]/40 flex-shrink-0 overflow-hidden border border-pink-100 flex items-center justify-center p-0.5">
                                                     <img src={item.image} alt={item.title} className="w-full h-full object-cover rounded-md" />
@@ -346,7 +346,7 @@ export default function Header({ cartItems, wishlistCount, showMobileSearch, cus
                                                 <div
                                                     key={item.id}
                                                     onClick={() => handleSelectSearchResult(item)}
-                                                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-pink-50/80 cursor-pointer transition-all duration-200 group border-b border-gray-100 last:border-0"
+                                                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-pink-50/80 cursor-pointer transition-all duration-200 group border border-black mb-1.5"
                                                 >
                                                     <div className="w-12 h-12 rounded-lg bg-[#F9E2E8]/40 flex-shrink-0 overflow-hidden border border-pink-100 flex items-center justify-center p-0.5">
                                                         <img src={item.image} alt={item.title} className="w-full h-full object-cover rounded-md group-hover:scale-105 transition-transform" />
