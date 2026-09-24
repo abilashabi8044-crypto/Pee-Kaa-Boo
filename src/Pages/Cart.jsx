@@ -19,8 +19,16 @@ const recommendedProducts = gridItems.filter(item => item.type === 'product');
 const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
   const [localQty, setLocalQty] = useState(1);
   const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState(false);
-  const [appliedCouponCode, setAppliedCouponCode] = useState('');
+  const [appliedCouponCode, setAppliedCouponCode] = useState(() => localStorage.getItem('appliedCouponCode') || '');
+  const [appliedCoupon, setAppliedCoupon] = useState(() => !!localStorage.getItem('appliedCouponCode'));
+
+  useEffect(() => {
+    if (appliedCoupon && appliedCouponCode) {
+      localStorage.setItem('appliedCouponCode', appliedCouponCode);
+    } else {
+      localStorage.removeItem('appliedCouponCode');
+    }
+  }, [appliedCoupon, appliedCouponCode]);
   const [showCouponInput, setShowCouponInput] = useState(false);
   const [couponError, setCouponError] = useState('');
 

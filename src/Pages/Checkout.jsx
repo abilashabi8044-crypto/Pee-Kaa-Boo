@@ -95,8 +95,16 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
   const [selectedGiftWrap, setSelectedGiftWrap] = useState('');
   const [giftMessage, setGiftMessage] = useState('');
   const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState(false);
-  const [appliedCouponCode, setAppliedCouponCode] = useState('');
+  const [appliedCouponCode, setAppliedCouponCode] = useState(() => localStorage.getItem('appliedCouponCode') || '');
+  const [appliedCoupon, setAppliedCoupon] = useState(() => !!localStorage.getItem('appliedCouponCode'));
+
+  useEffect(() => {
+    if (appliedCoupon && appliedCouponCode) {
+      localStorage.setItem('appliedCouponCode', appliedCouponCode);
+    } else {
+      localStorage.removeItem('appliedCouponCode');
+    }
+  }, [appliedCoupon, appliedCouponCode]);
   const [showCouponInput, setShowCouponInput] = useState(false);
   const [couponError, setCouponError] = useState('');
   const [pincode, setPincode] = useState('');
@@ -322,9 +330,12 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
         const data = await response.json();
         if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
           const postOffice = data[0].PostOffice[0];
+          const area = postOffice.Name;
+          const city = postOffice.District || postOffice.Block || postOffice.Region || prev.city;
+          
           setNewAddress(prev => ({
             ...prev,
-            city: postOffice.District || postOffice.Block || postOffice.Region || prev.city,
+            city: area && city && area !== city ? `${area}, ${city}` : city || area,
             state: postOffice.State || prev.state,
             pincode: value
           }));
