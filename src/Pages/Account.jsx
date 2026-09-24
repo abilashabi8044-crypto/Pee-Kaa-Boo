@@ -42,6 +42,10 @@ const INITIAL_ADDRESS_FORM = {
   username: '',
   line1: '',
   line2: '',
+  landmark: '',
+  city: '',
+  state: '',
+  pincode: '',
   phone: '',
   type: 'HOME'
 };
@@ -213,10 +217,10 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   type="button"
                   onClick={() => handleSelectDay(day)}
                   className={`h-9 w-9 mx-auto rounded-full flex items-center justify-center text-sm font-bold transition-all cursor-pointer ${isSelected
-                      ? 'bg-gradient-to-tr from-[#F96E8F] to-[#FF8EAA] text-white shadow-md shadow-pink-300 scale-105 font-black'
-                      : isToday
-                        ? 'border-2 border-[#F96E8F] text-[#F96E8F] font-black hover:bg-pink-50'
-                        : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                    ? 'bg-gradient-to-tr from-[#F96E8F] to-[#FF8EAA] text-white shadow-md shadow-pink-300 scale-105 font-black'
+                    : isToday
+                      ? 'border-2 border-[#F96E8F] text-[#F96E8F] font-black hover:bg-pink-50'
+                      : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
                     }`}
                 >
                   {day}
@@ -241,8 +245,8 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   setViewMode('days');
                 }}
                 className={`py-3 rounded-2xl font-bold text-sm transition-all cursor-pointer ${isSelected
-                    ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
-                    : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                  ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
+                  : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
                   }`}
               >
                 {m.substring(0, 3)}
@@ -266,8 +270,8 @@ const CustomDatePicker = ({ value, onChange, onClose }) => {
                   setViewMode('months');
                 }}
                 className={`py-3 rounded-2xl font-bold text-sm transition-all cursor-pointer ${isSelected
-                    ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
-                    : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
+                  ? 'bg-[#F96E8F] text-white shadow-md shadow-pink-200'
+                  : 'text-gray-700 hover:bg-pink-50 hover:text-[#F96E8F]'
                   }`}
               >
                 {y}
@@ -337,8 +341,8 @@ const WishlistItemCard = ({ item, addToCart, onRemove }) => {
       <button
         onClick={handleAdd}
         className={`w-full py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-sm mb-2 font-['Nunito'] flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${isAdded
-            ? 'bg-[#fc148c] text-white scale-95'
-            : 'bg-[#F96E8F] text-white hover:bg-[#E44971]'
+          ? 'bg-[#fc148c] text-white scale-95'
+          : 'bg-[#F96E8F] text-white hover:bg-[#E44971]'
           }`}
       >
         {isAdded ? (
@@ -626,9 +630,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
     if (!addressFormData.line1 || !addressFormData.line1.trim()) {
       formErrors.line1 = 'Address Line 1 is required';
     }
-    if (!addressFormData.line2 || !addressFormData.line2.trim()) {
-      formErrors.line2 = 'City, State & Pincode is required';
-    }
+
     const cleanPhone = (addressFormData.phone || '').replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) {
       formErrors.phone = 'Valid 10-digit mobile number is required';
@@ -782,8 +784,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   <button
                     onClick={() => setActiveMenu('My Profile')}
                     className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'My Profile'
-                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
-                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                      ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                      : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
                       }`}
                   >
                     <div className="flex items-center gap-4">
@@ -808,8 +810,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   <button
                     onClick={() => setActiveMenu('My Orders')}
                     className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'My Orders'
-                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
-                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                      ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                      : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
                       }`}
                   >
                     <div className="flex items-center gap-4">
@@ -834,8 +836,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   <button
                     onClick={() => setActiveMenu('Manage Addresses')}
                     className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'Manage Addresses'
-                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
-                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                      ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                      : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
                       }`}
                   >
                     <div className="flex items-center gap-4">
@@ -860,8 +862,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   <button
                     onClick={() => setActiveMenu('Saved UPI')}
                     className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'Saved UPI'
-                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
-                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                      ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                      : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
                       }`}
                   >
                     <div className="flex items-center gap-4">
@@ -886,8 +888,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   <button
                     onClick={() => setActiveMenu('Saved Cards')}
                     className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'Saved Cards'
-                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
-                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                      ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                      : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
                       }`}
                   >
                     <div className="flex items-center gap-4">
@@ -912,8 +914,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                   <button
                     onClick={() => setActiveMenu('My Wishlists')}
                     className={`w-full flex items-center justify-between px-6 py-[15px] font-extrabold text-sm transition-all duration-200 cursor-pointer ${activeMenu === 'My Wishlists'
-                        ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
-                        : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
+                      ? 'bg-[#FFF0F4] text-gray-900 border-l-[3px] border-l-[#F96E8F]'
+                      : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-l-transparent'
                       }`}
                   >
                     <div className="flex items-center gap-4">
@@ -1458,8 +1460,8 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
       {/* Address Form Modal */}
       {showAddressModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[24px] p-6 sm:p-7 w-full max-w-md shadow-2xl font-['Baloo_2'] border border-gray-100">
-            <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
+          <div className="bg-white rounded-[24px] p-5 sm:p-6 w-full max-w-md shadow-2xl font-['Baloo_2'] border border-gray-100 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
               <h3 className="text-xl font-black text-gray-900">
                 {editingAddressId ? 'Edit Address' : 'Add New Address'}
               </h3>
@@ -1471,9 +1473,9 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
               </button>
             </div>
 
-            <form onSubmit={handleSaveAddress} className="flex flex-col gap-4" noValidate>
+            <form onSubmit={handleSaveAddress} className="flex flex-col gap-3" noValidate>
               {/* Address Label Select */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <label className="text-sm font-black text-gray-800">
                   Address Label <span className="text-[#F96E8F]">*</span>
                 </label>
@@ -1486,13 +1488,13 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                       if (addressErrors.name) setAddressErrors(prev => ({ ...prev, name: '' }));
                     }}
                     className={`w-full appearance-none bg-white border ${addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                      } rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-sm ${addressFormData.name ? 'text-gray-900' : 'text-gray-400'
+                      } rounded-[12px] py-2.5 pl-4 pr-10 font-bold text-sm ${addressFormData.name ? 'text-gray-900' : 'text-gray-400'
                       } outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
                   >
                     <option value="" disabled className="text-gray-400">Select Address Label</option>
-                    <option value="Home" className="text-gray-800 font-bold py-2">🏠 Home (Residence)</option>
-                    <option value="Work" className="text-gray-800 font-bold py-2">💼 Work (Office / Business)</option>
-                    <option value="Other" className="text-gray-800 font-bold py-2">📍 Other (Friend / Family)</option>
+                    <option value="Home" className="text-gray-800 font-bold py-1">🏠 Home (Residence)</option>
+                    <option value="Work" className="text-gray-800 font-bold py-1">💼 Work (Office / Business)</option>
+                    <option value="Other" className="text-gray-800 font-bold py-1">📍 Other (Friend / Family)</option>
                   </select>
                   <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1506,7 +1508,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
               </div>
 
               {/* Full Name */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <label className="text-sm font-black text-gray-800">
                   Full Name <span className="text-[#F96E8F]">*</span>
                 </label>
@@ -1519,7 +1521,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     if (addressErrors.username) setAddressErrors(prev => ({ ...prev, username: '' }));
                   }}
                   className={`w-full border ${addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                    } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    } p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.username && (
                   <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.username}</span>
@@ -1527,7 +1529,7 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
               </div>
 
               {/* Address Line 1 */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <label className="text-sm font-black text-gray-800">
                   Address Line 1 <span className="text-[#F96E8F]">*</span>
                 </label>
@@ -1540,36 +1542,65 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     if (addressErrors.line1) setAddressErrors(prev => ({ ...prev, line1: '' }));
                   }}
                   className={`w-full border ${addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                    } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    } p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.line1 && (
                   <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line1}</span>
                 )}
               </div>
 
-              {/* City, State, Pincode */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-black text-gray-800">
-                  City, State & Pincode <span className="text-[#F96E8F]">*</span>
-                </label>
+              {/* Landmark (Optional) */}
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-black text-gray-800">Landmark (Optional)</label>
                 <input
                   type="text"
-                  placeholder="e.g. Chennai, Tamil Nadu - 600001"
-                  value={addressFormData.line2}
-                  onChange={e => {
-                    setAddressFormData({ ...addressFormData, line2: e.target.value });
-                    if (addressErrors.line2) setAddressErrors(prev => ({ ...prev, line2: '' }));
-                  }}
-                  className={`w-full border ${addressErrors.line2 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                    } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                  placeholder="e.g. Near Apollo Hospital"
+                  value={addressFormData.landmark || ''}
+                  onChange={e => setAddressFormData({ ...addressFormData, landmark: e.target.value })}
+                  className={`w-full border border-gray-200 p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
-                {addressErrors.line2 && (
-                  <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line2}</span>
-                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {/* City */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-black text-gray-800">City (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Chennai"
+                    value={addressFormData.city || ''}
+                    onChange={e => setAddressFormData({ ...addressFormData, city: e.target.value })}
+                    className={`w-full border border-gray-200 p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                  />
+                </div>
+
+                {/* Pincode */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-black text-gray-800">Pincode (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 600001"
+                    value={addressFormData.pincode || ''}
+                    onChange={e => setAddressFormData({ ...addressFormData, pincode: e.target.value.replace(/\D/g, '') })}
+                    className={`w-full border border-gray-200 p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                  />
+                </div>
+              </div>
+
+              {/* State */}
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-black text-gray-800">State (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Tamil Nadu"
+                  value={addressFormData.state || ''}
+                  onChange={e => setAddressFormData({ ...addressFormData, state: e.target.value })}
+                  className={`w-full border border-gray-200 p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                />
               </div>
 
               {/* Phone Number */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <label className="text-sm font-black text-gray-800">
                   Mobile Number <span className="text-[#F96E8F]">*</span>
                 </label>
@@ -1582,24 +1613,24 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
                     if (addressErrors.phone) setAddressErrors(prev => ({ ...prev, phone: '' }));
                   }}
                   className={`w-full border ${addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'
-                    } p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    } p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                 />
                 {addressErrors.phone && (
                   <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.phone}</span>
                 )}
               </div>
 
-              <div className="flex gap-4 mt-3">
+              <div className="flex gap-4 mt-2">
                 <button
                   type="button"
                   onClick={closeAddressModal}
-                  className="flex-1 py-3.5 border border-gray-300 rounded-[12px] hover:bg-gray-50 font-bold cursor-pointer text-gray-700 transition-colors"
+                  className="flex-1 py-3 border border-gray-300 rounded-[12px] hover:bg-gray-50 font-bold cursor-pointer text-gray-700 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3.5 bg-[#F96E8F] text-white rounded-[12px] hover:bg-[#E44971] font-bold cursor-pointer shadow-sm transition-colors"
+                  className="flex-1 py-3 bg-[#F96E8F] text-white rounded-[12px] hover:bg-[#E44971] font-bold cursor-pointer shadow-sm transition-colors"
                 >
                   {editingAddressId ? 'Update Address' : 'Save Address'}
                 </button>
