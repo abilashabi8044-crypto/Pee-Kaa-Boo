@@ -53,9 +53,7 @@ const INITIAL_ADDRESS_FORM = {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
-// ==========================================
-// Helper Subcomponents
-// ==========================================
+
 
 /**
  * Custom DatePicker Component with Days, Months, and Years view modes
