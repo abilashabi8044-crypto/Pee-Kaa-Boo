@@ -536,7 +536,12 @@ const Account = ({ cartItems, addToCart, orders = [], wishlist = [], addToWishli
   }, [showCalendar]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    
+    if (name === 'mobileNumber' || name === 'altMobileNumber') {
+      value = value.replace(/\D/g, '').slice(0, 10);
+    }
+    
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
