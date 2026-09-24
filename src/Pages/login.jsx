@@ -201,7 +201,7 @@ export default function Login() {
                             value={email}
                             onChange={(e) => handleEmailChange(e.target.value)}
                             placeholder="username@gmail.com"
-                            className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${emailError ? 'border-[#FF5252]' : 'border-transparent'}`}
+                            className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${emailError ? 'border-[#FF5252]' : 'border-gray-300 hover:border-gray-400 focus:border-[#04BCC6]'}`}
                         />
                         {emailError && <p className="text-[#FF5252] text-xs font-bold mt-[4px]">{emailError}</p>}
                     </div>
@@ -214,7 +214,7 @@ export default function Login() {
                                 value={password}
                                 onChange={(e) => handlePasswordChange(e.target.value)}
                                 placeholder="Password"
-                                className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${passwordError ? 'border-[#FF5252]' : 'border-transparent'}`}
+                                className={`w-full h-[45px] rounded-[10px] px-[15px] text-sm text-[#333] outline-none border-2 placeholder-gray-400 font-medium bg-white transition-colors ${passwordError ? 'border-[#FF5252]' : 'border-gray-300 hover:border-gray-400 focus:border-[#04BCC6]'}`}
                             />
                             {/* Eye Icon placeholder */}
                             <span className="absolute right-[15px] top-[12px] text-gray-400 cursor-pointer">
