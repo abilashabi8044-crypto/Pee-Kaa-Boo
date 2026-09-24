@@ -385,8 +385,8 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
         {/* Address Form Modal */}
         {showAddressForm && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[100] flex items-center justify-center p-4">
-            <div className="bg-white rounded-[24px] p-6 sm:p-7 w-full max-w-md shadow-2xl font-['Baloo_2'] border border-gray-100">
-              <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
+            <div className="bg-white rounded-[24px] p-5 sm:p-6 w-full max-w-md shadow-2xl font-['Baloo_2'] border border-gray-100 max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
                 <h3 className="text-xl font-black text-gray-900">{editingAddressId ? 'Edit Address' : 'Add New Address'}</h3>
                 <button
                   onClick={closeAddressModal}
@@ -396,9 +396,9 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                 </button>
               </div>
 
-              <form onSubmit={handleAddAddress} className="flex flex-col gap-4" noValidate>
+              <form onSubmit={handleAddAddress} className="flex flex-col gap-3" noValidate>
                 {/* Address Label Styled Select */}
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1">
                   <label className="text-sm font-black text-gray-800">Address Label <span className="text-[#F96E8F]">*</span></label>
                   <div className="relative">
                     <select
@@ -408,12 +408,12 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                         setNewAddress({ ...newAddress, name: val, type: val.toUpperCase() });
                         if (addressErrors.name) setAddressErrors(prev => ({ ...prev, name: '' }));
                       }}
-                      className={`w-full appearance-none bg-white border ${addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} rounded-[12px] py-3.5 pl-4 pr-10 font-bold text-sm ${newAddress.name ? 'text-gray-900' : 'text-gray-400'} outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
+                      className={`w-full appearance-none bg-white border ${addressErrors.name ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} rounded-[12px] py-2.5 pl-4 pr-10 font-bold text-sm ${newAddress.name ? 'text-gray-900' : 'text-gray-400'} outline-none focus:border-[#F96E8F] transition-all shadow-xs cursor-pointer`}
                     >
                       <option value="" disabled className="text-gray-400">Select Address Label</option>
-                      <option value="Home" className="text-gray-800 font-bold py-2">🏠 Home (Residence)</option>
-                      <option value="Work" className="text-gray-800 font-bold py-2">💼 Work (Office / Business)</option>
-                      <option value="Other" className="text-gray-800 font-bold py-2">📍 Other (Friend / Family)</option>
+                      <option value="Home" className="text-gray-800 font-bold py-1">🏠 Home (Residence)</option>
+                      <option value="Work" className="text-gray-800 font-bold py-1">💼 Work (Office / Business)</option>
+                      <option value="Other" className="text-gray-800 font-bold py-1">📍 Other (Friend / Family)</option>
                     </select>
                     <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -425,7 +425,7 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                 </div>
 
                 {/* Full Name */}
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1">
                   <label className="text-sm font-black text-gray-800">Full Name <span className="text-[#F96E8F]">*</span></label>
                   <input
                     type="text"
@@ -435,13 +435,13 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                       setNewAddress({ ...newAddress, username: e.target.value });
                       if (addressErrors.username) setAddressErrors(prev => ({ ...prev, username: '' }));
                     }}
-                    className={`w-full border ${addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border ${addressErrors.username ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
                   {addressErrors.username && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.username}</span>}
                 </div>
 
                 {/* Address Line 1 */}
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1">
                   <label className="text-sm font-black text-gray-800">Address Line 1 <span className="text-[#F96E8F]">*</span></label>
                   <input
                     type="text"
@@ -451,26 +451,26 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                       setNewAddress({ ...newAddress, line1: e.target.value });
                       if (addressErrors.line1) setAddressErrors(prev => ({ ...prev, line1: '' }));
                     }}
-                    className={`w-full border ${addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border ${addressErrors.line1 ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
                   {addressErrors.line1 && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.line1}</span>}
                 </div>
 
                 {/* Landmark (Optional) */}
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1">
                   <label className="text-sm font-black text-gray-800">Landmark (Optional)</label>
                   <input
                     type="text"
                     placeholder="e.g. Near Apollo Hospital"
                     value={newAddress.landmark || ''}
                     onChange={e => setNewAddress({ ...newAddress, landmark: e.target.value })}
-                    className={`w-full border border-gray-200 p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border border-gray-200 p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   {/* City */}
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-1">
                     <label className="text-sm font-black text-gray-800">City <span className="text-[#F96E8F]">*</span></label>
                     <input
                       type="text"
@@ -480,27 +480,27 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                         setNewAddress({ ...newAddress, city: e.target.value });
                         if (addressErrors.city) setAddressErrors(prev => ({ ...prev, city: '' }));
                       }}
-                      className={`w-full border ${addressErrors.city ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                      className={`w-full border ${addressErrors.city ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                     />
                     {addressErrors.city && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.city}</span>}
                   </div>
 
                   {/* Pincode */}
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-1">
                     <label className="text-sm font-black text-gray-800">Pincode <span className="text-[#F96E8F]">*</span></label>
                     <input
                       type="text"
                       placeholder="e.g. 600001"
                       value={newAddress.pincode || ''}
                       onChange={handlePincodeChange}
-                      className={`w-full border ${addressErrors.pincode ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                      className={`w-full border ${addressErrors.pincode ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                     />
                     {addressErrors.pincode && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.pincode}</span>}
                   </div>
                 </div>
 
                 {/* State */}
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1">
                   <label className="text-sm font-black text-gray-800">State <span className="text-[#F96E8F]">*</span></label>
                   <input
                     type="text"
@@ -510,13 +510,13 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                       setNewAddress({ ...newAddress, state: e.target.value });
                       if (addressErrors.state) setAddressErrors(prev => ({ ...prev, state: '' }));
                     }}
-                    className={`w-full border ${addressErrors.state ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border ${addressErrors.state ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
                   {addressErrors.state && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.state}</span>}
                 </div>
 
                 {/* Phone Number */}
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-1">
                   <label className="text-sm font-black text-gray-800">Mobile Number <span className="text-[#F96E8F]">*</span></label>
                   <input
                     type="text"
@@ -526,22 +526,22 @@ const Checkout = ({ cartItems = [], updateQuantity, addToCart, placeOrder }) => 
                       setNewAddress({ ...newAddress, phone: e.target.value.replace(/\D/g, '').slice(0, 10) });
                       if (addressErrors.phone) setAddressErrors(prev => ({ ...prev, phone: '' }));
                     }}
-                    className={`w-full border ${addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-3.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
+                    className={`w-full border ${addressErrors.phone ? 'border-red-500 bg-red-50/10' : 'border-gray-200'} p-2.5 rounded-[12px] outline-none focus:border-[#F96E8F] font-bold text-sm text-gray-800 transition-all shadow-xs`}
                   />
                   {addressErrors.phone && <span className="text-red-500 text-xs font-bold mt-0.5">{addressErrors.phone}</span>}
                 </div>
 
-                <div className="flex gap-4 mt-3">
+                <div className="flex gap-4 mt-2">
                   <button
                     type="button"
                     onClick={closeAddressModal}
-                    className="flex-1 py-3.5 border border-gray-300 rounded-[12px] hover:bg-gray-50 font-bold cursor-pointer text-gray-700 transition-colors"
+                    className="flex-1 py-3 border border-gray-300 rounded-[12px] hover:bg-gray-50 font-bold cursor-pointer text-gray-700 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3.5 bg-[#F96E8F] text-white rounded-[12px] hover:bg-[#E44971] font-bold cursor-pointer shadow-sm transition-colors"
+                    className="flex-1 py-3 bg-[#F96E8F] text-white rounded-[12px] hover:bg-[#E44971] font-bold cursor-pointer shadow-sm transition-colors"
                   >
                     {editingAddressId ? 'Update Address' : 'Save Address'}
                   </button>
