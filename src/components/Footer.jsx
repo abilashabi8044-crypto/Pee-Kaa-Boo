@@ -158,7 +158,7 @@ export default function Footer() {
                         <img
                             src={footerLogo}
                             alt="Bunny Illustration"
-                            className="absolute right-0 sm:right-2 2xl:-mr-[128px] bottom-0 lg:-bottom-[70px] w-[110px] sm:w-[130px] lg:w-[165px] object-contain pointer-events-none z-20"
+                            className="absolute right-0 sm:right-2 2xl:-mr-[128px] bottom-0 lg:-bottom-[70px] w-[110px] sm:w-[130px] lg:w-[130px] object-contain pointer-events-none z-20"
                         />
                     </div>
 

@@ -17,7 +17,6 @@ import { gridItems } from './Shop';
 const recommendedProducts = gridItems.filter(item => item.type === 'product');
 
 const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
-  const [localQty, setLocalQty] = useState(1);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCouponCode, setAppliedCouponCode] = useState(() => localStorage.getItem('appliedCouponCode') || '');
   const [appliedCoupon, setAppliedCoupon] = useState(() => !!localStorage.getItem('appliedCouponCode'));
@@ -29,15 +28,14 @@ const Cart = ({ cartItems = [], updateQuantity, addToCart }) => {
       localStorage.removeItem('appliedCouponCode');
     }
   }, [appliedCoupon, appliedCouponCode]);
-  const [showCouponInput, setShowCouponInput] = useState(false);
+  const [showCouponInput, setShowCouponInput] = useState(false);  
   const [couponError, setCouponError] = useState('');
 
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [addedItems, setAddedItems] = useState({});
   const [showOrderSummaryModal, setShowOrderSummaryModal] = useState(false);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 640 : false);
   const [toastTrigger, setToastTrigger] = useState(0);
-  const [toastType, setToastType] = useState('updated'); 
+  const [toastType, setToastType] = useState('updated');
   const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
