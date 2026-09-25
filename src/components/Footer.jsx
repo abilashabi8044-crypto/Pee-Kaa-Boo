@@ -59,7 +59,7 @@ export default function Footer() {
 
                     {/* Column 2: About Us */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-3xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             About Us
                         </h4>
                         <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-3xl">
@@ -101,7 +101,7 @@ export default function Footer() {
 
                     {/* Column 3: Why Us */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-3xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             Why Us ?
                         </h4>
                         <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-bold text-lg sm:text-lg lg:text-xl xl:text-3xl">
@@ -143,7 +143,7 @@ export default function Footer() {
 
                     {/* Column 4: Jewellery Guides + Bunny Illustration */}
                     <div className="lg:col-span-3 flex flex-col items-start pt-1 mt-5 md:pt-2 relative min-h-[220px] xl:ml-[20px] 2xl:ml-[40px]">
-                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-3xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
+                        <h4 className="text-gray-900 font-black text-2xl sm:text-lg lg:text-2xl mb-2.5 lg:mb-3.5 uppercase tracking-wider whitespace-nowrap">
                             Jewellery Guides
                         </h4>
                         <ul className="flex flex-col gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-700 font-['Baloo_2'] font-bold text-lg sm:text-lg lg:text-xl xl:text-xl mb-4 md:mb-0">
